@@ -32,23 +32,6 @@ ng build --prod --output-hashing=all
 ng build --configuration=mahir   
 
 
-## config client nginx
-
-    server {
-        listen       80;
-	    server_name  e-mekteb.idrak.edu.az;
-        location / {
-		    proxy_pass http://127.0.0.1:7777;
-        }
-    }
-  
-	server {
-        listen       80;
-        server_name  back.idrak.edu.az;
-        location / {
-		proxy_pass http://127.0.0.1:7770;
-        }
-	}
 
 ## config gateway nginx
         location / {
