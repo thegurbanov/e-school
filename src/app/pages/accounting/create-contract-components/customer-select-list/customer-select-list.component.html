@@ -1,0 +1,105 @@
+<div class="col-md-12">
+  <form [formGroup]="form">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">2.Müştəri</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="row" style="text-align: right">
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müştəri</label>
+              <div class="col-sm-5">
+                <ng-select [clearable]="false" formControlName="consentId" class="col-md-12"
+                           (change)="getCustomer($event)"
+                           style="text-align: left" [ngClass]="{ 'is-invalid': validation.consentId.errors}">
+                  <ng-option *ngFor="let customer of customerList" [value]="customer.id">
+                    {{customer.secondName}} {{customer.firstName}} {{customer.fatherName}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.consentId.errors" class="invalid-feedback">
+                  <div *ngIf="validation.consentId.errors.required">
+                    Müştəri is required
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-primary btn-rounded" (click)="scrollModal(scrollDataModal)"
+                        [disabled]="!this.form.controls['consentId'].value">
+                  <i class="bx bx-show"></i>
+                </button>
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-success btn-rounded" (click)="openAddModal(customerAddModal)">
+                  <i class="bx bx-plus-medical"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Seriya nömrəsi</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{this.selectedCustomer?.customerDocument?.documentSeriya}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">FIN kodu</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="{{this.selectedCustomer?.customerDocument?.documentFin}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Orqan kodu</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{this.selectedCustomer?.customerDocument?.documentOrqan}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<ng-template #scrollDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müştərinin müqavilələri</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-list-special [consentId]="selectedCustomer.id" [consentType]="'CUSTOMER'"></app-contract-list-special>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #customerAddModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müştəri əlavə et</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-customer (isModifyDataEvent)="closeModals(); getAllCustomers()" [isOnlyAdd]="true"></app-customer>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erp-front
+  labels:
+    type: front-end
+    app: erp-front
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: erp-front
+  template:
+    metadata:
+      labels:
+        app: erp-front
+    spec:
+      imagePullSecrets:
+        - name: gitlab-auth
+      containers:
+        - name: erp-front
+          image: registry.gitlab.com/enterprise-resource-planning-system-solution/erp-front:{{IMAGE_VERSION}}
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+          ports:
+            - containerPort: 80
+              protocol: TCP

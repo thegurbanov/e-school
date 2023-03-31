@@ -1,0 +1,221 @@
+<!-- Right Sidebar -->
+<div id="main">
+  <div id="rightbar" class="right-bar custom">
+    <form [formGroup]="searchForm">
+      <ngx-simplebar class="h-100">
+        <div class="rightbar-title d-flex align-items-center bg-dark p-3">
+          <h5 class="m-0 me-2 text-white">Filtirlə</h5>
+          <a href="javascript:void(0);" class="right-bar-toggle ms-auto" (click)="hide();">
+            <i class="mdi mdi-close noti-icon"></i>
+          </a>
+        </div>
+
+        <!-- Settings -->
+        <hr class="m-0"/>
+
+        <div class="p-4" style="text-align: right; margin-left: -60px;">
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label">Tarix</label>
+            <div class="col-sm-4">
+              <input type="date" class="form-control" formControlName="startDate">
+            </div>
+            <div class="col-sm-4">
+              <input type="date" class="form-control" formControlName="endDate">
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label">Müqavilə növü</label>
+            <div class="col-sm-8">
+              <ng-select class="ng-select w-100" [clearable]="true" style="text-align: left" formControlName="contractType">
+                <ng-option *ngFor="let contractType of contractTypeList"
+                           [value]="contractType?.id">{{contractType?.info}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label">Ödəniş növü</label>
+            <div class="col-sm-8">
+              <ng-select class="ng-select w-100" [clearable]="true" style="text-align: left" formControlName="paymentType">
+                <ng-option *ngFor="let paymentType of contractPaymentTypeList" [value]="paymentType?.id">{{paymentType?.info}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label">Tərəf</label>
+            <div class="col-sm-8">
+              <ng-select class="ng-select w-100" [clearable]="true" style="text-align: left" formControlName="agreementSideId">
+                <ng-option *ngFor="let agreementSideType of contractAgreementSideTypeList"
+                           [value]="agreementSideType?.id">{{agreementSideType?.info}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label">Predmet</label>
+            <div class="col-sm-8">
+              <ng-select class="ng-select w-100" [clearable]="true" style="text-align: left" formControlName="predmetId">
+                <ng-option *ngFor="let predmetType of contractPredmetTypeList"
+                           [value]="predmetType?.id">{{predmetType?.info}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label"></label>
+            <div class="col-sm-8">
+              <div class="row mb-2 ps-3" *ngFor="let table of tableColumns; let i = index">
+                <div class="form-check d-flex justify-content-start">
+                  <input class="form-check-input me-1" type="checkbox" checked (change)="changeColumnActive(i)">
+                  <label class="form-check-label">{{table.title}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-warning" (click)="resetForm()">
+                <i class="bx bx-reset"></i> Təmizlə
+              </button>
+              <button class="btn btn-success ms-2" (click)="search()">
+                <i class="bx bx-search"></i> Axtarış
+              </button>
+            </div>
+          </div>
+        </div>
+      </ngx-simplebar>
+    </form>
+  </div>
+  <!-- /Right-bar -->
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <button class="btn btn-success" (click)="open()">
+        <i class="bx bx-window-open"></i> Filtirləri aç
+      </button>
+      <a routerLink="/accounting/create-contract/" class="btn btn-success ms-2">
+        <i class="bx bx-plus-medical"></i> Yeni müqavilə
+      </a>
+      <button class="btn btn-success ms-2" (click)="openScrollModal(scrollDataModal)">
+        <i class="bx bx-notepad"></i> Şablonla yeni müqavilə
+      </button>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-sm-12 col-md-6">
+      <div class="dataTables_length" id="tickets-table_length"><label
+        class="d-inline-flex align-items-center">Göstər:
+        <select name="tickets-table_length" aria-controls="tickets-table"
+                (change)="changePageSize()"
+                [(ngModel)]="pageSize" class="form-control form-control-sm mx-2">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="25">25</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select> data</label></div>
+    </div>
+  </div>
+  <div class="table-responsive border-bottom">
+    <table class="table table-bordered">
+      <thead class="ant-table-thead">
+      <tr style="text-align: center;">
+        <th style="text-align: left;"><span class="ant-table-header-column">
+          <div><span class="ant-table-column-title">№</span><span class="ant-table-column-sorter"></span>
+          </div>
+        </span></th>
+        <ng-container *ngFor="let column of tableColumns">
+          <th *ngIf="column.isActive"> {{column.title}}</th>
+        </ng-container>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let contract of paginatedContractList?.content; let i=index">
+        <td style="text-align: left;">{{pageSize * (pageNumber - 1) + i + 1}}</td>
+        <td style="text-align: left;" *ngIf="tableColumns[0].isActive">{{contract | agreementSide}}</td>
+        <td style="text-align: left;" *ngIf="tableColumns[1].isActive">{{contract?.contractType?.info}}</td>
+        <td style="text-align: left;" *ngIf="tableColumns[2].isActive">{{contract?.contractPaymentOrder?.paymentType?.info}}</td>
+        <td
+          style="text-align: right;" *ngIf="tableColumns[3].isActive">{{contract?.contractPaymentOrder?.totalAmount}} {{contract?.contractPaymentOrder?.currency?.info}}</td>
+        <td style="text-align: right;" *ngIf="tableColumns[4].isActive">{{contract?.contractPaymentOrder?.totalPaymentAmount}} {{contract?.contractPaymentOrder?.currency?.info}}</td>
+        <td style="text-align: right;" *ngIf="tableColumns[5].isActive">{{contract?.contractPaymentOrder?.totalPaymentPercent}} %</td>
+        <td style="text-align: right;" *ngIf="tableColumns[6].isActive">{{contract?.contractPaymentOrder?.totalDeptAmount}} {{contract?.contractPaymentOrder?.currency?.info}}</td>
+        <td style="text-align: right;" *ngIf="tableColumns[7].isActive">{{contract?.contractPaymentOrder?.lastPaymentAmount}} {{contract?.contractPaymentOrder?.currency?.info}}</td>
+        <td style="text-align: left;" *ngIf="tableColumns[8].isActive">{{contract?.contractPaymentOrder?.lastPaymentDate}}</td>
+        <td style="text-align: left;" *ngIf="tableColumns[9].isActive">{{contract?.contractDate}}</td>
+        <td style="text-align: center;">
+          <button type="button" class="btn btn-primary btn-rounded me-2"
+                  (click)="selectContract(contract, contractDetailsModal)">
+            <i class="bx bx-info-circle"></i>
+          </button>
+          <button class="btn btn-success btn-rounded"
+                  routerLink="/accounting/payment-for-contract/{{contract?.id}}">
+            <i class="bx bx-dollar"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [paginatedData]="paginatedContractList" [pageSize]="pageSize"
+                  (changePageNumberEvent)="receivePageNumber($event)" [changePageNumber]="changePageNumber">
+  </app-pagination>
+</div>
+<ng-template #scrollDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müqavilə şablonları</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>Ad</th>
+          <th>Müqavilə növü</th>
+          <th>Ödəniş növü</th>
+          <th>Valyuta</th>
+          <th>Ümumi məbləğ</th>
+          <th>İlkin ödəniş</th>
+          <th>Müddət</th>
+          <th>Güzəştli müddət</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let contractTemplate of contractTemplateList">
+          <td>{{contractTemplate?.info}}</td>
+          <td>{{contractTemplate?.contractType?.info}}</td>
+          <td>{{contractTemplate?.paymentType?.info}}</td>
+          <td>{{contractTemplate?.currency?.info}}</td>
+          <td class="text-end">{{contractTemplate?.totalAmount}}</td>
+          <td class="text-end">{{contractTemplate?.initialAmount}}</td>
+          <td class="text-end">{{contractTemplate?.offerMonth}}</td>
+          <td class="text-end">{{contractTemplate?.discountMonth}}</td>
+          <td class="text-center">
+            <button type="button" class="btn btn-primary btn-rounded mx-2"
+                    (click)="createContractByTemplate(contractTemplate.id)">
+              <i class="bx bx-arrow-from-left"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>
+<ng-template #contractDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müqavilə məlumatları</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="selectedContract.id"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

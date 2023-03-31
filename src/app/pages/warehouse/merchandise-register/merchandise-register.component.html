@@ -1,0 +1,202 @@
+<div class="row">
+  <div class="col-lg-12">
+      <div class="card">
+          <div class="card-header">
+              <h4 class="card-title">Malların qeydiyyatı</h4>
+          </div>
+          <div class="card-body p-4">
+            <div class="row">
+              <div class="col-lg-5">
+                  <div>
+                    <form class="" [formGroup]="form" (ngSubmit)="addMerchandiseRegister()">
+                      <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                        <label  class="col-sm-3  control-label">Adı</label>
+                          <div class="col-sm-9">
+                            <input formControlName="info" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                            <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                                <div *ngIf="f.info.errors.required">
+                                    Info is required+
+                                </div>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                        <label class="col-sm-3 control-label">Barkod</label>
+                        <div class="col-sm-9">
+                          <input formControlName="barcode" class="form-control"
+                          [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                          <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                              <div *ngIf="f.info.errors.required">
+                                BarCode is required+
+                              </div>
+                          </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Satış qiyməti</label>
+                      <div class="col-sm-9">
+                        <input formControlName="salePrice" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.salePrice.errors }">
+                        <div *ngIf="submitted && f.salePrice.errors" class="invalid-feedback">
+                            <div *ngIf="f.salePrice.errors.required">
+                              salePrice is required+
+                            </div>
+                        </div>
+                      </div>
+
+                  </div>
+                      <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                        <label class="col-sm-3  form-label">Malın Qrupu</label>
+                        <div class="col-sm-9">
+                          <ng-select  [clearable]="false" formControlName="group" [items]="merchandise_group" [(ngModel)]="currentmerchandisegroup" bindValue="id" (change)="getparentmerchandisegroups()"
+                          bindLabel="info" class="ng-select h-50 w-100 " [notFoundText]="'Group tapılmadı'">
+                      </ng-select>
+                        </div>
+                      </div>
+                      <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                        <label class="col-sm-3  form-label">Alt Qrup</label>
+                        <div class="col-sm-9">
+                          <ng-select  [clearable]="false" formControlName="parentgroup" [items]="currentparentmerchandise" bindValue="id"
+                          bindLabel="info" class="ng-select h-50 w-100 " [notFoundText]="'Group tapılmadı'">
+                      </ng-select>
+                        </div>
+                      </div>
+
+
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3  form-label">Mədaxil ölçü vahidi</label>
+                  <div class="col-sm-9">
+                    <ng-select  [clearable]="false" formControlName="tipEnter" [items]="merchandise_type"
+                    bindLabel="info" bindValue="id" class="ng-select h-50 w-100 " [notFoundText]="'Group tapılmadı'"
+                    >
+                </ng-select>
+                  </div>
+                </div>
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Nisbət</label>
+                  <div class="col-sm-9">
+                    <input formControlName="ratio" type="number" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                        <div *ngIf="f.info.errors.required">
+                          Ratio is required+
+                        </div>
+                    </div>
+                  </div>
+              </div>
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3  form-label">Məxaric ölçü vahidi</label>
+                  <div class="col-sm-9">
+                    <ng-select  [clearable]="false" formControlName="tip" [items]="merchandise_type"
+                    bindLabel="info" bindValue="id" class="ng-select h-50 w-100 " [notFoundText]="'Group tapılmadı'">
+                </ng-select>
+                  </div>
+                </div>
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Minimum və maksimum miqdara nəzarət</label>
+                  <div class="col-sm-9">
+                    <input type="checkbox" formControlName="minmax" (change)="currentvalue()">
+                  </div>
+              </div>
+
+                <div *ngIf="isChecked" class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Maksimum miqdar</label>
+                  <div class="col-sm-9">
+                    <input formControlName="maxCount" class="form-control">
+                  </div>
+              </div>
+
+              <div *ngIf="isChecked" class="form-group" style="display: flex;margin-bottom: 10px;">
+                <label class="col-sm-3 control-label">Minimum miqdar</label>
+                <div class="col-sm-9">
+                  <input formControlName="minCount" class="form-control">
+                </div>
+            </div>
+            <div class="form-group" style="display: flex;margin-bottom: 10px;">
+              <label class="col-sm-3 control-label">Yararlılıq müddəti</label>
+              <div class="col-sm-9">
+                  <input class="form-check-input" type="radio" formControlName="hasExpired" [value]="1" />
+                  <label class="form-check-label" style="margin-left: 1px;margin-right: 28px;" for="layout-mode-light">
+                    Beli</label>
+              <input class="form-check-input" type="radio" formControlName="hasExpired" [value]="0" />
+            <label class="form-check-label" style="margin-left: 1px;" for="layout-mode-light">
+          Xeyr</label>
+          <div *ngIf="submitted && f.hasExpired.errors" class="invalid-feedback">
+            <div *ngIf="f.hasExpired.errors?.required">
+              hasExpired is required+
+            </div>
+        </div>
+              </div>
+          </div>
+       <br>
+                        <div class="mb-3">
+                            <button  (click)="editMerchandiseRegister()" type="button" class="btn btn-primary me-3" >
+                                <i class="bx bx-edit-alt"></i>
+                                Dəyiş
+                            </button>
+                            <button  class="btn btn-success me-3" >
+                                <i class="bx bx-plus-medical"></i>
+                                Əlavə et
+                            </button>
+                        </div>
+                    </form>
+                  </div>
+              </div>
+
+              <div class="col-lg-7 ms-lg-auto">
+                  <div class="mt-4 mt-lg-0">
+                      <div class="table-responsive">
+                        <input type="search" class="form-control" placeholder="Axtar"
+                        [(ngModel)]="searchregister">
+                          <table class="table table-bordered mt-2">
+                              <thead>
+                                  <tr>
+                                      <th>Adı</th>
+                                      <th>BarCode</th>
+                                      <th>Satış qiyməti</th>
+                                      <th></th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <ng-container *ngFor="let merchandiseregister of data | search:'info,sellPrice,barcode': searchregister">
+                                      <tr [class.selected]="selectedMerchandiseRegister.id==merchandiseregister.id">
+                                          <td>
+                                              <span class="pr-6 whitespace-nowrap">
+                                                  {{merchandiseregister.info}}
+                                              </span>
+                                          </td>
+                                          <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{merchandiseregister.barcode}}
+                                            </span>
+                                        </td>
+                                      <td>
+                                        <span class="pr-6 whitespace-nowrap">
+                                            {{merchandiseregister.salePrice}}
+                                        </span>
+                                    </td>
+                                          <td>
+                                              <button (click)="delMerchandiseRegister(merchandiseregister)" class="btn btn-danger btn-rounded">
+                                                  <i class="bx bx-trash-alt"></i>
+                                              </button>
+
+                                              <button (click)="selectMerchandiseRegister(merchandiseregister.id)" class="btn btn-primary btn-rounded ms-2">
+                                                  <i class="bx bx-edit-alt"></i>
+                                              </button>
+                                          </td>
+                                      </tr>
+                                  </ng-container>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+

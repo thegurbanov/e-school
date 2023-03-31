@@ -1,0 +1,98 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Tədris ili</h4>
+                <p class="card-title-desc">Tədris ilinin siyahısı</p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div>
+                            <form [formGroup]="YearForm" (ngSubmit)="createYear()">
+                                <div class="flex flex-col gt-xs:flex-row">
+                                    <label>Adı</label>
+                                    <input formControlName="info" class="form-control" />
+                                </div>
+                                <div class="flex">
+                                    <label>Başlama tarixi</label>
+                                    <input formControlName="startYear" type="datetime" class="form-control" />
+                                </div>
+                                <div class="flex">
+                                    <label>Bitmə tarixi</label>
+                                    <input formControlName="endYear" class="form-control" />
+                                </div>
+                                <div class="mt-2">
+                                    <!-- <button (click)="editYear()" type="button" class="btn btn-primary me-3"
+                                        [disabled]="YearForm.invalid">
+                                        <i class="bx bx-edit-alt"></i>
+                                        Dəyiş
+                                    </button> -->
+                                    <button class="btn btn-success me-3" [disabled]="YearForm.invalid">
+                                        <i class="bx bx-plus-medical"></i>
+                                        Əlavə et
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                            <div class="table-responsive">
+                              <input type="search" class="form-control" placeholder="Axtar"
+                              [(ngModel)]="educationyear">
+                                <table class="table table-bordered mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th>Adı</th>
+                                            <th>Başlama tarixi</th>
+                                            <th>Bitmə tarixi</th>
+                                            <th>Status</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let year of data | search:'info,startYear,endYear,isCurrent':educationyear">
+                                            <tr [class.selected]="selectedYear.id == year.id">
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{ year.info }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{ year.startYear }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{ year.endYear }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{ year.isCurrent ? "cari" : "" }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button (click)="delYear(year)" class="btn btn-danger btn-rounded">
+                                                        <i class="bx bx-trash-alt"></i>
+                                                    </button>
+
+                                                    <!-- <button (click)="selectYear(year)"
+                                                        class="btn btn-primary btn-rounded ms-2">
+                                                        <i class="bx bx-edit-alt"></i>
+                                                    </button> -->
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

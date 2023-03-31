@@ -1,0 +1,117 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Jurnal</h4>
+                <p class="card-title-desc">
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-12 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                            <div class="d-flex flex-wrap">
+
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1">Tədris ili</label>
+                                    <ng-select class="w-100" name="year" [(ngModel)]="year" [items]="years"
+                                        (change)="getJournals()" [(ngModel)]="year" bindLabel="info">
+                                    </ng-select>
+                                </div>
+
+                                <div class="weeks me-2">
+                                    <label>Həftələr</label>
+                                    <div>
+                                        <ng-select [(ngModel)]="week" (change)="getJournals()" [clearable]="false">
+                                            <ng-option *ngFor="let week of weeks" [value]="week">{{week?.info}}
+                                            </ng-option>
+                                        </ng-select>
+                                    </div>
+                                </div>
+
+                                <ng-container *roles="'ROLE_ADMIN'">
+                                    <div class="me-2 mt-1">
+                                        <label class="mb-1"> Müəllim</label>
+                                        <ng-select class="w-100" name="year" [items]="teachers" (change)="filter()"
+                                            [(ngModel)]="selectedTeacher" bindLabel="fullName">
+                                        </ng-select>
+                                    </div>
+                                </ng-container>
+
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1"> Sinif</label>
+                                    <ng-select class="w-100" name="year" [items]="classes" (change)="filter()"
+                                        [(ngModel)]="_class" bindLabel="info">
+                                    </ng-select>
+                                </div>
+                                <ng-container *roles="'ROLE_ADMIN'">
+
+                                    <div class="mt-1">
+                                        <label class="mb-1"> Fənn</label>
+                                        <ng-select class="w-100" name="year" [items]="subjects" (change)="filter()"
+                                            [(ngModel)]="selectedSubject" bindLabel="info">
+                                        </ng-select>
+                                    </div>
+                                </ng-container>
+
+
+                            </div>
+                            <div class="table-responsive mt-3">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Müəllim</th>
+                                            <th>Sinif</th>
+                                            <th>Fənn</th>
+                                            <th>Tədris saatı</th>
+                                            <th>Jurnal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let journal of journals;let i = index">
+                                            <tr>
+                                                <td>
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{journal.teacher?.fullName}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{journal.classYearly?.classPrefix}}
+                                                        {{journal.classYearly?.classPrefixIndicator}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{journal.subject?.info}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{journal.weeklyHour}}
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button
+                                                        [routerLink]="['/school/journal/yearly',journal.classYearly?.id,journal.subject?.id,journal?.teacher.id,
+                                                        this.year.id]"
+                                                        class="btn btn-info btn-rounded ">
+                                                        <i class="fad fa-table"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,203 @@
+<ul ngbNav #nav="ngbNav" [activeId]="0" class="nav-tabs">
+  <li [ngbNavItem]="0" (click)="getDebitorListByInvoice()">
+    <a ngbNavLink>
+      <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+      <span class="d-none d-sm-block">Qaiməyə görə</span>
+    </a>
+    <ng-template ngbNavContent>
+      <div class="table-responsive mt-3">
+        <table class="table table-bordered">
+          <thead class="ant-table-thead text-center">
+          <tr>
+            <th rowspan="2" class="text-start">№</th>
+            <th rowspan="2" class="text-start">Tarix</th>
+            <th rowspan="2" class="text-start">Qaimə nömrəsi</th>
+            <th rowspan="2" class="text-center">Müştəri</th>
+            <th rowspan="2" class="text-center">Valyuta</th>
+            <th colspan="4" class="text-center">Hesablanmış</th>
+            <th colspan="4" class="text-center">Ödənilmiş</th>
+            <th colspan="4" class="text-center">Qalıq</th>
+            <th colspan="2" class="text-center">Son ödəniş</th>
+            <th rowspan="2" class="text-center"></th>
+          </tr>
+          <tr>
+            <th class="text-center">Əsas<br>məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol<br>vergisi</th>
+            <th class="text-center">Yekun<br>məbləğ</th>
+            <th class="text-center">Əsas<br>məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol<br>vergisi</th>
+            <th class="text-center">Yekun<br>məbləğ</th>
+            <th class="text-center">Əsas<br>məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol<br>vergisi</th>
+            <th class="text-center">Yekun<br>məbləğ</th>
+            <th class="text-center">Ödəniş</th>
+            <th class="text-center">Ödəniş<br>tarixi</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let debitor of debitorList; let i = index">
+            <td class="text-end">{{i + 1}}</td>
+            <td class="text-start"><span>{{debitor?.lineDate}}</span></td>
+            <td class="text-end">{{debitor?.invoiceNumber}}</td>
+            <td class="text-start">{{debitor?.contract | agreementSide}}</td>
+            <td class="text-start">{{debitor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-end">{{debitor?.amount}}</td>
+            <td class="text-end">{{debitor?.taxAmount}}</td>
+            <td class="text-end">{{debitor?.taxRoadAmount}}</td>
+            <td class="text-end">{{debitor?.totalAmount}}
+
+
+            <td class="text-end">{{debitor?.payAmount}}</td>
+            <td class="text-end">{{debitor?.payTaxAmount}}</td>
+            <td class="text-end">{{debitor?.payTaxRoadAmount}}</td>
+            <td class="text-end">{{debitor?.totalPayAmount}}</td>
+
+            <td class="text-end" [ngClass]="{'text-danger' : debitor?.deptAmount || 0 > 0,
+            'text-success' : debitor?.deptAmount || 0 === 0}"><b>{{debitor?.deptAmount}}
+              </b></td>
+            <td class="text-end" [ngClass]="{'text-danger' : debitor?.deptAmount || 0 > 0,
+            'text-success' : debitor?.deptAmount || 0 === 0}"><b>{{debitor?.debtTaxAmount}}
+              </b></td>
+            <td class="text-end" [ngClass]="{'text-danger' : debitor?.debtTaxRoadAmount || 0 > 0,
+            'text-success' : debitor?.deptAmount || 0 === 0}"><b>{{debitor?.debtTaxRoadAmount}}
+              </b></td>
+            <td class="text-end" [ngClass]="{'text-danger' : debitor?.totalDebtAmount || 0 > 0,
+            'text-success' : debitor?.deptAmount || 0 === 0}"><b>{{debitor?.totalDebtAmount}}
+              </b></td>
+
+            <td
+              class="text-end">{{debitor?.contract?.contractPaymentOrder?.lastPaymentAmount}} </td>
+            <td class="text-center">{{debitor?.contract?.contractPaymentOrder?.lastPaymentDate}}</td>
+            <td class="text-center">
+              <button class="btn btn-success btn-rounded"
+                      routerLink="/accounting/payment-for-contract/{{debitor?.contract?.id}}">
+                <i class="bx bx-dollar"></i></button>
+              <button type="button" class="btn btn-primary btn-rounded ms-2"
+                      (click)="selectDebitor(debitor, contractDetailsModal)">
+                <i class="bx bx-pen"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="" (click)="getDebitorListByContract()">
+    <a ngbNavLink>
+      <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+      <span class="d-none d-sm-block">Müqaviləyə görə</span>
+    </a>
+    <ng-template ngbNavContent>
+      <div class="table-responsive mt-3">
+        <table class="table table-bordered">
+          <thead class="ant-table-thead text-center">
+          <tr>
+            <th rowspan="2" class="text-start">№</th>
+            <th rowspan="2" class="text-start">Tarix</th>
+            <th rowspan="2" class="text-start">Müqavilə növü</th>
+            <th rowspan="2" class="text-center">Müştəri</th>
+            <th rowspan="2" class="text-center">Valyuta</th>
+            <th colspan="4" class="text-center">Hesablanmış</th>
+            <th colspan="4" class="text-center">Ödənilmiş</th>
+            <th colspan="4" class="text-center">Qalıq</th>
+            <th colspan="2" class="text-center">Son ödəniş</th>
+            <th rowspan="2" class="text-center"></th>
+          </tr>
+          <tr>
+            <th class="text-center">Əsas<br>məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol<br>vergisi</th>
+            <th class="text-center">Yekun<br>məbləğ</th>
+            <th class="text-center">Əsas<br>məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol<br>vergisi</th>
+            <th class="text-center">Yekun<br>məbləğ</th>
+            <th class="text-center">Əsas<br>məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol<br>vergisi</th>
+            <th class="text-center">Yekun<br>məbləğ</th>
+            <th class="text-center">Ödəniş</th>
+            <th class="text-center">Ödəniş<br>tarixi</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let debitor of debitorList; let i = index">
+            <td class="text-end">{{i + 1}}</td>
+            <td class="text-start"><span>{{debitor?.lineDate}}</span></td>
+            <td class="text-start">{{debitor?.contract?.contractType?.info}}</td>
+            <td class="text-end">{{debitor?.contract | agreementSide}}</td>
+            <td class="text-end">{{debitor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+
+            <td class="text-end">{{debitor?.amount}}
+              </td>
+            <td class="text-end">{{debitor?.taxAmount}}
+              </td>
+            <td class="text-end">{{debitor?.taxRoadAmount}}
+              </td>
+            <td class="text-end">{{debitor?.totalAmount}}
+
+
+            <td class="text-end">{{debitor?.payAmount}}
+              </td>
+            <td class="text-end">{{debitor?.payTaxAmount}}
+              </td>
+            <td class="text-end">{{debitor?.payTaxRoadAmount}}
+              </td>
+            <td class="text-end">{{debitor?.totalPayAmount}}
+              </td>
+
+            <td class="text-end" [ngClass]="{'text-danger' : debitor?.deptAmount || 0 > 0,
+            'text-success' : debitor?.deptAmount || 0 === 0}"><b>{{debitor?.deptAmount}}
+              </b></td>
+            <td class="text-end" [ngClass]="{'text-danger' : debitor?.deptAmount || 0 > 0,
+            'text-success' : debitor?.deptAmount || 0 === 0}"><b>{{debitor?.debtTaxAmount}}
+              </b></td>
+            <td class="text-end" [ngClass]="{'text-danger' : debitor?.debtTaxRoadAmount || 0 > 0,
+            'text-success' : debitor?.deptAmount || 0 === 0}"><b>{{debitor?.debtTaxRoadAmount}}
+              </b></td>
+            <td class="text-end" [ngClass]="{'text-danger' : debitor?.totalDebtAmount || 0 > 0,
+            'text-success' : debitor?.deptAmount || 0 === 0}"><b>{{debitor?.totalDebtAmount}}
+              </b></td>
+
+
+            <td
+              class="text-end">{{debitor?.contract?.contractPaymentOrder?.lastPaymentAmount}} </td>
+            <td class="text-center">{{debitor?.contract?.contractPaymentOrder?.lastPaymentDate}}</td>
+            <td class="text-center">
+              <button class="btn btn-success btn-rounded"
+                      routerLink="/accounting/payment-for-contract/{{debitor?.contract?.id}}">
+                <i class="bx bx-dollar"></i></button>
+              <button type="button" class="btn btn-primary btn-rounded ms-2"
+                      (click)="selectDebitor(debitor, contractDetailsModal)">
+                <i class="bx bx-pen"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+  </li>
+</ul>
+<div [ngbNavOutlet]="nav" class="text-muted"></div>
+
+<ng-template #contractDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müqavilə məlumatları</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="selectedDebitor.contract.id"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

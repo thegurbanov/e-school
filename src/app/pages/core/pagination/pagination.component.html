@@ -1,0 +1,20 @@
+<div class="row justify-content-md-between align-items-md-center mt-2">
+  <div class="col-sm-12 col-md-5">
+    <div class="dataTables_info " id="tickets-table_info" role="status" aria-live="polite">
+      Showing
+      {{(paginatedData?.pageable?.pageSize || 0 )* (paginatedData?.pageable?.pageNumber || 0) + 1}}
+      to
+      {{(paginatedData?.pageable?.pageSize || 0) * (paginatedData?.pageable?.pageNumber || 0) + (paginatedData?.numberOfElements || 0)}}
+      of {{paginatedData?.totalElements}} entries
+    </div>
+  </div>
+  <!-- Pagination -->
+  <div class="col-sm-12 col-md-5">
+    <div class="text-md-right float-md-end pagination-rounded">
+      <ngb-pagination [collectionSize]="paginatedData?.totalElements ?? 0" [(page)]="pageNumber" [pageSize]="pageSize"
+                      (pageChange)="sendPageNumber(); changePageNumber()"
+                      [rotate]="true" [boundaryLinks]="true"></ngb-pagination>
+    </div>
+  </div>
+  <!-- End Pagination -->
+</div>

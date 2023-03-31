@@ -1,0 +1,202 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Banklar</h4>
+        <p class="card-title-desc">Təşkilatda fəaliyyət göstərən banklar
+        </p>
+      </div>
+      <div class="card-body p-4">
+        <div class="row">
+          <div class="col-lg-5">
+            <div>
+              <form class="" [formGroup]="BankForm" (ngSubmit)="addBank()">
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3  control-label">Adi</label>
+                  <div class="col-sm-9">
+                    <input formControlName="info" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        Info is required+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">MuxbirHesab</label>
+                  <div class="col-sm-9">
+                    <input formControlName="muxbirHesab" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        MuxbirHesab is required+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">BranchCode</label>
+                  <div class="col-sm-9">
+                    <input formControlName="branchCode" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        BranchCode is required+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Vöen</label>
+                  <div class="col-sm-9">
+                    <input formControlName="voen" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        Vöen is required+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">İban</label>
+                  <div class="col-sm-9">
+                    <input formControlName="iban" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        Iban is required+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Swift</label>
+                  <div class="col-sm-9">
+                    <input formControlName="swift" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        Swift is required+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Şəhər</label>
+                  <div class="col-sm-9">
+                    <input formControlName="city" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        City is required+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Address</label>
+                  <div class="col-sm-9">
+                    <input formControlName="address" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        Address is required+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Telefon</label>
+                  <div class="col-sm-9">
+                    <input formControlName="phone" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                      <div *ngIf="f.info.errors.required">
+                        Phone is required+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="mb-3">
+                  <button (click)="editBank()" type="button" class="btn btn-primary me-3" [disabled]="BankForm.invalid">
+                    <i class="bx bx-edit-alt"></i>
+                    Dəyiş
+                  </button>
+                  <button class="btn btn-success me-3" [disabled]="BankForm.invalid">
+                    <i class="bx bx-plus-medical"></i>
+                    Əlavə et
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-lg-7 ms-lg-auto">
+            <div class="mt-4 mt-lg-0">
+              <div class="table-responsive">
+                <input type="search" class="form-control" placeholder="Şöbə axtar" [(ngModel)]="bank">
+                <table class="table table-bordered mt-2">
+                  <thead>
+                    <tr>
+                      <th>Adı</th>
+                      <th>MüxbirHesab</th>
+                      <th>BranchCode</th>
+                      <th>Vöen</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let bank of data | search:'info,muxbirHesab,branchCode,voen': bank">
+                      <tr [class.selected]="selectedBank.id == bank.id">
+                        <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{bank.info}}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{bank.muxbirHesab}}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{bank.branchCode}}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{bank.voen}}
+                          </span>
+                        </td>
+                        <td>
+                          <button (click)="deleteBank(bank)" class="btn btn-danger btn-rounded">
+                            <i class="bx bx-trash-alt"></i>
+                          </button>
+
+                          <button (click)="selectBank(bank.id)" class="btn btn-primary btn-rounded ms-2">
+                            <i class="bx bx-edit-alt"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

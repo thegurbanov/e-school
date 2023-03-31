@@ -1,0 +1,135 @@
+.students {
+    .student {
+        display: flex;
+        .student-info {
+            box-shadow: 0 1px 5px #00000032;
+            border: 1px solid #bf7646;
+            margin: 5px;
+            height: 40px;
+            border-radius: 6px;
+            line-height: 40px;
+            padding: 0 10px;
+            width: 250px;
+        }
+    }
+
+    .def {
+        &.note,
+        &.student-info {
+            background-color: #bf76468c;
+            font-weight: bold;
+        }
+    }
+}
+.notes {
+    width: max-content;
+    .note {
+        width: 50px;
+        height: 40px;
+        border-radius: 6px;
+        text-align: center;
+        line-height: 35px;
+        box-shadow: 0 1px 5px #00000032;
+        border: 1px solid #bf76468c;
+        margin: 5px;
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 0;
+        position: relative;
+        &.active {
+            background: #bf7646;
+            color: #fff;
+        }
+
+        .day-info {
+            position: absolute;
+            font-size: 8px;
+            bottom: -12px;
+            right: 8px;
+        }
+        input {
+            border: 0;
+            background: transparent;
+            margin: 0;
+            text-align: center;
+            width: 100%;
+        }
+        cursor: pointer;
+        &:hover {
+            background-color: #bf7646;
+            color: #fff;
+        }
+    }
+    .marks-list {
+        border: 1px solid #bf76468c;
+        margin: 5px;
+        min-width: 55px;
+        border-radius: 6px;
+        box-shadow: 0 1px 5px #00000032;
+    }
+}
+
+.plans {
+    .plan {
+        width: 100%;
+        .plan-detail {
+            display: flex;
+            li.green {
+                border: 1px solid #08a53ca1;
+                box-shadow: 0 1px 5px #08a53ca1;
+            }
+            li {
+                min-width: 100px;
+                border-radius: 6px;
+                margin-top: 5px;
+                padding: 7px;
+                border: 1px solid #bf7646;
+                box-shadow: 0 1px 5px #00000032;
+                margin-right: 10px;
+
+                &.plan-date {
+                    width: 150px;
+                }
+                &.plan-hour {
+                    width: 150px;
+                }
+                &.plan-task {
+                    width: 230px;
+                    input {
+                        background: transparent;
+                        width: 100%;
+                    }
+                }
+                &.plan-subject {
+                    width: 230px;
+                }
+                &.modify {
+                    width: 100px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: #bf76468c;
+                        i {
+                            color: #fff !important;
+                            font-weight: bold;
+                        }
+                    }
+                    i.confirm {
+                        color: rgb(11, 202, 11);
+                    }
+                    i {
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+        &.def {
+            .plan-detail {
+                li {
+                    background-color: #bf76468c;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}

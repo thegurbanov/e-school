@@ -1,0 +1,172 @@
+<div class="row">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Filiallar</h4>
+          <p class="card-title-desc">Təşkilatın filalları
+          </p>
+        </div>
+        <div class="card-body p-4">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="mt-4 mt-lg-0">
+                <div class="table-responsive">
+                  <input type="search" class="form-control" placeholder="Axtar"
+                         [(ngModel)]="branch">
+                  <table class="table table-bordered mt-2">
+                    <thead>
+                    <tr>
+                      <th></th>
+                      <th>Adı</th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <ng-container
+                      *ngFor="let section of data|search:'info,adress,phone1,phone2,mob1,mob2,fax1,fax2,webPage,email': branch;let i = index">
+                      <tr [class.selected]="selectedBranch.id == section.id">
+                        <td>
+                          {{i + 1}}
+                        </td>
+                        <td>
+                                          <span class="pr-6 whitespace-nowrap">
+                                              {{section.info}}
+                                          </span>
+                        </td>
+                        <td>
+                          <button (click)="deleteBranch(section)" class="btn btn-danger btn-rounded">
+                            <i class="bx bx-trash-alt"></i>
+                          </button>
+
+                          <button (click)="selectBranch(section)" class="btn btn-primary btn-rounded ms-2">
+                            <i class="bx bx-edit-alt"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <div class="bg-card">
+                <ul class="nav nav-tabs tabs">
+                  <ng-container *ngFor="let nav of navs">
+                    <li (click)="changeTab(nav)" class="nav-item">
+                      <a class="nav-link" [ngClass]="{ active: nav.status }">{{
+                        nav.title
+                        }}</a>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
+              <ng-container *ngIf="selectedClass?.id === 0">
+                <div class="p-3">
+                  <form class="" [formGroup]="BranchForm" (ngSubmit)="createBranch()">
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3  control-label">Adı</label>
+                      <div class="col-sm-9">
+                        <input formControlName="info" class="form-control"
+                               [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                        <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                          <div *ngIf="f.info.errors.required">
+                            Info is required+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Address</label>
+                      <div class="col-sm-9">
+                        <input formControlName="adress" class="form-control">
+                      </div>
+
+                    </div>
+
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Tel1</label>
+                      <div class="col-sm-9">
+                        <input formControlName="phone1" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Tel2</label>
+                      <div class="col-sm-9">
+                        <input formControlName="phone2" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Mob1</label>
+                      <div class="col-sm-9">
+                        <input formControlName="mob1" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Mob2</label>
+                      <div class="col-sm-9">
+                        <input formControlName="mob2" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Fax1</label>
+                      <div class="col-sm-9">
+                        <input formControlName="fax1" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Fax2</label>
+                      <div class="col-sm-9">
+                        <input formControlName="fax2" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Web</label>
+                      <div class="col-sm-9">
+                        <input formControlName="webPage" class="form-control">
+                      </div>
+                    </div>
+                    <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                      <label class="col-sm-3 control-label">Email</label>
+                      <div class="col-sm-9">
+                        <input formControlName="email" class="form-control">
+                      </div>
+                    </div>
+                    <br>
+                    <div class="mb-3">
+                      <button (click)="editBranch()" type="button" class="btn btn-primary me-3">
+                        <i class="bx bx-edit-alt"></i>
+                        Dəyiş
+                      </button>
+                      <button class="btn btn-success me-3">
+                        <i class="bx bx-plus-medical"></i>
+                        Əlavə et
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="selectedClass?.id === 1">
+                Təşkilati struktur
+              </ng-container>
+              <ng-container *ngIf="selectedClass?.id === 2">
+                Bina haqqında məlumat və şəkil
+              </ng-container>
+              <ng-container *ngIf="selectedClass?.id === 3">
+                Fəaliyyətə icazə sənədləri
+              </ng-container>
+              <ng-container *ngIf="selectedClass?.id === 4">
+                Əlaqə və ünvan
+              </ng-container>
+            </div>
+          </div>
+          </div>
+      </div>
+</div>
+

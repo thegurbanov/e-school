@@ -1,0 +1,53 @@
+<div class="table-responsive">
+    <input type="text" class="form-control w-100 search mb-2" [(ngModel)]="data">
+    <div *ngIf="loader" class="loader">
+        <img width="30" src="assets/load.gif" alt="">
+    </div>
+    <table class="table table-condensed w-100 table-striped fixed_header ">
+        <thead class="BI_tablehead">
+            <tr>
+                <ng-container *ngFor="let col of columns2">
+                    <th class="">{{col}}</th>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody class="BI_tablebody">
+            <ng-container *ngFor="let item of dataSource | filter:data">
+                <tr>
+                    <ng-container *ngFor="let col of columns">
+                        <td>{{item[col]}}</td>
+                    </ng-container>
+                </tr>
+            </ng-container>
+
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation " class=" d-flex mt-2 justify-content-end">
+
+        <div>
+            <label for="pageSize" class="tc d-inline me-2">Hər səhifədə:</label>
+            <select (change)="getData()" class="form-control mt-2 " name="pageSize" id="pageSize" [(ngModel)]="size">
+                <ng-container *ngFor="let len of length">
+                    <option value="{{len}}">{{len}}</option>
+                </ng-container>
+            </select>
+            <label for="page" class="tc d-inline mx-2">Səhifə:</label>
+            <div class="disabled d-inline tc">{{selectedPage}} - {{totalPage}} </div>
+
+            <label for="page" class="tc d-inline mx-2">Sətr:</label>
+            <div class="disabled d-inline tc">{{totalRow}} </div>
+        </div>
+
+        <ul class="pagination ms-2 mt-2 ">
+            <li (click)="changePage('prev',1)" class="page-item"><a class="page-link bg-grey tc bc"><i
+                        class="fad fa-chevron-double-left"></i></a>
+            </li>
+            <li (click)="changePage('prev',selectedPage)" class="page-item"><a class="page-link bg-grey tc bc"><i
+                        class="fas fa-chevron-left"></i></a></li>
+            <li (click)="changePage('next',selectedPage)" class="page-item"><a class="page-link bg-grey tc bc"><i
+                        class="fas fa-chevron-right"></i></a></li>
+            <li (click)="changePage('next',totalPage)" class="page-item"><a class="page-link bg-grey tc bc"><i
+                        class="fad fa-chevron-double-right"></i></a></li>
+        </ul>
+    </nav>
+</div>

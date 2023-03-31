@@ -1,0 +1,186 @@
+<ng-template #scrollDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müştərinin müqavilələri</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-list-special [predmetId]="selectedCommercialObject.id" [predmetType]="'COMMERCIAL_OBJECT'"></app-contract-list-special>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla</button>
+  </div>
+</ng-template>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Kommersiya obyektləri</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+              <th>Ad</th>
+              <th>Nömrəsi</th>
+              <th>Mərtəbəsi</th>
+              <th>Sahəsi</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let commercialObject of commercialObjectsDto" style="text-align: right">
+              <td style="text-align: left">{{commercialObject.info}}</td>
+              <td>{{commercialObject.nomre}}</td>
+              <td>{{commercialObject.mertebeNomresi}}</td>
+              <td>{{commercialObject.sahe}}</td>
+              <td style="text-align: center">
+                <button type="button" (click)="deleteCommercialObjectById(commercialObject.id)"
+                        class="btn btn-danger btn-rounded">
+                  <i class="bx bx-trash-alt"></i>
+                </button>
+                <button type="button" class="btn btn-primary btn-rounded ms-2"
+                        (click)="getCommercialObjectById(commercialObject.id)">
+                  <i class="bx bx-edit-alt"></i>
+                </button>
+                <button class="btn btn-primary btn-rounded ms-2"
+                        (click)="scrollModal(scrollDataModal, commercialObject.id)">
+                  <i class="bx bx-show"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Kommersiya obyekti</h4>
+      </div>
+      <div class="card-body mt-2">
+        <form [formGroup]="commercialObjectForm" style="text-align: right;">
+          <div class="row mb-2 d-none">
+            <label class="col-sm-3 col-form-label">Id</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="id" [disabled]="true">
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Ad</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="info">
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Nömrə</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" formControlName="nomre"
+                     [ngClass]="{ 'is-invalid': validation.nomre.errors }">
+              <div *ngIf="validation.nomre.errors" class="invalid-feedback">
+                <div *ngIf="validation.nomre.errors.required">
+                  Nömrə is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Mərtəbə nömrə</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" formControlName="mertebeNomresi"
+                     [ngClass]="{ 'is-invalid': validation.mertebeNomresi.errors }">
+              <div *ngIf="validation.mertebeNomresi.errors" class="invalid-feedback">
+                <div *ngIf="validation.mertebeNomresi.errors.required">
+                  Nömrə is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Otaq sayı</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" formControlName="otaqSay">
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Sahəsi</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" formControlName="sahe">
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Qeyd</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="note">
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Təmir vəziyyəti</label>
+            <div class="col-sm-2">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" formControlName="repairType" [value]="0">
+                <label class="form-check-label">
+                  Təmirsiz
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" formControlName="repairType" [value]="1">
+                <label class="form-check-label">
+                  Təmirli
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <h4 class="card-title" style="text-align: left">Satış</h4>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">1 kv/m<sup>2</sup> qiyməti</label>
+            <div class="col-sm-3">
+              <input type="number" class="form-control" formControlName="oneTotal">
+            </div>
+            <label class="col-sm-3 col-form-label">Satış qiyməti</label>
+            <div class="col-sm-3">
+              <input type="number" class="form-control" formControlName="total">
+            </div>
+          </div>
+          <div class="row mb-2">
+            <h4 class="card-title" style="text-align: left">Endirim</h4>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">1 kv/m<sup>2</sup> qiyməti</label>
+            <div class="col-sm-2">
+              <input type="number" class="form-control" formControlName="discountOneTotal">
+            </div>
+            <label class="col-sm-2 col-form-label">Endirim</label>
+            <div class="col-sm-2">
+              <input type="number" class="form-control" formControlName="discountTotal">
+            </div>
+            <label class="col-sm-1 col-form-label px-0">%-lə</label>
+            <div class="col-sm-2">
+              <input type="number" class="form-control" formControlName="discountTotalPercent">
+            </div>
+          </div>
+          <div class="justify-content-end mb-2">
+            <button type="submit" class="btn btn-warning me-3" (click)="resetForm()">
+              <i class="bx bx-reset"></i>
+              Təmizlə</button>
+            <button type="submit" class="btn btn-primary me-3" (click)="updateCommercialObject()" [disabled]="isFormReset">
+              <i class="bx bx-edit-alt"></i>
+              Dəyiş</button>
+            <button class="btn btn-success me-3" (click)="addCommercialObject()">
+              <i class="bx bx-plus-medical"></i> Əlavə et
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

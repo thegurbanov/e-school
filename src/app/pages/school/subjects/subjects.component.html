@@ -1,0 +1,136 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Tədris olunan fənlər</h4>
+                <p class="card-title-desc">Təhsil müəssəsində tədris olunan fənlərin siyahısı
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div>
+                            <form [formGroup]="SubjectForm" (ngSubmit)="createSubject()">
+                                <div>
+                                  <label>Adı</label>
+                                  <input formControlName="info" class="form-control">
+                                </div>
+                              <div class="mt-3">
+                                <label>Adı(Eng)</label>
+                                <input formControlName="infoEng" class="form-control">
+                              </div>
+                              <div class="mt-3">
+                                <label>Adı(Rus)</label>
+                                <input formControlName="infoRus" class="form-control">
+                              </div>
+                              <div class="mt-3 d-flex justify-content-end text-center">
+                                <button (click)="editSubject()" type="button" class="btn btn-primary"
+                                        [disabled]="SubjectForm.invalid">
+                                  <i class="bx bx-edit-alt"></i>
+                                  Dəyiş
+                                </button>
+                                <button class="btn btn-success ms-3" [disabled]="SubjectForm.invalid">
+                                  <i class="bx bx-plus-medical"></i>
+                                  Əlavə et
+                                </button>
+                              </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                            <input type="search" class="form-control" placeholder="Fənn axtar" [(ngModel)]="subject">
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Adı</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <ng-container
+                                      *ngFor="let subject of subjects | search:'info': subject ;let i = index">
+                                      <tr [class.selected]="selectedSubject.id == subject.id" style="cursor: pointer"
+                                          (click)="getSubjectById(subject)">
+                                        <td>{{i + 1}}</td>
+                                        <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{subject.info}}
+                                                    </span>
+                                        </td>
+                                        <td class="p-1">
+                                          <button (click)="delSubject(subject)"
+                                                  class="btn btn-danger btn-rounded">
+                                            <i class="bx bx-trash-alt"></i>
+                                          </button>
+
+                                          <button (click)="getSubjectById(subject)"
+                                                  class="btn btn-primary btn-rounded ms-2">
+                                            <i class="bx bx-edit-alt"></i>
+                                          </button>
+                                        </td>
+                                      </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 ms-lg-auto">
+                      <div class="mt-4 mt-lg-0 row">
+                        <label>Müəllim</label>
+
+                        <div class="my-2 d-flex ">
+
+                          <ng-select [clearable]="false" [(ngModel)]="teacher" [items]="teachers"
+                                     bindLabel="fullName" class="ng-select w-100 col-md"
+                                     [notFoundText]="'Müəllim tapılmadı'">
+                          </ng-select>
+
+                          <button (click)="addEmployeeBySubject()" class="btn btn-success p-1 ms-2">
+                            <i class="bx bx-plus-medical"></i>
+                                    Əlavə et
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+
+                              <table class="table table-bordered mb-0" *ngIf="subjectEmployees.length > 0">
+                                <thead>
+                                <tr>
+                                  <th></th>
+                                  <th>Adı</th>
+                                  <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <ng-container *ngFor="let item of subjectEmployees;let i = index">
+                                  <tr>
+                                                <td>
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{item.fullName}}
+                                                    </span>
+                                                </td>
+                                    <td class="text-center">
+                                      <button (click)="delEmployeeFromSubject(item)"
+                                              class="btn btn-danger btn-rounded">
+                                        <i class="bx bx-trash-alt"></i>
+                                      </button>
+                                    </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

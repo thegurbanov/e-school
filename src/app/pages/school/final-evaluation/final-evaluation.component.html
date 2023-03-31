@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Yekun qiymətləndirmə</h4>
+        <p class="card-title-desc">Tədris ili üzrə siniflərin yekun qiymətləndirmə</p>
+      </div>
+      <div class="card-body px-4 py-2">
+        <div class="row">
+            <div class="col-md-3">
+              <label class="mb-1">Tədris ili</label>
+              <ng-select [clearable]="false" class="w-100" [(ngModel)]="currentYear">
+                <ng-option *ngFor="let year of years" [value]="year">
+                  {{year.info}}
+                </ng-option>
+              </ng-select>
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Sinif</label>
+              <ng-select [clearable]="false" class="w-100">
+              </ng-select>
+            </div>
+          <div class="col-md-3">
+            <label class="mb-1">Fənn</label>
+            <ng-select [clearable]="false" class="w-100">
+            </ng-select>
+          </div>
+          <div class="col-md-3">
+            <label class="mb-1">&nbsp;</label><br>
+            <button class="btn btn-primary">Göstər</button>
+          </div>
+          <div class="col-lg-12 mt-3">
+            <div class="table-responsive">
+
+              <ul class="pricings">
+                <li class="pricing def">
+                    <ul class="pricing-detail">
+                      <li ></li>
+                      <li class="pricing-student">S.A.A</li>
+                      <li >BSQ 1</li>
+                      <li >KSQ 1</li>
+                      <li  class="greenrow">1-ci Yarımil</li>
+                      <li >BSQ 2</li>
+                      <li >KSQ 2</li>
+                      <li class="greenrow">2-ci Yarımil</li>
+                      <li class="redrow">İllik</li>
+                    </ul>
+                </li>
+                <ng-container *ngFor="let customer of studentList;let i = index">
+                    <li class="pricing ">
+                      <ul class="pricing-detail">
+                        <li >{{i + 1}}</li>
+                        <li class="pricing-student">  {{customer?.fullName}}</li>
+                        <li >5</li>
+                        <li >10</li>
+                        <li class="greenrow">15</li>
+                        <li >20</li>
+                        <li >25</li>
+                        <li class="greenrow">30</li>
+                        <li class="redrow">35</li>
+                      </ul>
+                    </li>
+                </ng-container>
+            </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

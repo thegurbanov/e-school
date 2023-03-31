@@ -1,0 +1,30 @@
+.ng-select.auto-grow {
+  max-width: inherit;
+  .ng-dropdown-panel {
+    width: auto;
+  }
+}
+
+.custom {
+  right: -700px
+}
+
+#rightbar {
+  width: 31%;
+}
+
+body[data-layout-mode="dark"]{
+  #rightbar {
+    border-left: 1px solid #3b403d;
+  }
+}
+
+body[data-layout-mode="light"]{
+  #rightbar {
+    border-left: 1px solid #e9e9ef;
+  }
+}
+
+.table-responsive{
+  height: 65vh;
+}

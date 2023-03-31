@@ -1,0 +1,98 @@
+<div>
+  <form [formGroup]="customerForm">
+    <div class="mb-3">
+      <div class="mt-2">
+        <label>Ad</label>
+        <input formControlName="firstName" class="form-control"
+               [ngClass]="{ 'is-invalid':  f.firstName.errors }">
+        <div *ngIf="f.firstName.errors" class="invalid-feedback">
+          <div *ngIf="f.firstName.errors.required">
+            The field is required
+          </div>
+          <div *ngIf="f.firstName.errors.min">
+            The field must be at least 1 characters
+          </div>
+          <div *ngIf="f.firstName.errors.max">
+            The field must not exceed 50 characters
+          </div>
+        </div>
+      </div>
+      <div class="mt-2">
+        <label>Soyad</label>
+        <input formControlName="secondName" class="form-control"
+               [ngClass]="{ 'is-invalid': f.secondName.errors }">
+        <div *ngIf="f.secondName.errors" class="invalid-feedback">
+          <div *ngIf="f.secondName.errors.required">
+            The field is required
+          </div>
+          <div *ngIf="f.secondName.errors.min">
+            The field must be at least 1 characters
+          </div>
+          <div *ngIf="f.secondName.errors.max">
+            The field must not exceed 50 characters
+          </div>
+        </div>
+      </div>
+      <div class="mt-2">
+        <label>Ata adı</label>
+        <input formControlName="fatherName" class="form-control"
+               [ngClass]="{ 'is-invalid': f.fatherName.errors }">
+        <div *ngIf="f.fatherName.errors" class="invalid-feedback">
+          <div *ngIf="f.fatherName.errors.required">
+            The field is required
+          </div>
+          <div *ngIf="f.fatherName.errors.min">
+            The field must be at least 1 characters
+          </div>
+          <div *ngIf="f.fatherName.errors.max">
+            The field must not exceed 50 characters
+          </div>
+        </div>
+      </div>
+      <div class="mt-2">
+        <label>Ana adı</label>
+        <input formControlName="matherName" class="form-control">
+      </div>
+      <div>
+        <label>Cins</label>
+        <ng-select formControlName="gender" [items]="genders" bindLabel="info"
+                   class="ng-select w-100" [searchable]="false" [clearable]="false"
+                   [ngClass]="{ 'is-invalid': f.gender.errors }">
+        </ng-select>
+        <div *ngIf="f.gender.errors" class="invalid-feedback">
+          <div *ngIf="f.gender.errors.required">
+            The field is required
+          </div>
+        </div>
+            </div>
+            <div class="mt-2">
+              <label for="dob">Doğum tarixi</label>
+              <input id="dob" formControlName="dob" type="date" class="form-control"
+                     [ngClass]="{ 'is-invalid': f.dob.errors }">
+              <div *ngIf="f.dob.errors" class="invalid-feedback">
+                <div *ngIf="f.dob.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 d-flex justify-content-end">
+            <button (click)="reset()"
+                    class="btn btn-warning">
+              <i class="bx bx-reset"></i>
+              Təmizlə
+            </button>
+            <button *ngIf="!isOnlyAdd" [disabled]="!selectedCustomer?.id" (click)="update()"
+                    class="btn btn-primary ms-2">
+              <i class="bx bx-edit-alt"></i>
+              Dəyiş
+            </button>
+            <button *ngIf="!isOnlyEdit" [disabled]="customerForm.invalid || this.selectedCustomer" class="btn btn-success ms-2"
+                    (click)="add()"
+                    type="button">
+              <i class="bx bx-plus-medical"></i>
+              Əlavə et
+            </button>
+          </div>
+  </form>
+</div>

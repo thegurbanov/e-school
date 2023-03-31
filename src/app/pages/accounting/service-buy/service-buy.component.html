@@ -1,0 +1,187 @@
+<div id="main">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <button class="btn btn-success ms-2" (click)="openScrollModal(scrollDataModal)">
+                <i class="bx bx-notepad"></i> Yeni Qaimə
+            </button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="ant-table-thead">
+                <tr>
+                    <th>#</th>
+                    <th>Kontragent</th>
+                    <th>Xərc qrupu</th>
+                    <th>Xərc maddəsi</th>
+                    <th>Qaimənin məbləğ</th>
+                    <th>Qaimənin tarixi</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let invoice of invoices;let i = index">
+                    <tr>
+                        <td>{{i+1}}</td>
+                        <td>{{invoice.company?.info}}</td>
+                        <td>{{invoice.expenses.qrup.info}}</td>
+                        <td>{{invoice.expenses.info}}</td>
+                        <td>{{invoice.amount}}</td>
+                        <td>{{invoice.invoiceDate}}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-rounded ms-2"
+                                (click)="openScrollModal(scrollDataModal,invoice)">
+                                <i class="bx bx-pen"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </ng-container>
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<ng-template #scrollDataModal let-modal>
+    <form [formGroup]="InvoiceForm" (ngSubmit)="editable ? editInvoice() :  addInvoice()">
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">Yeni Qaimə</h5>
+            <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <label for="">Qaimə tarixi</label>
+                            <input formControlName="invoiceDate"
+                                [ngClass]="{ 'is-invalid': validation.invoiceDate.errors }" class="form-control"
+                                type="date">
+                        </div>
+                        <div class="col-6">
+                          <label for="">&nbsp;</label>
+                          <br>
+                          <input class="form-check-input me-1" type="checkbox" formControlName="electron">
+                            <label for="">Elektron Qaimə</label>
+
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <label for="">Seriya</label>
+                            <input formControlName="invoiceDate"
+                                [ngClass]="{ 'is-invalid': validation.invoiceDate.errors }" class="form-control"
+                                type="text">
+                        </div>
+                        <div class="col-6">
+                            <label for="">Nömrə</label>
+                            <input formControlName="invoiceNumber"
+                                [ngClass]="{ 'is-invalid': validation.invoiceNumber.errors }" class="form-control"
+                                type="text">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label>Şirkət</label>
+                        <ng-select bindLabel="info" formControlName="company" class="ng-select w-100"
+                            (change)="getCompanyContracts($event)" [items]="companies"
+                            [ngClass]="{ 'is-invalid': validation.company.errors }" [searchable]="false"
+                            [clearable]="false">
+                        </ng-select>
+                    </div>
+
+                    <div class="mt-2">
+                        <label>Müqavilə</label>
+
+                        <ng-select bindLabel="title" class="ng-select w-100" formControlName="contract"
+                            [ngClass]="{ 'is-invalid': validation.contract.errors }" [items]="contracts"
+                            [searchable]="false" [clearable]="false">
+                        </ng-select>
+                    </div>
+
+                    <div class="mt-2">
+                        <label>Xərc Qrupu</label>
+                        <ng-select bindLabel="info" class="ng-select w-100" formControlName="qrup"
+                            [items]="expensesGroups" (change)="getExpenses($event)" [searchable]="false"
+                            [clearable]="false">
+                        </ng-select>
+                    </div>
+
+
+                    <div class="mt-2">
+                        <label>Xərc maddəsi</label>
+                        <ng-select formControlName="expenses" bindLabel="info" class="ng-select w-100"
+                            [items]="expenses" [ngClass]="{ 'is-invalid': validation.expenses.errors }"
+                            [searchable]="false" [clearable]="false">
+                        </ng-select>
+                    </div>
+
+
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <label>Sayı</label>
+                            <input [ngClass]="{ 'is-invalid': validation.counts.errors }"
+                                type="number" class="form-control" formControlName="counts">
+                        </div>
+                        <div class="col-4">
+                            <label>Qiyməti</label>
+                            <input (change)="getTotal()" [ngClass]="{ 'is-invalid': validation.price.errors }"
+                               type="number" class="form-control" formControlName="price">
+                        </div>
+                        <div class="col-4">
+                            <label>Məbləğ</label>
+                            <input readonly (change)="getTotal()" type="number" #price class="form-control disabled"
+                                formControlName="amount">
+                        </div>
+                    </div>
+
+                  <div class="row mt-2">
+                    <div class="col-md-6">
+                      <label>ƏDV</label>
+                      <input type="number" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                      <label>Yol vergisi</label>
+                      <input type="number" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="row mt-2">
+                    <div class="col-md-12">
+                      <label>Debet</label>
+                      <ng-select class="w-100">
+                        <ng-option *ngFor="let plan of chartOfAccountsList"
+                                   [value]="plan?.id">{{plan?.id}} - {{plan?.info}}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+
+                  <div class="row mt-2">
+                    <div class="col-md-12">
+                      <label>Kredit</label>
+                      <ng-select class="w-100">
+                        <ng-option *ngFor="let plan of chartOfAccountsList"
+                                   [value]="plan?.id">{{plan?.id}} - {{plan?.info}}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+
+                  <div class="mt-2">
+                    <label>Qeyd</label>
+                    <textarea formControlName="info" class="form-control" name="" id="" rows="2"></textarea>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="text-end">
+                <button (click)="resetForm()" type="button" class="btn btn-warning">Təmizlə</button>
+            </div>
+            <div class="text-end">
+                <button [disabled]="InvoiceForm.invalid" class="btn btn-success">Yadda saxla</button>
+            </div>
+        </div>
+    </form>
+</ng-template>

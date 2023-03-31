@@ -1,0 +1,195 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Tədris proqramı</h4>
+                <p class="card-title-desc">
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-12 ms-lg-auto">
+                      <div class="mt-4 mt-lg-0">
+                        <div class="d-flex flex-wrap">
+                          <div class="me-2 mt-1">
+                            <label class="mb-1">Dərs növü</label>
+                            <ng-select [clearable]="false" [(ngModel)]="selectedLessonType" name="year"
+                                       [items]="lessonTypes" bindLabel="info" class="ng-select w-100"
+                                       [notFoundText]="'Dərs növü tapılmadı'" (change)="getProgramsById()">
+                            </ng-select>
+                          </div>
+                          <div class="me-2 mt-1">
+                                    <label class="mb-1">Tədris ili</label>
+                                    <ng-select [clearable]="false" [(ngModel)]="selectedYear" name="year"
+                                        [items]="years" bindLabel="info" class="ng-select w-100"
+                                        [notFoundText]="'Tədris ili tapılmadı'" (change)="getProgramsById()">
+                                    </ng-select>
+                                </div>
+
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1"> Bölmə</label>
+                                    <ng-select [clearable]="false" [(ngModel)]="selectedSection" name="section"
+                                        [items]="sections" bindLabel="info" class="ng-select w-100"
+                                        [notFoundText]="'Bölmə tapılmadı'" (change)="getProgramsById()">
+                                    </ng-select>
+                                </div>
+
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1"> Sinif</label>
+                                    <ng-select [clearable]="false" bindLabel="info" [(ngModel)]="selectedClass"
+                                        name="class" [items]="counter" class="ng-select w-100"
+                                        [notFoundText]="'Sinif tapılmadı'" (change)="getProgramsById()">
+                                    </ng-select>
+                                </div>
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1"> Təmayül</label>
+                                    <ng-select [clearable]="false" [(ngModel)]="selectedTendency" name="tendency"
+                                               [items]="temayuls" class="ng-select w-100" bindLabel="info"
+                                               [notFoundText]="'Təmayül tapılmadı'" (change)="getProgramsById()">
+                                    </ng-select>
+                                </div>
+                          <div class="me-2 mt-1">
+                            <label class="mb-1"> Fənn</label>
+                            <ng-select [clearable]="false" [(ngModel)]="selectedSubject" name="subject"
+                                       [items]="subjects" class="ng-select w-100" bindLabel="info"
+                                       [notFoundText]="'Fənn tapılmadı'" (change)="getProgramsById()">
+                            </ng-select>
+                          </div>
+                          <div class="me-2 mt-4">
+                            <label class="mb-1"></label>
+                            <app-excel-reader></app-excel-reader>
+                          </div>
+                          <div class="mt-4">
+                            <label class="mb-1"></label>
+                            <app-excel-creater fileName="{{selectedClass}} {{selectedSection?.info}} {{selectedSubject?.info}}.xlsx" [tableElement]="tableElement"
+                            ></app-excel-creater>
+                          </div>
+                        </div>
+                          <input type="search" class="mt-3 mb-3 form-control"
+                                 placeholder="Tədris proqramı, sinif, tədris saatı axtar"
+                                 [(ngModel)]="program">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" #tableElement>
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Adı</th>
+                                            <th>Növü</th>
+                                            <th>Tədris<br>saatı</th>
+                                            <th>Standart</th>
+                                            <th>Resurs</th>
+                                            <th>İnteqrasiya</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container
+                                            *ngFor="let program of programs | search:'info,classPrefix,hour':program;let i = index">
+                                          <tr [class.selected]="program.id ==selectedProgram.id">
+                                            <td>
+                                              {{i + 1}}
+                                            </td>
+                                            <td>
+                                                    <span class="pr-6 whitespace-nowrap text-primary">
+                                                        {{program.info}}
+                                                    </span>
+                                            </td>
+                                            <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{lessonTypes[program.markType]?.info}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{program.hour}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{program.standart}}
+                                                    </span>
+                                                </td>
+                                            <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{program.resources}}
+                                                    </span>
+                                            </td>
+                                            <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{program.inteqrasiyya}}
+                                                    </span>
+                                            </td>
+                                            <td class="text-center">
+                                              <button (click)="delProgram(program)" title="{{program.info}}"
+                                                      class="btn btn-danger btn-rounded">
+                                                <i class="bx bx-trash-alt"></i>
+                                              </button>
+                                              <button
+                                                (click)="openScrollableModal(programEdit, 'lg');
+                                                    getProgramById(program)"
+                                                title="{{program.info}}"
+                                                class="btn btn-primary btn-rounded ms-3">
+                                                <i class="bx bx-edit-alt"></i>
+                                              </button>
+                                            </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #programEdit let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Tədris proqramının redaktəsi</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="ProgramForm">
+      <div class="mb-3">
+        <label class="form-label">Tədris proqramının adı</label>
+        <input type="text" class="form-control" formControlName="info">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Tədris saatı</label>
+        <input type="number" class="form-control" formControlName="hour">
+      </div>
+
+
+      <div class="mb-3">
+        <label class="form-label">Standart</label>
+        <input type="text" class="form-control" formControlName="standart">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Resurs</label>
+        <input type="text" class="form-control" formControlName="resources">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">İnteqrasiya</label>
+        <input type="text" class="form-control" formControlName="inteqrasiyya">
+      </div>
+
+      <div class="mb-2 d-flex justify-content-end">
+        <button (click)="editProgram(); modal.close()" type="button" class="btn btn-primary ms-1">
+          <i class="bx bx-edit-alt"></i>
+          Dəyiş
+        </button>
+        <button class="btn btn-success ms-3" (click)="createProgram()">
+          <i class="bx bx-plus-medical"></i>
+          Əlavə et
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

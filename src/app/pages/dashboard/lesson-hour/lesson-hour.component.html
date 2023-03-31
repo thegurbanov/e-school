@@ -1,0 +1,133 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Dərs saatları</h4>
+                <p class="card-title-desc">Tədris ilindəki dərs saatları
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div>
+                            <form [formGroup]="form" (ngSubmit)="add()">
+                                <div class="mb-3">
+                                    <label class="form-label">Adı</label>
+                                    <input class="form-control" formControlName="info"
+                                        [ngClass]="{ 'is-invalid': submitted && f.info.errors }">
+                                    <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                                        info is required
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Sıra</label>
+                                    <input class="form-control" type="number" formControlName="sira"
+                                        [ngClass]="{ 'is-invalid': submitted && f.sira.errors }">
+                                    <div *ngIf="submitted && f.sira.errors" class="invalid-feedback">
+                                        <div *ngIf="f.sira.errors.required">
+                                            Sira is required+
+                                        </div>
+                                        <div *ngIf="f.sira.errors.min">
+                                            Sira must be at least 1 characters
+                                        </div>
+                                        <div *ngIf="f.sira.errors.max">
+                                            Sira must not exceed 8 characters
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Başlama</label>
+                                    <input class="form-control" mask="00:00:00" formControlName="startHour"
+                                        [ngClass]="{ 'is-invalid': submitted && f.startHour.errors }">
+                                    <div *ngIf="submitted && f.startHour.errors" class="invalid-feedback">
+                                        startHour is required
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Bitmə</label>
+                                    <input class="form-control" formControlName="endHour" mask="00:00:00"
+                                        [ngClass]="{ 'is-invalid': submitted && f.endHour.errors }">
+                                    <div *ngIf="submitted && f.endHour.errors" class="invalid-feedback">
+                                        endHour is required
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <button (click)="update()" type="button" class="btn btn-primary me-3">
+                                        <i class="bx bx-edit-alt"></i>
+                                        Dəyiş
+                                    </button>
+                                    <button class="btn btn-success me-3">
+                                        <i class="bx bx-plus-medical"></i>
+                                        Əlavə et
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                          <input type="search" class="form-control" placeholder="Axtar"
+                          [(ngModel)]="lessonhour">
+                            <div class="table-responsive">
+                                <label class="mt-2">Tədris ili</label>
+                                <select class="form-select" (change)="selectCurrentYear($event)">
+                                    <ng-container  *ngFor="let year of years">
+                                        <option [value]="year.id">
+                                            {{year.info}}
+                                        </option>
+                                    </ng-container>
+
+                                </select>
+                                <table class="table table-bordered mb-0 mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Adı</th>
+                                            <th>Sıra</th>
+                                            <th>Saat</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let lesson of lessons| search:'info,row,startHour,endHour':lessonhour;let i = index">
+                                            <tr [class.selected]="selectedLesson.id==lesson.id">
+                                                <td>
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{lesson.info}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{lesson.row}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{lesson.startHour}}-{{lesson.endHour}}
+                                                    </span>
+                                                </td>
+                                                <td class="p-1 text-center">
+                                                    <button (click)="delete(lesson)" class="btn btn-danger btn-rounded">
+                                                        <i class="bx bx-trash-alt"></i>
+                                                    </button>
+
+                                                    <button (click)="selectLesson(lesson)"
+                                                        class="btn btn-primary btn-rounded ms-2">
+                                                        <i class="bx bx-edit-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

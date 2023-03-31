@@ -1,0 +1,11 @@
+.custom-fixed-top {
+  top: 26px;
+}
+
+.border-none {
+  padding-right: 0.1rem;
+  padding-left: 0.2rem;
+  &:hover {
+    cursor: auto;
+  }
+}

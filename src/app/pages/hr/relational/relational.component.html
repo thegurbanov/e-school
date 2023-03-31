@@ -1,0 +1,91 @@
+<div class="row">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Qohumluq əlaqəsi əlavə et</h4>
+      </div>
+      <div class="card-body mt-2">
+        <form [formGroup]="form" style="text-align: right;">
+          <div class="row mb-4 d-none">
+            <label class="col-sm-3 col-form-label">Id</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="id">
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-5 col-form-label">Adı</label>
+            <div class="col-sm-7">
+              <input type="input" class="form-control" formControlName="info"
+                     [ngClass]="{ 'is-invalid': validation.info.errors }">
+              <div *ngIf="validation.info.errors" class="invalid-feedback">
+                <div *ngIf="validation.info.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-5 col-form-label">Cins</label>
+            <div class="col-sm-7">
+              <ng-select class="w-100 text-start" formControlName="genderId" [clearable]="false">
+                <ng-option *ngFor="let gender of genders" [value]="gender.id">{{gender?.info}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="justify-content-end mb-4">
+            <button type="submit" class="btn btn-warning" (click)="resetForm()">
+              <i class="bx bx-reset"></i>
+              Təmizlə
+            </button>
+            <button class="btn btn-primary ms-3" (click)="update()" [disabled]="form.invalid || !this.selectedRelationalship">
+              <i class="bx bx-edit-alt"></i>
+              Dəyiş
+            </button>
+            <button class="btn btn-success ms-3" (click)="add()" [disabled]="form.invalid || this.selectedRelationalship">
+              <i class="bx bx-plus-medical"></i> Əlavə et
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card">
+      <div class="card-header">
+        <div class="row mb-2 mt-2">
+        </div>
+      </div>
+      <div class="card-body mt-2">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+              <th>#</th>
+              <th>Adı</th>
+              <th>Cins</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let relationalship of relationalshipList; let i = index" (click)="getRelationalshipInfo(relationalship)"
+                [class.selected]="relationalship?.id === selectedRelationalship?.id"
+                style="cursor: pointer" class="text-center">
+              <td>{{i + 1}}</td>
+              <td>{{relationalship?.info}}</td>
+              <td>{{relationalship?.gender?.info}}</td>
+              <td>
+                <button type="button" class="btn btn-danger btn-rounded" (click)="deleteLessonById(relationalship.id)">
+                  <i class="bx bx-trash-alt"></i>
+                </button>
+                <button type="button" class="btn btn-primary btn-rounded ms-2" (click)="getRelationalshipInfo(relationalship)">
+                  <i class="bx bx-edit-alt"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

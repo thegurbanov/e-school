@@ -1,0 +1,436 @@
+<div class="calendar">
+
+    <div class="filters d-flex my-3">
+        <div class="year">
+            <label>Tədris ili</label>
+            <div>
+
+                <ng-select [(ngModel)]="year" (change)="filters()" [clearable]="false">
+                    <ng-option *ngFor="let year of years" [value]="year">{{year.info}}</ng-option>
+                </ng-select>
+            </div>
+        </div>
+        <div class="weeks ms-3">
+            <label>Həftələr</label>
+            <div>
+                <ng-select [(ngModel)]="week" (change)="changeWeek(week)" [clearable]="false">
+                    <ng-option *ngFor="let week of weeks" [value]="week">{{week?.info}}</ng-option>
+                </ng-select>
+            </div>
+        </div>
+        <div class="class ms-3">
+            <label>Siniflər</label>
+            <div>
+                <ng-select [(ngModel)]="_class" (change)="changeClass()" [clearable]="false">
+                    <ng-option *ngFor="let class of classes" [value]="class">{{class?.info}}
+                    </ng-option>
+                </ng-select>
+            </div>
+        </div>
+      <ng-container *roles="'ROLE_ADMIN'">
+        <div class="class ms-3">
+          <label>&nbsp;</label>
+          <div>
+            <button (click)="openSplitModal(splitGroups)" class="btn btn-success">Qruplara Böl</button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *roles="'ROLE_ADMIN'">
+        <div class="class ms-3">
+          <label>&nbsp;</label>
+          <div>
+            <button (click)="openSubstituteModal(subsituteModal)"
+                    class="btn btn-warning">Dərsi əvəz et
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="py-3">
+        <ul class="d-flex weekDays">
+            <li> </li>
+            <ng-container *ngFor="let day of days">
+                <li class="weekDay">
+                    <i> {{day.day}}</i>
+                    <div>
+                        <a class="fc-col-header-cell-cushion ">
+                            {{day.info}}
+                        </a>
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+        <ng-container *ngFor="let item of list">
+            <ul class="d-flex days">
+                <li class="hour">{{item.lessonHour.row}}. {{item.lessonHour.startHour}}</li>
+
+                <ng-container *ngFor="let scheduler of item.schedulerList">
+                    <li class="day" data-bs-toggle="modal" data-bs-target="#myModal">
+
+                        <span class="class-name">
+                            <i class="fad fa-users-class"></i>
+                            {{_class?.classPrefix}}
+                            {{_class?.classPrefixIndicator}}
+                        </span>
+                        <div class="icons">
+                            <ng-container *roles="'ROLE_ADMIN'">
+                                <i (click)="openModal(addLessonModal,scheduler)" *ngIf="!scheduler.subject3"
+                                    class="fas fa-plus"></i>
+                                <i *ngIf="scheduler.subject1" (click)="delLesson(scheduler)" class="fas fa-trash"></i>
+                            </ng-container>
+                        </div>
+                        <div *ngIf="scheduler.subject1" class="subject d-flex mt-2">
+                            <span
+                                title="{{scheduler.subject1?.subject?.info}} - {{scheduler?.subject1.teacher?.fullName}}"
+                                [routerLink]="['/school/journal/yearly/',_class.id,scheduler.subject1?.subject?.id,scheduler?.subject1?.teacher.id, year.id]"
+                                class="subject-title flex-grow-1">
+                                {{scheduler.subject1?.subject?.info}} - {{scheduler?.subject1?.teacher?.fullName}}
+                            </span>
+                            <span *roles="'ROLE_ADMIN'" class="subject-delete ">
+                                <i *ngIf="scheduler.subject1"
+                                    (click)="openModal(editLessonModal,scheduler,scheduler.subject1)"
+                                    class="fas fa-edit"></i>
+                            </span>
+                        </div>
+                        <div *ngIf="scheduler.subject2" class="subject d-flex">
+                            <span
+                                title="{{scheduler.subject2?.subject?.info}} - {{scheduler?.subject2.teacher?.fullName}}"
+                                [routerLink]="['/school/journal/yearly/',_class.id,scheduler.subject2?.subject?.id,scheduler?.subject2?.teacher.id, year.id]"
+                                class="subject-title flex-grow-1">
+                                {{scheduler.subject2?.subject?.info}} - {{scheduler?.subject2?.teacher?.fullName}}
+                            </span>
+                            <span *roles="'ROLE_ADMIN'" class="subject-delete ">
+                                <i (click)="openModal(editLessonModal,scheduler,scheduler.subject2)"
+                                    class="fas fa-edit"></i>
+                            </span>
+                        </div>
+                        <div *ngIf="scheduler.subject3" class="subject d-flex">
+                            <span
+                                title="{{scheduler.subject3?.subject?.info}} - {{scheduler?.subject3.teacher?.fullName}}"
+                                [routerLink]="['/school/journal/',_class.id,scheduler.subject3?.subject?.id,scheduler?.subject3?.teacher.id, year.id]"
+                                class="subject-title flex-grow-1">
+                                {{scheduler.subject3?.subject?.info}} - {{scheduler?.subject3?.teacher?.fullName}}
+                            </span>
+                            <span *roles="'ROLE_ADMIN'" class="subject-delete ">
+                                <i (click)="openModal(editLessonModal,scheduler,scheduler.subject3)"
+                                    class="fas fa-edit"></i>
+                            </span>
+                        </div>
+
+                    </li>
+                </ng-container>
+
+            </ul>
+        </ng-container>
+    </div>
+        <ng-container *roles="'ROLE_ADMIN'">
+            <ng-container *ngIf="plans.length>0">
+                <label for="">Bu sinifdə tədris olunan fənlər</label>
+                <div class="table-responsive">
+                    <table class="table table-bordered  mt-2">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Adı</th>
+                                <th>Ümumi plan üzrə</th>
+                                <th>Cədvələ salınan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let plan of plans;let i = index">
+                                <tr>
+                                    <td>
+                                        {{i+1}}
+                                    </td>
+                                    <td>
+                                        <span class="pr-6 whitespace-nowrap">
+                                            {{plan.subject?.info}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="pr-6 whitespace-nowrap">
+                                            {{plan.weeklyHour}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="pr-6 whitespace-nowrap">
+                                            {{plan.weeklyHourCalendar }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-container>
+
+                        </tbody>
+                    </table>
+                </div>
+            </ng-container>
+
+
+        </ng-container>
+
+
+        <!-- split group-->
+        <ng-template #splitGroups role="document" let-modal>
+            <div class="modal-header">
+                <h5 class="modal-title mt-0">Sinifi qruplara bölmək</h5>
+                <button type="button" class="btn-close" aria-hidden="true"
+                    (click)="modal.dismiss('Cross click')"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex students">
+                    <div class="w-50">
+                        <label class="form-label mt-2">Fənn</label>
+                        <ng-select [clearable]="false" class="w-100" (change)="getStudentsBySubjectandClassId($event)"
+                            [items]="subjects" bindLabel="info">
+                        </ng-select>
+                    </div>
+                    <div class="w-50 ps-1">
+                        <label class="form-label mt-2">Qrup</label>
+                        <ng-select [clearable]="false" [(ngModel)]="group" (change)="selectGroup($event)" class="w-100"
+                            [items]="groups">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="w-50 table-responsive">
+                        <table class="table table-bordered  mt-2">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>S.A.A</th>
+                                    <th>Qrup</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let customer of students;let i = index">
+                                    <tr>
+                                        <td>
+                                            {{i+1}}
+                                        </td>
+                                        <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{customer.student?.fullName}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span *ngIf="customer.qrup" class="pr-6 whitespace-nowrap">
+                                                {{customer.qrup}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button type="button" (click)="moveStudent(customer.student)"
+                                                class="btn btn-info btn-rounded">
+                                                <i class=" fad fa-arrow-right"></i>
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                </ng-container>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="w-50 table-responsive ps-1">
+                        <table class="table table-bordered  mt-2">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>S.A.A</th>
+                                    <th>Qrup</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let customer of selectedStudents;let i = index">
+                                    <tr>
+                                        <td>
+                                            {{i+1}}
+                                        </td>
+                                        <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{customer.student?.fullName}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{customer.qrup}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button type="button" (click)="deleteStudentFromGroup(customer.id)"
+                                                class="btn btn-info btn-rounded">
+                                                <i class=" fad fa-arrow-left"></i>
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                </ng-container>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" (click)="resetForm()">Bağla</button>
+                <!-- <button class="btn btn-primary">Əlavə et</button> -->
+            </div>
+        </ng-template>
+
+        <!-- add lesson-->
+        <ng-template #addLessonModal role="document" let-modal>
+            <form [formGroup]="LessonForm" (ngSubmit)="addNewSubjectAndTeacherToLesson()">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">{{currentDay.name}} {{currentHour.info}} {{currentHour.startHour}} -
+                        {{currentHour.endHour}}</h5>
+                    <button type="button" class="btn-close" aria-hidden="true"
+                        (click)="modal.dismiss('Cross click')"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label mt-2">Fənn</label>
+                    <ng-select [clearable]="false" class="w-100" formControlName="subject"
+                        (change)="getTeachersBySubjectId($event)" [items]="subjects" bindLabel="info">
+                    </ng-select>
+
+                    <label class="form-label mt-2">Müəllim</label>
+                    <ng-select [clearable]="false" class="w-100" formControlName="teacher" [items]="teachers"
+                        bindLabel="fullName">
+                    </ng-select>
+
+                    <label class="form-label mt-2">Qrup</label>
+                    <ng-select [clearable]="false" class="w-100" formControlName="qrup" [items]="groups">
+                    </ng-select>
+
+
+                    <label class="form-label mt-2">Otaq</label>
+                    <ng-select [clearable]="false" class="w-100" formControlName="branchRoom" [items]="rooms"
+                        bindLabel="info">
+                    </ng-select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Bağla</button>
+                    <button class="btn btn-primary">Əlavə et</button>
+                </div>
+            </form>
+        </ng-template>
+
+        <!-- edit lesson-->
+        <ng-template #editLessonModal role="document" let-modal>
+            <form [formGroup]="LessonForm" (ngSubmit)="editCurrentLesson()">
+
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">{{currentDay.name}} {{currentHour.info}} {{currentHour.startHour}} -
+                        {{currentHour.endHour}}</h5>
+                    <button type="button" class="btn-close" aria-hidden="true"
+                        (click)="modal.dismiss('Cross click')"></button>
+                </div>
+                <div class="modal-body">
+
+                    <label class="form-label mt-2">Fənn</label>
+                    <ng-select class="w-100" (change)="getTeachersBySubjectId(selectedMainSubject.subject)"
+                        [items]="subjects" formControlName="subject" bindLabel="info">
+                    </ng-select>
+
+                    <label class="form-label mt-2">Müəllim</label>
+                    <ng-select class="w-100" [items]="teachers" formControlName="teacher" bindLabel="fullName">
+                    </ng-select>
+
+                    <label class="form-label mt-2">Dərsin günü</label>
+                    <ng-select class="w-100" formControlName="dayOfWeek">
+                        <ng-option *ngFor="let day of days" [value]="day.dayOfWeek">{{day?.info}}</ng-option>
+                    </ng-select>
+
+                    <label class="form-label mt-2">Dərs Saatı</label>
+                    <ng-select class="w-100" [items]="lessonHours" formControlName="lessonHour" bindLabel="info">
+                    </ng-select>
+
+                  <label class="form-label mt-2">Qrup</label>
+                  <ng-select [clearable]="false" class="w-100" formControlName="qrup" [items]="groups">
+                  </ng-select>
+
+                  <label class="form-label mt-2">Otaq</label>
+                  <ng-select class="w-100" [items]="rooms" formControlName="branchRoom" bindLabel="info">
+                  </ng-select>
+
+                </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Bağla</button>
+                <button type="button" class="btn btn-danger" (click)="delSubject(selectedMainSubject)">Sil</button>
+                <button class="btn btn-primary">Dəyiş</button>
+              </div>
+            </form>
+        </ng-template>
+  <ng-template #subsituteModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Dərsi əvəz et</h5>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+              aria-label="Close">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="col-md-12 mb-3">
+        <label>Həftə</label>
+        <div>
+          <ng-select [(ngModel)]="week" (change)="changeWeek(week)" [clearable]="false" class="w-100">
+            <ng-option *ngFor="let week of weeks" [value]="week">{{week?.info}}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-md-12 mb-3">
+        <label>Sinif</label>
+        <div>
+          <ng-select [(ngModel)]="_class" (change)="changeClass()" [clearable]="false" class="w-100">
+            <ng-option *ngFor="let class of classes" [value]="class">{{class?.info}}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-md-12 mb-3">
+        <label>Dərs tarixi</label>
+        <div>
+          <input type="date" class="form-control" value="{{today}}">
+        </div>
+      </div>
+      <div class="col-md-12 mb-3">
+        <label>Əvəz olunacaq fənn</label>
+        <div>
+          <ng-select [clearable]="false" class="w-100">
+            <ng-option>Riyaziyyat</ng-option>
+            <ng-option>Fizika</ng-option>
+            <ng-option>Azərbaycan dili</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-md-12 mb-3">
+        <label>Əvəz edəcək müəllim</label>
+        <div>
+          <ng-select [clearable]="false" class="w-100">
+            <ng-option>Səlimova Gülnarə</ng-option>
+            <ng-option>Qurbanova Gülşən</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-md-12 mb-3">
+        <label>Əvəz ediləcək fənn</label>
+        <div>
+          <ng-select [clearable]="false" class="w-100">
+            <ng-option>Riyaziyyat</ng-option>
+            <ng-option>Fizika</ng-option>
+            <ng-option>Azərbaycan dili</ng-option>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success"
+              (click)="modal.close('Close click')">Əlavə et
+      </button>
+      <button type="button" class="btn btn-secondary"
+              (click)="modal.close('Close click')">Bağla
+      </button>
+    </div>
+  </ng-template>
+</div>

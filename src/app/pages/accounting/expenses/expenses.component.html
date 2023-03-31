@@ -1,0 +1,182 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Xərc maddələrinin qrupu</h4>
+                <p class="card-title-desc">
+                </p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div>
+                            <form [formGroup]="ExpensesGroupForm" (ngSubmit)="createExpensesGroup()">
+                                <div class="">
+                                    <label>Adı</label>
+                                    <input formControlName="info" class="form-control">
+                                </div>
+                                <div class="mt-2">
+                                    <button [disabled]="!selectedexpensesGroup " (click)="resetGroupForm()"
+                                        type="button" class="btn btn-warning me-2 mb-2 px-1">
+                                        <i class="bx bx-refresh"></i>
+                                        Təmizlə
+                                    </button>
+                                    <button [disabled]="!selectedexpensesGroup" (click)="editExpensesGroup()"
+                                        type="button" class="btn btn-primary me-2 mb-2 px-1">
+                                        <i class="bx bx-edit-alt"></i>
+                                        Dəyiş
+                                    </button>
+                                    <button [disabled]="selectedexpensesGroup" class="btn btn-success mb-2 px-1">
+                                        <i class="bx bx-plus-medical"></i>
+                                        Əlavə et
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered mt-2">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Adı</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <ng-container *ngFor="let eg of expensesGroups;let i = index">
+                                        <tr [class.selected]="selectedexpensesGroup?.id == eg.id">
+                                            <td>
+                                                {{i+1}}
+                                            </td>
+                                            <td>
+                                                <span class="pr-6 whitespace-nowrap">
+                                                    {{eg.info}}
+                                                </span>
+                                            </td>
+                                            <td class="p-1">
+                                                <button (click)="delExpensesGroup(eg)"
+                                                    class="btn btn-danger btn-rounded">
+                                                    <i class="bx bx-trash-alt"></i>
+                                                </button>
+
+                                                <button (click)="getExpensesGroupById(eg)"
+                                                    class="btn btn-primary btn-rounded ms-2">
+                                                    <i class="bx bx-edit-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Xərc maddələri</h4>
+                <p class="card-title-desc">
+                </p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+
+                        <div>
+                            <form [formGroup]="ExpensesForm" (ngSubmit)="createExpense()">
+                                <div class="">
+                                    <label>Adı</label>
+                                    <input formControlName="info" class="form-control">
+                                </div>
+                              <div class="mt-3">
+                                <label>ƏDV dərəcəsi</label>
+                                <ng-select class="w-100" formControlName="taxDegree">
+                                  <ng-option *ngFor="let taxDegree of taxDegreeList"
+                                  [value]="taxDegree?.value">
+                                    {{taxDegree?.info}}
+                                  </ng-option>
+                                </ng-select>
+                              </div>
+                              <div class="mt-3" [formGroup]="chartOfAccountFormGroup">
+                                <label>Uçotu hesabı</label>
+                                <ng-select class="w-100" formControlName="id">
+                                  <ng-option *ngFor="let plan of chartOfAccountsList"
+                                             [value]="plan?.id">{{plan?.id}} - {{plan?.info}}</ng-option>
+                                </ng-select>
+                              </div>
+                                <div class="mt-2">
+                                    <button
+                                        (click)="resetExpenceForm()" type="button"
+                                        class="btn btn-warning me-2 mb-2 px-1">
+                                        <i class="bx bx-refresh"></i>
+                                        Təmizlə
+                                    </button>
+                                    <button [disabled]="!selectedexpensesGroup || !selectedExpense"
+                                        (click)="editExpense()" type="button" class="btn btn-primary me-2 px-1 mb-2">
+                                        <i class="bx bx-edit-alt"></i>
+                                        Dəyiş
+                                    </button>
+                                    <button [disabled]="!selectedexpensesGroup  || selectedExpense"
+                                        class="btn btn-success me-2 px-1 mb-2">
+                                        <i class="bx bx-plus-medical"></i>
+                                        Əlavə et
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 ms-lg-auto">
+
+                        <div class="mt-4 mt-lg-0">
+                            <div class="table-responsive mt-3">
+
+                                <table class="table table-bordered mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Adı</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let ex of expenses ;let i = index">
+                                            <tr [class.selected]="selectedExpense?.id == ex?.id">
+                                                <td>
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{ex.info}}
+                                                    </span>
+                                                </td>
+                                                <td class="p-1">
+                                                    <button (click)="delExpense(ex)" class="btn btn-danger btn-rounded">
+                                                        <i class="bx bx-trash-alt"></i>
+                                                    </button>
+
+                                                    <button (click)="getExpenseById(ex)"
+                                                        class="btn btn-primary btn-rounded ms-2">
+                                                        <i class="bx bx-edit-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

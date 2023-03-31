@@ -1,0 +1,123 @@
+<div class="bg-card p-3">
+  <ul class="nav nav-tabs tabs">
+    <ng-container *ngFor="let nav of navs">
+      <li (click)="selectedNav.id ? '': changeTab(nav)" class="nav-item">
+        <a (click)="changeTab(nav); selectBuilding(nav.binaId)" class="nav-link active"
+           [ngClass]="{ active: nav.status }">{{nav.title}}</a>
+      </li>
+    </ng-container>
+  </ul>
+</div>
+<div *ngIf="selectedNav?.id <= buildingList.length" class="col-lg-12">
+  <div class="table-responsive mt-2">
+    <table class="table table-bordered mb-0">
+      <thead class="text-center">
+      <tr>
+        <th rowspan="2">Giriş</th>
+        <th rowspan="2">Mərtəbə<br>nömrəsi</th>
+        <th rowspan="2">Mənzil<br>nömrəsi</th>
+        <th rowspan="2">Ev Sahibi</th>
+        <th rowspan="2">Otaq sayı</th>
+        <th rowspan="2">Sahəsi<br>kv/m<sup>2</sup></th>
+        <th rowspan="2">Tarif</th>
+        <th colspan="12">
+          <button class="btn btn-sm" (click)="year = year - 1;
+          getCommunalViewByBuildingIdAndYear(selectedBuilding.bina.id, year)">
+            <i class="bx bxs-left-arrow"></i>
+          </button>
+          <span class="mx-2">{{year}}</span>
+          <button class="btn btn-sm" (click)="year = year + 1;
+          getCommunalViewByBuildingIdAndYear(selectedBuilding.bina.id, year)">
+            <i class="bx bxs-right-arrow"></i>
+          </button>
+        </th>
+        <th rowspan="2">Ödənilməli</th>
+        <th rowspan="2">Ödənilib</th>
+        <th rowspan="2">Yekun borc</th>
+        <th rowspan="2"></th>
+      </tr>
+      <tr>
+        <th class="custom-fixed-top">Yan</th>
+        <th class="custom-fixed-top">Fev</th>
+        <th class="custom-fixed-top">Mart</th>
+        <th class="custom-fixed-top">Apr</th>
+        <th class="custom-fixed-top">May</th>
+        <th class="custom-fixed-top">İyun</th>
+        <th class="custom-fixed-top">İyul</th>
+        <th class="custom-fixed-top">Avq</th>
+        <th class="custom-fixed-top">Sen</th>
+        <th class="custom-fixed-top">Okt</th>
+        <th class="custom-fixed-top">Noy</th>
+        <th class="custom-fixed-top">Dek</th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let block of selectedBuilding?.blockList; let i = index" class="text-left">
+      <tr>
+        <th colspan="23">Giriş  {{block?.block?.nomre}}</th>
+      </tr>
+      <ng-container *ngFor="let floor of block?.floorList let i=index">
+        <tr>
+          <th></th>
+          <th colspan="22"> Mərtəbə {{floor?.floor?.mertebeNomresi}}</th>
+        </tr>
+        <ng-container>
+          <ng-container style="text-align: right" *ngFor="let flat of block.floorList[i].flatList">
+            <tr *ngFor="let contract of flat.communalContracts">
+              <td colspan="2"></td>
+              <td scope="row"><b>Mənzil № {{flat?.menzilNomre}}</b></td>
+              <td class="text-start">{{contract?.customerFullName}}</td>
+              <td>{{contract?.roomCount}}</td>
+              <td>{{contract?.sahe}}</td>
+              <td>{{contract?.monthlyPayment}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status1)}}">{{contract?.amount1}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status2)}}">{{contract?.amount2}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status3)}}">{{contract?.amount3}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status4)}}">{{contract?.amount4}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status5)}}">{{contract?.amount5}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status6)}}">{{contract?.amount6}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status7)}}">{{contract?.amount7}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status8)}}">{{contract?.amount8}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status9)}}">{{contract?.amount9}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status10)}}">{{contract?.amount10}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status11)}}">{{contract?.amount11}}</td>
+              <td class="{{setAmountColorClassByStatus(contract?.status12)}}">{{contract?.amount12}}</td>
+              <td>{{contract?.totalAmount}}</td>
+              <td>{{contract?.totalPaymentAmount}}</td>
+              <td>{{contract?.totalDept}}</td>
+              <td class="text-start">
+                <button class="btn btn-primary btn-rounded me-2"
+                        (click)="openContractInfoModal(content, contract?.id)">
+                  <i class="bx bx-info-circle"></i>
+                </button>
+                <button class="btn btn-success btn-rounded"
+                        routerLink="/accounting/payment-for-contract/{{contract?.id}}">
+                  <i class="bx bx-dollar"></i>
+                </button>
+                <button *ngIf="(contract?.totalDept || 0) > 0" class='btn border-none'>
+                  <i class='text-danger bx bx-md bxs-error bx-flashing'></i>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Kommunal müqaviləsi</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="selectedApartmentContractId"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

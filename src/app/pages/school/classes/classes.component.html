@@ -1,0 +1,229 @@
+<div class="card">
+  <div class="bg-card shadow p-3">
+    <div class="p-6">
+      <div class="mr-4 mb-3 text-lg font-medium">Siniflər</div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <ul class="nav nav-tabs tabs">
+          <ng-container *ngFor="let nav of navs">
+            <li (click)="selectedClass.id ? changeTab(nav, studentList) : ''" class="nav-item">
+              <a class="nav-link active" [ngClass]="{ active: nav.status }">{{
+                nav.title
+                }}</a>
+            </li>
+          </ng-container>
+        </ul>
+        <ng-container>
+          <form class="p-3" [formGroup]="ClassForm" (ngSubmit)="add()">
+            <div class="">
+              <label>Bölmə</label>
+              <ng-select [clearable]="false" class="w-100" formControlName="classSection" [items]="sections"
+                bindLabel="info">
+              </ng-select>
+
+              <label>UTIS</label>
+              <input [attr.disabled]="year.isCurrent ? null : ''" autocomplete="off" formControlName="utis"
+                class="form-control" />
+              <label>Sinif №</label>
+              <input [attr.disabled]="year.isCurrent ? null : ''" autocomplete="off" formControlName="classPrefix"
+                class="form-control" />
+              <label>Sinif #</label>
+              <input [attr.disabled]="year.isCurrent ? null : ''" autocomplete="off"
+                formControlName="classPrefixIndicator" class="form-control" />
+
+              <div class="mb-3">
+                <label class="form-label">Təmayül</label>
+                <ng-select [clearable]="false" class="w-100" formControlName="tendency" [items]="temayuls"
+                  bindLabel="info">
+                </ng-select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Sinif Rəhbəri</label>
+
+                <ng-select [clearable]="false" class="w-100" formControlName="header" [items]="teachers"
+                  bindLabel="fullName">
+                </ng-select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Otaq</label>
+                <ng-select [clearable]="false" formControlName="branchRoom" autocomplete="false" [items]="rooms"
+                  bindLabel="info" class="ng-select w-100" [notFoundText]="'Otaq tapılmadı'">
+                </ng-select>
+              </div>
+            </div>
+            <div class="mt-2">
+              <button (click)="update()" [disabled]="!year.isCurrent" type="button" class="btn btn-primary me-3">
+                <i class="bx bx-edit-alt"></i>
+                Dəyiş
+              </button>
+              <button [disabled]="!year.isCurrent" class="btn btn-success me-3">
+                <i class="bx bx-plus-medical"></i>
+                Əlavə et
+              </button>
+            </div>
+          </form>
+        </ng-container>
+      </div>
+      <!-- Overview -->
+      <div class="col-md-9">
+        <div class="overflow-x-auto mx-6">
+          <label>Tədris ili</label>
+          <ng-select name="year" (change)="selectCurrentYear(year)" [(ngModel)]="year" [clearable]="false">
+            <ng-option *ngFor="let _year of years" [value]="_year">{{ _year?.info }}
+            </ng-option>
+          </ng-select>
+          <input type="search" class="form-control mt-3 mb-3" placeholder="Təmayül, sinif rəhbəri axtar" [(ngModel)]="filterclass">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Adı</th>
+                  <th>UTIS</th>
+                  <th>Bölmə</th>
+                  <th>Təmayül</th>
+                  <th>Sinif Rəhbəri</th>
+                  <th>Şagird sayı</th>
+                  <th>Həftəlik<br>Dərs<br>Saatı</th>
+                  <th>Otaq</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let class of data| search:'header.fullName,tendency.info':filterclass;
+                let i = index; ">
+                  <tr [class.selected]="selectedClass.id == class.id" (click)="selectClass(class)"
+                      style="cursor: pointer">
+                    <td>
+                      {{i+1}}
+                    </td>
+                    <td>
+                      <span class="pr-6 whitespace-nowrap text-primary">
+                        {{ class.classPrefix }} {{ class.classPrefixIndicator }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="pr-6 whitespace-nowrap">
+                        {{class.utis}}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="pr-6 whitespace-nowrap">
+                        {{ class.classSchool?.section?.info }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="pr-6 whitespace-nowrap">
+                        {{
+                        class.tendency?.info
+                        }}
+                      </span>
+                    </td>
+                    <td>
+
+                      <span *ngIf="class.header" class="pr-6 whitespace-nowrap">
+                        {{class.header?.fullName}}
+                      </span>
+
+                    </td>
+                    <td>{{class.studentCount}}</td>
+                    <td>{{class.lessonHourCount}}</td>
+                    <td>{{class.branchRoom?.info}}</td>
+
+                    <td class="p-1 text-center">
+                      <button [routerLink]="['/school/calendar/',class.id]" class="btn btn-info btn-rounded"
+                              title="{{ class.classPrefix }} {{ class.classPrefixIndicator }} / {{ class.classSchool?.section?.info }}">
+                        <i class="fad fa-table"></i>
+                      </button>
+                      <button (click)="delete(class)" class="btn btn-danger btn-rounded  ms-2"
+                              title="{{ class.classPrefix }} {{ class.classPrefixIndicator }} / {{ class.classSchool?.section?.info }}">
+                        <i class="bx bx-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #studentList let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{selectedClass.classPrefix}} {{selectedClass.classPrefixIndicator}} sinifi</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click'); changeTab(navs[0], studentList)"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-sm-6 col-form-label text-end">Sinifə yeni şagird əlavə et</label>
+            <div class="col-sm-6">
+              <ng-select (change)="setStudent($event)" [(ngModel)]="student" class="w-100 col-md-12" [items]="students"
+                         bindLabel="fullName">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <!-- Overview -->
+        <div class="col-md-6">
+          <button [disabled]="!year.isCurrent || !student" class="btn btn-primary ms-3"
+                  (click)="addStudentToCurrentClass()">
+            <i class="bx bx-edit-alt"></i>
+            Təsdiq et
+          </button>
+          <button [disabled]="student" class="btn btn-success ms-3"
+                  (click)="openScrollableModal(studentAdd, 'lg')">
+            <i class="bx bx-plus-medical"></i>
+            Yeni şagird əlavə et
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive mt-2">
+        <table class="table table-bordered mb-0">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>S.A.A</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let class of currentClassStudents;let i = index">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>
+                        <span class="pr-6 whitespace-nowrap">
+                          {{ class.customer.fullName }}
+                        </span>
+              </td>
+
+              <td class="text-center">
+                <button type="button" (click)="deleteStudentFromCurrentClass(class)" class="btn btn-danger">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #studentAdd let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Yeni şagird</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-customer [isOnlyAdd]="true" (isModifyDataEvent)="modal.close()"></app-customer>
+  </div>
+</ng-template>

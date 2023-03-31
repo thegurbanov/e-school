@@ -1,0 +1,125 @@
+<div class="row">
+  <div class="col-lg-12">
+      <div class="card">
+          <div class="card-header">
+              <h4 class="card-title">Kassa</h4>
+              <p class="card-title-desc">Kassalarin siyahısı
+              </p>
+          </div>
+          <div class="card-body p-4">
+              <div class="row">
+                  <div class="col-lg-3">
+                      <div>
+                          <form [formGroup]="CashForm" (ngSubmit)="createCashbox()">
+                              <div class="">
+                                  <label>Adı</label>
+                                  <input formControlName="info" class="form-control">
+                              </div>
+                              <div class="mt-2">
+                                  <button (click)="editCashbox()" type="button" class="btn btn-primary m-1"
+                                      [disabled]="CashForm.invalid">
+                                      <i class="bx bx-edit-alt"></i>
+                                      Dəyiş
+                                  </button>
+                                  <button class="btn btn-success m-1" [disabled]="CashForm.invalid">
+                                      <i class="bx bx-plus-medical"></i>
+                                      Əlavə et
+                                  </button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  <div class="col-lg-4 ms-lg-auto">
+                      <div class="mt-4 mt-lg-0">
+                          <input type="search" class="form-control" placeholder="Axtar" [(ngModel)]="cashbox" >
+                          <div class="table-responsive">
+
+                              <table class="table table-bordered mt-2">
+                                  <thead>
+                                      <tr>
+                                          <th></th>
+                                          <th>Adı</th>
+                                          <th></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <ng-container
+                                          *ngFor="let cashbox of cashes  | search:'info': cashbox ;let i = index">
+                                          <tr [class.selected]="selectedCashbox.id == cashbox.id">
+                                              <td>
+                                                  {{i+1}}
+                                              </td>
+                                              <td>
+                                                  <span class="pr-6 whitespace-nowrap">
+                                                      {{cashbox.info}}
+                                                  </span>
+                                              </td>
+                                              <td class="p-1">
+                                                  <button (click)="delCashbox(cashbox)"
+                                                      class="btn btn-danger btn-rounded">
+                                                      <i class="bx bx-trash-alt"></i>
+                                                  </button>
+                                                  <button (click)="selectCashbox(cashbox)"
+                                                      class="btn btn-primary btn-rounded ms-2">
+                                                      <i class="bx bx-edit-alt"></i>
+                                                  </button>
+                                              </td>
+                                          </tr>
+                                      </ng-container>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-lg-4 ms-lg-auto">
+                    <div class="mt-4 mt-lg-0">
+                        <label>Kassir</label>
+                        <div class="my-2 d-flex ">
+                          <ng-select style="width: 210px; " [(ngModel)]="employee">
+                            <ng-option
+                             *ngFor="let _cash of employees" [value]="_cash.employee">
+                                {{_cash.employee.fullName}}</ng-option>
+                        </ng-select>
+                            <button (click)="addCashierToCashbox()" class="btn btn-success p-1 ms-2">
+                                <i class="bx bx-plus-medical"></i>
+                                Əlavə et
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Adı</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container  *ngFor="let item of cashiers;let i = index">
+                                        <tr>
+                                            <td>
+                                                {{i+1}}
+                                            </td>
+                                            <td>
+                                                <span class="pr-6 whitespace-nowrap">
+                                                    {{item.cashier.fullName}}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button (click)="delCashier(item)"
+                                                    class="btn btn-danger btn-rounded">
+                                                    <i class="bx bx-trash-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

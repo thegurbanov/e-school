@@ -1,0 +1,173 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Şagirdlər</h4>
+            <p class="card-title-desc">Tədris müəssəsində tədris alan şagirdlər
+            </p>
+          </div>
+          <div class="card-body p-3">
+            <div class="row">
+              <div class="col-md-4">
+                <input type="search" class="form-control mb-3 col-md-6"
+                       placeholder="Şagird axtar" [(ngModel)]="student">
+              </div>
+              <div class="col-md-6">
+                <button class="btn btn-success col-md-3" (click)="openScrollableModal(studentAdd, 'lg')">
+                  <i class="bx bx-plus-medical"></i> Yeni şagird
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th>S.A.A.</th>
+                    <th>Doğum tarixi</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                    <tbody>
+                    <ng-container
+                      *ngFor="let student of students | search:'secondName,firstName,fatherName': student ;let i = index ">
+                      <tr [class.selected]="selectedStudent?.id === student?.id">
+                        <td class="text-center">{{i + 1}}</td>
+                        <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{student.fullName}}
+                                                    </span>
+                        </td>
+                        <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{student.dob}}
+                                                    </span>
+                        </td>
+
+                        <td class="text-center">
+                          <button (click)="delete(student)"
+                                  title="{{student.fullName}}"
+                                  class="btn btn-danger btn-rounded">
+                            <i class="bx bx-trash-alt"></i>
+                          </button>
+
+                          <button
+                            (click)="getStudentById(student); openScrollableModal(studentEdit, 'xl')"
+                            title="{{student.fullName}}"
+                            class="btn btn-primary btn-rounded ms-2">
+                            <i class="bx bx-edit-alt"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+<ng-template #studentEdit let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Şagirdin redaktəsi</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <ul ngbNav #nav="ngbNav" [activeId]="0" class="nav-tabs">
+      <li [ngbNavItem]="0">
+        <a ngbNavLink>
+          <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+          <span class="d-none d-sm-block">Şagird</span>
+        </a>
+        <ng-template ngbNavContent>
+          <div class="p-3">
+            <app-customer [customerId]="selectedStudent.id || ''"
+                          (isModifyDataEvent)="getStudentAndRelatedLists(); modal.close()"
+            [isOnlyEdit]="true"></app-customer>
+          </div>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="1">
+        <a ngbNavLink>
+          <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+          <span class="d-none d-sm-block">Qohumluq əlaqələri</span>
+        </a>
+        <ng-template ngbNavContent>
+          <div class="row p-3">
+            <div class="col-md-6">
+              <form [formGroup]="ParentForm" (ngSubmit)="addParentToStudent()">
+                <label class="mt-2">Şəxs</label>
+                <ng-select [clearable]="false" formControlName="parent" [items]="parents"
+                           bindLabel="fullName" class="ng-select w-100"
+                           [notFoundText]="'Valideyn tapılmadı'">
+                </ng-select>
+
+                <label class="mt-2">Əlaqə</label>
+                <ng-select [clearable]="false" formControlName="relationalShip" [items]="relations"
+                           bindLabel="info" class="ng-select w-100"
+                           [notFoundText]="'Əlaqə tapılmadı'">
+                </ng-select>
+
+                <div class="mt-3 d-flex justify-content-end">
+                  <button [disabled]="ParentForm.invalid" class="btn btn-success">
+                    <i class="bx bx-plus-medical"></i>
+                    Əlavə et
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                  <thead>
+                  <tr>
+                    <th></th>
+                    <th>S.A.A</th>
+                    <th>Qohumluq əlaqəsi</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <ng-container *ngFor="let item of parentStudents;let i = index">
+                    <tr>
+                      <td>
+                        {{i + 1}}
+                      </td>
+                      <td>
+                        {{item.parent?.fullName}}
+                      </td>
+                      <td>
+                        {{item.relationalShip?.info}}
+                      </td>
+                      <td>
+                        <button (click)="delParentFromStudent(item)"
+                                class="btn btn-danger btn-rounded">
+                          <i class="bx bx-trash-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="nav" class="text-muted"></div>
+  </div>
+</ng-template>
+
+<ng-template #studentAdd let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Yeni şagird</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-customer [isOnlyAdd]="true" (isModifyDataEvent)="modal.close()"></app-customer>
+  </div>
+</ng-template>

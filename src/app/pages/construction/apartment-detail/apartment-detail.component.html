@@ -1,0 +1,222 @@
+<form [formGroup]="form">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Mənzil məlumatları</h4>
+        </div>
+        <div class="card-body mt-2">
+          <div class="row" style="text-align: right">
+            <div class="col-md-6 px-2">
+              <div class="row mb-4">
+                <label class="col-sm-4 col-form-label">Mənzil nömrəsi</label>
+                <div class="col-sm-4">
+                  <input type="number" class="form-control" formControlName="menzilNomre">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 px-2"></div>
+            <div class="col-md-6 px-2">
+              <div class="row mb-4">
+                <label class="col-sm-4 col-form-label">Sahəsi</label>
+                <div class="col-sm-4">
+                  <input type="number" class="form-control" formControlName="sahe">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 px-2"></div>
+            <div class="col-md-6 px-2">
+              <div class="row mb-2">
+                <label class="col-sm-4 col-form-label">Otaq sayı</label>
+                <div class="col-sm-4">
+                  <input type="number" class="form-control" formControlName="otaqSay">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Satış</h4>
+        </div>
+        <div class="card-body mt-2">
+          <div class="row" style="text-align: right">
+            <div class="col-md-6 px-2">
+              <div class="row mb-4">
+                <label class="col-sm-4 col-form-label">1 kv/m<sup>2</sup> qiyməti</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" formControlName="oneTotal"
+                         (input)="changeApartmentPriceByOneTotal()">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 px-2">
+              <div class="row mb-4">
+                <label class="col-sm-4 col-form-label">Satış qiyməti</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" style="text-align: left" formControlName="total"
+                         (input)="changeApartmentOnePriceByTotal()">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 px-2">
+              <div class="row mb-2">
+                <label class="col-sm-4 col-form-label">Təmir vəziyyəti</label>
+                <div class="col-sm-2">
+                  <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" id="formRadios1" [value]="0"
+                           formControlName="repairType">
+                    <label class="form-check-label" for="formRadios1">
+                      Təmirsiz
+                    </label>
+                  </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="radio" id="formRadios2" [value]="1"
+                         formControlName="repairType">
+                  <label class="form-check-label" for="formRadios2">
+                    Təmirli
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-2" *ngIf="false">
+              <label class="col-sm-4 col-form-label">Lokasiya</label>
+              <div class="col-sm-2">
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="radio">
+                  <label class="form-check-label" for="formRadios1">
+                    Mənzil
+                  </label>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="radio">
+                  <label class="form-check-label">
+                    Mansard
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Endirim</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="row" style="text-align: right">
+          <div class="col-md-4 px-2">
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">1 kv/m<sup>2</sup> qiyməti</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="discountOneTotal"
+                       (input)="changeApartmentPricePercentByDiscountOneTotal()">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 px-2">
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Endirim</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="discountTotal"
+                       (input)="changeApartmentPricePercentByDiscountTotal()">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 px-2">
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">%-lə</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="discountTotalPercent"
+                       (input)="changeApartmentPricePercentByDiscountTotalPercent()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-body mt-2">
+      <div class="row" style="text-align: right">
+        <div class="col-md-12 px-2">
+          <div class="row mb-4">
+            <label class="col-sm-1 col-form-label">Qeyd</label>
+            <div class="col-sm-11">
+              <textarea class="form-control" formControlName="note"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 px-2">
+          <div class="row mb-2">
+            <label class="col-sm-4 col-form-label">Satış vəziyyəti</label>
+            <div class="col-sm-2">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" formControlName="isSale" [value]="1">
+                <label class="form-check-label" for="formRadios1">
+                  Satışa icazə vermək
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" formControlName="isSale" [value]="0">
+                <label class="form-check-label" for="formRadios2">
+                  Satışa xitam vermək
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">İlkin təmir</h4>
+    </div>
+    <div class="card-body mt-2">
+      <div class="row" style="text-align: right">
+        <div class="col-md-6 px-2">
+          <div class="row mb-2">
+            <label class="col-sm-4 col-form-label">Başlama tarixi</label>
+            <div class="col-sm-4">
+              <input type="date" class="form-control" formControlName="repairStartDate">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-2">
+          <div class="row mb-2">
+            <label class="col-sm-4 col-form-label">Bitmə tarixi</label>
+            <div class="col-sm-4">
+              <input type="date" class="form-control" formControlName="repairEndDate">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="col-md-12 d-flex justify-content-end">
+    <button type="submit" class="btn btn-primary" (click)="updateApartment()">
+      <i class="bx bx-edit-alt"></i>
+      Dəyiş
+    </button>
+  </div>
+</form>

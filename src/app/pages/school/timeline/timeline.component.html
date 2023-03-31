@@ -1,0 +1,142 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Dərs cədvəli</h4>
+            </div><!-- end card header -->
+
+            <div class="filters d-flex my-3 px-3">
+                <ng-container *roles="'ROLE_SCHOOL_STUDENT_PARENT'">
+                    <div class="year">
+                        <label>Şagird</label>
+                        <div>
+                            <ng-select (change)="getLessonByCustomerID()" [(ngModel)]="child" [clearable]="false">
+                                <ng-option *ngFor="let child of children" [value]="child">{{child.customer.fullName}}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                </ng-container>
+                <div class="year ms-3">
+                    <label>Tədris ili</label>
+                    <div>
+                        <ng-select [(ngModel)]="year" (change)="getLessonByCustomerID()" [clearable]="false">
+                            <ng-option *ngFor="let year of years" [value]="year">{{year.info}}</ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="weeks ms-3">
+                    <label>Ay</label>
+                    <div>
+                        <ng-select (change)="getLessonByCustomerID()" [(ngModel)]="month" [clearable]="false">
+                            <ng-option *ngFor="let month of months" [value]="month">{{month?.info}}</ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <div class="col-xl-10">
+                        <div class="timeline">
+                            <div class="timeline-container">
+
+                                <div class="timeline-continue">
+                                    <div *ngFor="let date of dates;let i = index">
+
+                                        <div>
+                                            <div class="row timeline-right">
+                                                <div class="col-1">
+                                                    <div class="timeline-date bg-primary text-center rounded">
+                                                        <h6 class="text-white mb-0">
+                                                            {{date.lessonDay}}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                                <div class="col-11">
+                                                    <div class="timeline-box w-100">
+
+                                                        <table class="table table-bordered w-100  mt-2">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>Fenn</th>
+                                                                    <th>Müəllim</th>
+                                                                    <th>Mövzu</th>
+                                                                    <th>Ev tapşırığı</th>
+                                                                    <th>Qiymət</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <ng-container
+                                                                    *ngFor="let subject of date.subjects;let i = index">
+                                                                    <tr class="{{subject.topic?.lessonType | journal}}">
+                                                                        <td>
+                                                                            {{i+1}}
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="pr-6 whitespace-nowrap">
+                                                                                {{subject.subject?.info}}
+
+                                                                            </span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="pr-6 whitespace-nowrap">
+                                                                                {{subject.teacher?.fullName}}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="pr-6 whitespace-nowrap">
+                                                                                {{subject.topic?.info}}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="pr-6 whitespace-nowrap">
+                                                                                {{subject.homeTask}}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="pr-6 whitespace-nowrap">
+                                                                                {{subject.mark}} 
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <ng-container *ngIf="subject.mark">
+                                                                        <tr
+                                                                            class="{{subject.topic?.lessonType | journal}}">
+                                                                            <td></td>
+                                                                            <td colspan="5">
+                                                                                <p class="mb-0"><b>Qeyd</b> :
+                                                                                    {{subject.markNote}} 
+                                                                                </p>
+                                                                                <p class="mb-0"><b>Məzmun Standartı</b>:
+                                                                                    {{subject.content?.info}}</p>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </ng-container>
+                                                                </ng-container>
+
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end card body -->
+        </div>
+        <!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
+<!-- end row -->

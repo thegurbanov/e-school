@@ -1,0 +1,85 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Şagird Qəbulu - Rəy bölməsi</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div>
+                            <form [formGroup]="StudentReceptionExamForm">
+                                <div class="mb-3">
+                                    <div class="mt-2">
+                                        <label>Qeyd</label>
+                                        <textarea formControlName="note" class="form-control"
+                                            [ngClass]="{ 'is-invalid': submitted && examControls.examResult.errors }"
+                                            name="" id="" cols="30" rows="10"></textarea>
+                                    </div>
+                                </div>
+                                <div class="mt-2" (click)="update()">
+                                    <button [disabled]="StudentReceptionExamForm.invalid" class="btn btn-success me-3">
+                                        Təsdiq et
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th>S.A.A</th>
+                                          <th>Sinif</th>
+                                          <th>Bölmə</th>
+                                          <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let exam of exams;let i = index">
+                                          <tr [class.selected]="selectedExam === exam"
+                                              (click)="getExamById(exam)" style="cursor: pointer">
+                                            <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{ i + 1 }}
+                                                    </span>
+                                            </td>
+                                            <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{exam?.student?.secondName}} {{exam?.student?.firstName}}
+                                                    </span>
+                                            </td>
+
+                                            <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{exam?.student?.classPrefix}}
+                                                    </span>
+                                            </td>
+                                            <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{exam?.student?.section?.info}}
+                                                    </span>
+                                            </td>
+                                            <td class="text-center">
+                                              <button (click)="getExamById(exam)"
+                                                      class="btn btn-primary btn-rounded">
+                                                <i class="bx bx-edit-alt"></i>
+                                              </button>
+                                            </td>
+                                          </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,60 @@
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="ant-table-thead">
+    <tr>
+      <th class="text-start"><span class="ant-table-header-column">
+          <div><span class="ant-table-column-title">№</span><span class="ant-table-column-sorter"></span>
+          </div>
+        </span></th>
+      <th class="text-center">Müştəri</th>
+      <th class="text-center">Müqavilə növü</th>
+      <th class="text-center">Ödəniş qaydası</th>
+      <th class="text-center">Məbləğ</th>
+      <th class="text-center">Ödənilib</th>
+      <th class="text-center">Ödənilib(%)</th>
+      <th class="text-center">Ödənilməlidir</th>
+      <th class="text-center">Son ödəniş</th>
+      <th class="text-center">Son ödəniş tarixi</th>
+      <th class="text-center">Müqavilə tarixi</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let contract of contractList; let i=index">
+      <td class="text-start">{{i + 1}}</td>
+      <td class="text-start">{{contract | agreementSide}}</td>
+      <td class="text-start">{{contract?.contractType?.info}}</td>
+      <td class="text-start">{{contract?.contractPaymentOrder?.paymentType?.info}}</td>
+      <td
+        class="text-end">{{contract?.contractPaymentOrder?.totalAmount}} {{contract?.contractPaymentOrder?.currency?.info}}</td>
+      <td class="text-end">{{contract?.contractPaymentOrder?.totalPaymentAmount}} {{contract?.contractPaymentOrder?.currency?.info}}</td>
+      <td class="text-end">{{contract?.contractPaymentOrder?.totalPaymentPercent}} %</td>
+      <td class="text-end">{{contract?.contractPaymentOrder?.totalDeptAmount}} {{contract?.contractPaymentOrder?.currency?.info}}</td>
+      <td class="text-end">{{contract?.contractPaymentOrder?.lastPaymentAmount}} {{contract?.contractPaymentOrder?.currency?.info}}</td>
+      <td class="text-start">{{contract?.contractPaymentOrder?.lastPaymentDate}}</td>
+      <td class="text-start">{{contract?.contractDate}}</td>
+      <td style="text-align: center">
+        <button class="btn btn-primary btn-rounded" (click)="scrollModal(scrollDataModal, contract)">
+          <i class="bx bx-show"></i>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<ng-template #scrollDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müqavilə məlumatları</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="selectedContract.id"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,27 @@
+<button class="btn btn-success" (click)="openExcelReaderContent(excelReaderContent)">
+  <i class="fad fa-file-excel"></i> Excel
+</button>
+
+<ng-template #excelReaderContent let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Excel faylı yüklə</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <input type="file" (change)="onFileChange($event)" multiple="false"/>
+<!--    <div class="table-responsive">-->
+<!--      <table class="table table-bordered">-->
+<!--        <tbody>-->
+<!--        <tr *ngFor="let row of data">-->
+<!--          <td *ngFor="let cell of row">-->
+<!--            {{cell}}-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+<!--    </div>-->
+
+    <pre>{{data | json }}</pre>
+  </div>
+</ng-template>

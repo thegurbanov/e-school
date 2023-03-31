@@ -1,0 +1,103 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Təqvim günləri</h4>
+        <p class="card-title-desc">Təqvim günlərinin siyahısı</p>
+      </div>
+      <div class="card-body p-4">
+        <div class="row">
+          <div class="col-12">
+            <full-calendar [options]="calendarOptions"></full-calendar>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div>
+              <form class="" [formGroup]="CalendarDayForm" (ngSubmit)="add()">
+                <div class="">
+                  <label>Tipi</label>
+                  <br />
+
+                  <input class="form-check-input" type="radio" formControlName="type" [value]="-1" />
+                  <label class="form-check-label" style="margin-left: 8px" for="layout-mode-light">
+                    Bayram günü</label>
+                  <br />
+
+                  <input class="form-check-input" type="radio" formControlName="type" [value]="1" />
+                  <label class="form-check-label" style="margin-left: 8px" for="layout-mode-light">
+                    Əlavə iş günü</label>
+
+                  <br />
+
+                  <label>Melumat</label>
+                  <input type="date" formControlName="info" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.info.errors }" />
+                  <div *ngIf="submitted && f.info.errors" class="invalid-feedback">
+                    <div *ngIf="f.info.errors.required">Info is required</div>
+                    <div *ngIf="f.type.errors?.required">Type is required</div>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <button (click)="update()" type="button" class="btn btn-primary me-3">
+                    <i class="bx bx-edit-alt"></i>
+                    Dəyiş
+                  </button>
+                  <button class="btn btn-success me-3">
+                    <i class="bx bx-plus-medical"></i>
+                    Əlavə et
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-8 ms-lg-auto">
+            <div class="mt-4 mt-lg-0">
+              <div class="table-responsive">
+                <input type="search" class="form-control" placeholder="Axtar"
+                              [(ngModel)]="calendarday">
+                <table class="table table-bordered mt-2">
+                  <thead>
+                    <tr>
+                      <th>Tipi</th>
+                      <th>Info</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let day of data | search:'info,type': calendarday">
+                      <tr>
+                        <td>
+                          <span *ngIf="day.type == -1" class="pr-6 whitespace-nowrap">
+                            Bayram günü
+                          </span>
+                          <span *ngIf="day.type == 1" class="pr-6 whitespace-nowrap">
+                            Əlavə iş günü
+                          </span>
+                        </td>
+                        <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{ day.info }}
+                          </span>
+                        </td>
+                        <td>
+                          <button (click)="delete(day)" class="btn btn-danger btn-rounded">
+                            <i class="bx bx-trash-alt"></i>
+                          </button>
+
+                          <button (click)="selectCalendarDay(day)" class="btn btn-primary btn-rounded ms-2">
+                            <i class="bx bx-edit-alt"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

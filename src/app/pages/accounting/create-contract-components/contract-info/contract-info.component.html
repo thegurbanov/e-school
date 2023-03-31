@@ -1,0 +1,425 @@
+<div class="col-md-12">
+  <form [formGroup]="form">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">1.Müqavilə şərtləri</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="row" style="text-align: right">
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilə növü</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" class="w-100" style="text-align: left" formControlName="contractType" #contractType
+                           (change)="changeContractType($event)" [ngClass]="{ 'is-invalid': validation.contractType.errors}">
+                  <ng-option *ngFor="let contractType of contractTypes" [value]="contractType.id">
+                    {{contractType?.info}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.contractType.errors" class="invalid-feedback">
+                  <div *ngIf="validation.contractType.errors.required">
+                    Müqavilən növü is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2"></div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilə nömrəsi</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" formControlName="contractNumber"
+                       [ngClass]="{ 'is-invalid': validation.contractNumber.errors}"/>
+                <div *ngIf="validation.contractNumber.errors" class="invalid-feedback">
+                  <div *ngIf="validation.contractNumber.errors.required">
+                    Müqavilə nömrəsi is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2"></div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilənin tarixi</label>
+              <div class="col-sm-8">
+                <input type="date" class="form-control" formControlName="contractDate"
+                       [ngClass]="{ 'is-invalid': validation.contractDate.errors}"/>
+                <div *ngIf="validation.contractDate.errors" class="invalid-feedback">
+                  <div *ngIf="validation.contractDate.errors.required">
+                    Müqavilənin tarixi is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <div class="col-sm-4 d-flex justify-content-end col-form-label">
+                <div class="form-group">
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="formrow-customCheck" (change)="changeIsTerm($event)"
+                           formControlName="isTerm">
+                    <label class="form-check-label" for="formrow-customCheck">Müddətli</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-8" [ngClass]="{'d-none' : form.controls['expireDate'].disabled}">
+                <input type="date" class="form-control"
+                       formControlName="expireDate" [ngClass]="{ 'is-invalid': validation.expireDate.errors}">
+                <div *ngIf="validation.expireDate.errors" class="invalid-feedback">
+                  <div *ngIf="validation.expireDate.errors.required">
+                    Müddət is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilənin dəyəri</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="totalValue"
+                       (input)="calculateOfferAmountWithTotalValue()"
+                       [ngClass]="{ 'is-invalid': validation.totalValue.errors}"/>
+                <div *ngIf="validation.totalValue.errors" class="invalid-feedback">
+                  <div *ngIf="validation.totalValue.errors.required">
+                    Müqavilənin dəyəri is required
+                  </div>
+                  <div *ngIf="validation.totalValue.errors.min">
+                    The field is min 0
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Endirim</label>
+              <div class="col-sm-3">
+                <input type="number" class="form-control" formControlName="discountWithNumber"
+                       (input)="calculateOfferAmountWithDiscountNumber()"
+                       [ngClass]="{ 'is-invalid': validation.discountWithNumber.errors}"/>
+                <div *ngIf="validation.discountWithNumber.errors" class="invalid-feedback">
+                  <div *ngIf="validation.discountWithNumber.errors.required">
+                    Endirim faizi is required
+                  </div>
+                  <div *ngIf="validation.discountWithNumber.errors.min">
+                    The field is min 0
+                  </div>
+                  <div *ngIf="validation.discountWithNumber.errors.max">
+                    The field is max {{form.controls['totalValue'].value}}
+                  </div>
+                </div>
+              </div>
+              <label class="col-sm-2 col-form-label">%-lə</label>
+              <div class="col-sm-3">
+                <input type="number" class="form-control" formControlName="discount"
+                       (input)="calculateOfferAmountWithPercent()"
+                       [ngClass]="{ 'is-invalid': validation.discount.errors}"/>
+                <div *ngIf="validation.discount.errors" class="invalid-feedback">
+                  <div *ngIf="validation.discount.errors.required">
+                    Endirim faizi is required
+                  </div>
+                  <div *ngIf="validation.discount.errors.min">
+                    The field is min 0
+                  </div>
+                  <div *ngIf="validation.discount.errors.max">
+                    The field is max 100
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Ödəniləcək məbləğ</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="offerAmount"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Valyuta</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" formControlName="currencyId" class="w-100" style="text-align: left"
+                           [ngClass]="{ 'is-invalid': validation.currencyId.errors}">
+                  <ng-option *ngFor="let currency of currencyList" [value]="currency.id">
+                    {{currency.isoCode}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.currencyId.errors" class="invalid-feedback">
+                  <div *ngIf="validation.currencyId.errors.required">
+                    Valyuta is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Ödəniş qaydası</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" formControlName="paymentType" class="w-100" style="text-align: left"
+                           (change)="changePaymentType($event)"
+                           [ngClass]="{ 'is-invalid': validation.paymentType.errors}">
+                  <ng-option *ngFor="let paymentType of paymentTypeList" [value]="paymentType?.id">
+                    {{paymentType?.info}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.paymentType.errors" class="invalid-feedback">
+                  <div *ngIf="validation.paymentType.errors.required">
+                    Ödəniş qaydası is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4" *ngIf="selectedPaymentType==='CASH'">
+              <label class="col-sm-4 col-form-label">Hesablama qaydası</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" formControlName="calcType" class="w-100" style="text-align: left"
+                           [ngClass]="{ 'is-invalid': validation.calcType.errors}">
+                  <ng-option *ngFor="let calcType of calcTypes" [value]="calcType?.id">
+                    {{calcType?.value}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.calcType.errors" class="invalid-feedback">
+                  <div *ngIf="validation.calcType.errors.required">
+                    Hesablama qaydası is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-4" *ngIf="selectedPaymentType==='LOAN'">
+              <div class="col-sm-4 d-flex justify-content-end col-form-label">
+                <div class="form-group">
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input"
+                           (change)="changePaymentGraphicStatus($event)"
+                           formControlName="isManualPaymentGraphic">
+                    <label class="form-check-label" for="formrow-customCheck">Ödəniş qrafikini qur</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Kredit müddəti</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="offerMonth"
+                       [ngClass]="{ 'is-invalid': validation.offerMonth.errors}"/>
+                <div *ngIf="validation.offerMonth.errors" class="invalid-feedback">
+                  <div *ngIf="validation.offerMonth.errors.required">
+                    Müddət is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Güzəştli müddət</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="discountMonth"
+                       [ngClass]="{ 'is-invalid': validation.discountMonth.errors}"/>
+                <div *ngIf="validation.discountMonth.errors" class="invalid-feedback">
+                  <div *ngIf="validation.discountMonth.errors.required">
+                    Güzəştli müddət is required
+                  </div>
+                  <div *ngIf="validation.discountMonth.errors.min">
+                    Güzəştli müddət is min 0
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Kredit faizi (%)</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="offerPercent"
+                       [ngClass]="{ 'is-invalid': validation.offerPercent.errors}"/>
+                <div *ngIf="validation.offerPercent.errors" class="invalid-feedback">
+                  <div *ngIf="validation.offerPercent.errors.required">
+                    Kredit faizi (%) is required
+                  </div>
+                  <div *ngIf="validation.offerPercent.errors.min">
+                    Kredit faizi (%) is min 0
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Kreditin birinci ödəniş tarixi</label>
+              <div class="col-sm-8">
+                <input type="date" class="form-control" formControlName="offerDate"
+                       [ngClass]="{ 'is-invalid': validation.offerDate.errors}"/>
+                <div *ngIf="validation.offerDate.errors" class="invalid-feedback">
+                  <div *ngIf="validation.offerDate.errors.required">
+                    Kreditin ilkin ödəniş tarixi is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">İlkin ödəniş</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="initialAmount"
+                       [ngClass]="{ 'is-invalid': validation.initialAmount.errors}"/>
+                <div *ngIf="validation.initialAmount.errors" class="invalid-feedback">
+                  <div *ngIf="validation.initialAmount.errors.required">
+                    İlkin ödəniş is required
+                  </div>
+                  <div *ngIf="validation.initialAmount.errors.min">
+                    İlkin ödəniş is min 0
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2" *ngIf="selectedPaymentType==='LOAN'
+           && form.controls['isManualPaymentGraphic'].value === false">
+            <div class="row mb-2">
+              <div class="col-sm-4"></div>
+              <div class="col-sm-8">
+                <button class="btn btn-primary w-100" (click)="getContractCalculator()"
+                        [disabled]="!form.valid">
+                  <i class="bx bx-calculator"></i>
+                  Hesabla
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="row" *ngIf="isShowCalculatorInfo
+&& form.controls['isManualPaymentGraphic'].value === false">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Müqavilə üzrə ödəniş qrafiki</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="table-responsive">
+          <table class="table table-bordered mt-2 text-center">
+            <thead>
+            <tr>
+              <th>Tarix</th>
+              <th>Nömrə</th>
+              <th>Ödəniş</th>
+              <th>Əsas məbləğ</th>
+              <th>Faizin məbləği</th>
+              <th>Cari balans</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container>
+              <tr *ngFor="let infoLine of contractPaymentOrder?.contractPaymentOrderLine">
+                <td>{{infoLine?.lineDate}}</td>
+                <td>{{infoLine?.line}}</td>
+                <td>{{infoLine?.amount}}</td>
+                <td>{{infoLine?.capital}}</td>
+                <td>{{infoLine?.interest}}</td>
+                <td>{{infoLine?.balance}}</td>
+              </tr>
+              <tr>
+                <td colspan="2">YEKUN</td>
+                <td>{{contractPaymentOrder?.totalAmount}}</td>
+                <td>{{contractPaymentOrder?.totalCapital}}</td>
+                <td>{{contractPaymentOrder?.totalInterest}}</td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="form.controls['isManualPaymentGraphic'].value === true">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Müqavilə üzrə ödəniş qrafiki</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="table-responsive">
+          <table class="table table-bordered mt-2 text-center">
+            <thead>
+            <tr>
+              <th>Tarix</th>
+              <th>Nömrə</th>
+              <th>Ödəniş</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container [formGroup]="manualPaymentGraphicForm">
+              <ng-container formArrayName="manualPayments">
+                <tr *ngFor="let payment of getPaymentGraphics.controls; let i = index" [formGroupName]="i">
+                  <td><input type="date" formControlName="lineDate" class="form-control">
+                  <td><input type="number" formControlName="line" class="form-control"></td>
+                  <td><input type="number" formControlName="payment" class="form-control"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">YEKUN</td>
+                  <td>{{getManualPaymentGraphicTotalValue()}}</td>
+                </tr>
+              </ng-container>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-end m-2">
+          <label class="text-success" role="alert" *ngIf="isManualPaymentGraphicValid()">
+            Valid Payment Graphic
+          </label>
+          <label class="text-danger ms-2" role="alert" *ngIf="isManualPaymentGraphicValid() === false">
+            Invalid Payment Graphic
+          </label>
+          <button class="btn btn-success ms-2" (click)="addRowToManualPaymentGraphic()">
+            <i class="bx bx-plus-medical"></i> Yeni ödəniş
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-customer-select-list *ngIf="selectedContractType?.agreementSide === 'CUSTOMER'" (event)="receiveConsentId($event)" >
+</app-customer-select-list>
+<app-company-select-list *ngIf="selectedContractType?.agreementSide === 'COMPANY'" (event)="receiveConsentId($event)">
+</app-company-select-list>
+
+<app-apartment-select-list *ngIf="selectedContractType?.predimet === 'APARTMENT'" (event)="receivePredimetId($event)"
+                           [predimetId]="predimet" [isEditable]="isPredmetEditable"
+                           [contractValue]="form.controls['offerAmount'].value || 0"></app-apartment-select-list>
+
+<app-garage-select-list *ngIf="selectedContractType?.predimet === 'GARAGE'" (event)="receivePredimetId($event)"
+                        [predimetId]="predimet" [isEditable]="isPredmetEditable"
+                        [contractValue]="form.controls['offerAmount'].value || 0"></app-garage-select-list>
+
+<app-commercial-object-select-list *ngIf="selectedContractType?.predimet === 'COMMERCIAL_OBJECT'" [predimetId]="predimet"
+                                   (event)="receivePredimetId($event)" [isEditable]="isPredmetEditable"
+                                   [contractValue]="form.controls['offerAmount'].value || 0"></app-commercial-object-select-list>
+<app-student-select-list *ngIf="selectedContractType?.predimet === 'CUSTOMER' && selectedContractType?.category === 'EDUCATION'" [predimetId]="predimet"
+                         (event)="receivePredimetId($event)" [isEditable]="isPredmetEditable"></app-student-select-list>
+
+<div class="d-flex justify-content-end">
+  <button class="btn btn-success" (click)="createContract()"
+  [disabled]="!form.valid"><i class="bx bx-plus-medical"></i> Müqavilə yarat</button>
+  <button class="btn btn-success ms-3" (click)="consoleForm()"><i class="bx bx-plus-medical"></i> CONSOLE</button>
+</div>

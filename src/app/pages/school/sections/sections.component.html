@@ -1,0 +1,75 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Sektorlar</h4>
+                <p class="card-title-desc">Siniflərin sektorlarının daxil edilmısi
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div>
+                            <form [formGroup]="SectionForm" (ngSubmit)="createSection()">
+                                <div class="mb-3">
+                                    <label class="form-label">Adı</label>
+                                    <input class="form-control" formControlName="info">
+                                </div>
+                                <div class="mb-3">
+                                    <button (click)="editSection()" type="button" class="btn btn-primary me-3" [disabled]="SectionForm.invalid">
+                                        <i class="bx bx-edit-alt"></i>
+                                        Dəyiş
+                                    </button>
+                                    <button class="btn btn-success me-3" [disabled]="SectionForm.invalid">
+                                        <i class="bx bx-plus-medical"></i>
+                                        Əlavə et
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                            <div class="table-responsive">
+                              <input type="search" class="form-control" placeholder="Fenn axtar"
+                              [(ngModel)]="section">
+                                <table class="table table-bordered mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Adı</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let section of data | search:'info': section ;let i = index">
+                                            <tr [class.selected]="selectedSection.id == section.id">
+                                                <td>
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{section.info}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button (click)="delSection(section)" class="btn btn-danger btn-rounded">
+                                                        <i class="bx bx-trash-alt"></i>
+                                                    </button>
+
+                                                    <button (click)="selectSection(section)" class="btn btn-primary btn-rounded ms-2">
+                                                        <i class="bx bx-edit-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

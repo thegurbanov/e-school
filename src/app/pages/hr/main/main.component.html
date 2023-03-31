@@ -1,0 +1,17 @@
+<div class="container">
+
+    <div class="row">
+        <div class="col-5">
+            <input type="date" [(ngModel)]="startDate" class="form-control">
+
+        </div>
+        <div class="col-5">
+            <input type="date" [(ngModel)]="endDate" class="form-control">
+        </div>
+        <div class="col-2">
+            <div (click)="getDate(startDate,endDate)" class="btn btn-success">Hesabla</div>
+        </div>
+
+        day: {{difDay}} month {{difMonth}}
+    </div>
+</div>

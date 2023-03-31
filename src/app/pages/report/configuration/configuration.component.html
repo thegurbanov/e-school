@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Hesabatlar</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+            <tr>
+              <th>Ad</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let report of reportList"
+                [ngClass]="{'selected' : report?.id === selectedReport?.id}">
+              <td>{{report?.info}}</td>
+              <td class="text-center">
+                <button type="button"
+                        class="btn btn-danger btn-rounded" (click)="deleteById(report.id)">
+                  <i class="bx bx-trash-alt"></i>
+                </button>
+                <button type="button" class="btn btn-primary btn-rounded ms-2" (click)="selectReport(report.id)">
+                  <i class="bx bx-edit-alt"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <form [formGroup]="form">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Hesabat</h4>
+        </div>
+        <div class="card-body mt-2">
+          <div class="text-end">
+            <div class="row mb-2 d-none">
+              <label class="col-sm-4 col-form-label">Info</label>
+              <div class="col-sm-8">
+                <input type="text" formControlName="id"/>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Ad</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" formControlName="info"
+                       [ngClass]="{ 'is-invalid': validation.info.errors}"/>
+                <div *ngIf="validation.info.errors" class="invalid-feedback">
+                  <div *ngIf="validation.info.errors.required">
+                    Ad is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="justify-content-end mb-2">
+              <button type="submit" class="btn btn-warning me-3" (click)="reset()">
+                <i class="bx bx-reset"></i>
+                Təmizlə
+              </button>
+              <button type="submit" class="btn btn-primary me-3" (click)="update()"
+                      [disabled]="!form.valid && !isFormUpdatable()">
+                <i class="bx bx-edit-alt"></i>
+                Dəyiş
+              </button>
+              <button class="btn btn-success" (click)="add()" [disabled]="!form.valid">
+                <i class="bx bx-plus-medical"></i> Əlavə et
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,304 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Müqavilələr</h4>
+        <p class="card-title-desc">Tədris müəssəsində tədris alan şagirdlərin müqavilələri
+        </p>
+      </div>
+      <div class="card-body p-4">
+        <div class="btn btn-success" (click)="open()">
+          <i class="bx bx-search"></i> Filter
+        </div>
+        <div class="row mt-3">
+          <div class="col-lg-12 ms-lg-auto">
+            <div class="mt-4 mt-lg-0">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>UTIS</th>
+                      <th>S.A.A</th>
+                      <th>Tədris ili</th>
+                      <th>Bölmə</th>
+                      <th>Sinif</th>
+                      <th>Doğum tarixi</th>
+                      <th>Cəmi məbləğ</th>
+                      <th>Ödənilib</th>
+                      <th>Ödənilməlidir</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <ng-container
+                    *ngFor="let customer of contracts | search:'secondName,firstName,fatherName': student ;let i = index ">
+                    <tr [class.selected]="selectedContract?.id == customer?.id">
+                      <td>{{i + 1}}</td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer?.customerUtis}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer?.customerFullName}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer?.yearInfo}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer?.customerSector}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer?.customerClass}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer.customerDob}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer.totalAmount}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer.totalPaymentAmount}}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{customer.totalDept}}
+                          </span>
+                        </td>
+                        <td class="text-center">
+                          <button (click)="selectCustomer(customer);openContractModal(contractDataModel, customer);"
+                            class="btn btn-primary btn-rounded">
+                            <i class="bx bx-show"></i>
+                          </button>
+                          <button (click)="selectCustomer(customer);openContractDetailsModal(contractDetailsModal);"
+                                  class="btn btn-primary btn-rounded ms-2">
+                            <i class="bx bx-pen"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="rightbar" class="right-bar custom">
+    <form>
+      <ngx-simplebar class="h-100">
+        <div class="rightbar-title d-flex align-items-center bg-dark p-3">
+          <h5 class="m-0 me-2 text-white">Filtirlə</h5>
+          <a href="javascript:void(0);" (click)="hide()" class="right-bar-toggle ms-auto">
+            <i class="mdi mdi-close noti-icon"></i>
+          </a>
+        </div>
+
+        <hr class="m-0" />
+
+        <div class="p-4" [formGroup]="searchForm">
+
+          <label>Tədris ili</label>
+          <ng-select [items]="years" bindLabel="info" (change)="getContractsBySearch()" formControlName="yearly"
+                     class="ng-select w-100 mb-2">
+          </ng-select>
+
+          <label>Müqavilə növü</label>
+          <ng-select [items]="contractTypes" bindLabel="info" formControlName="contractType"
+                     (change)="getContractsBySearch()"
+                     class="ng-select w-100 mb-2">
+          </ng-select>
+
+          <label>Bölmə</label>
+          <ng-select class="ng-select w-100 mb-2" [items]="sections" bindLabel="info" (change)="getContractsBySearch()"
+                     formControlName="sector">
+          </ng-select>
+
+          <label>Sinif №</label>
+          <ng-select [items]="classes" bindLabel="info" class="ng-select w-100 mb-2" formControlName="classPrefix"
+                     (change)="getContractsBySearch()">
+          </ng-select>
+
+          <label>Sinif #</label>
+          <ng-select [items]="allClasses" bindLabel="info" class="ng-select w-100 mb-2" formControlName="classYearly"
+                     (change)="getContractsBySearch()">
+          </ng-select>
+
+          <label>Şagirdlər</label>
+          <ng-select class="ng-select w-100 mb-2" [items]="customers" bindLabel="fullName"
+                     (change)="getContractsBySearch()" formControlName="customer">
+          </ng-select>
+        </div>
+      </ngx-simplebar>
+    </form>
+  </div>
+
+</div>
+
+<ng-template #contractDataModel let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">{{selectedContract?.customerFullName}} - müqavilələri</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <ul class="nav nav-tabs tabs">
+      <ng-container *ngFor="let nav of navs">
+        <li (click)="changeTab(nav)" class="nav-item">
+          <a class="nav-link active" [ngClass]="{ active: nav.status }">{{
+            nav.title
+            }}</a>
+        </li>
+      </ng-container>
+    </ul>
+
+        <ng-container *ngIf="selectedNav.id == 1">
+          <div class="p-3">
+
+            <div class="row mb-2">
+              <div class="col-md-3 ">
+                <label>Tədris ili</label>
+                <ng-select [items]="years" bindLabel="info" (change)="getContractsByContractTypeAndYear()"
+                           [(ngModel)]="year"
+                           class="w-100">
+                </ng-select>
+              </div>
+              <div class="col-md-3">
+                <label>Müqavilə növü</label>
+                <ng-select [items]="contractTypes" bindLabel="info" [(ngModel)]="contractType"
+                           (change)="getContractsByContractTypeAndYear()" class="w-100">
+                </ng-select>
+              </div>
+            </div>
+            <div class="table-responsive mt-3">
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tədris ili</th>
+                  <th>Bölmə</th>
+                  <th>Sinif</th>
+                  <th>Cəmi məbləğ</th>
+                  <th>Ödənilib</th>
+                  <th>Ödənilməlidir</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-container
+                  *ngFor="let contract of customerContracts | search:'secondName,firstName,fatherName': student ;let i = index ">
+                  <tr>
+                    <td>{{i + 1}}</td>
+                    <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{contract?.yearInfo}}
+                          </span>
+                    </td>
+                    <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{contract?.customerSector}}
+                          </span>
+                    </td>
+                    <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{contract?.customerClass}}
+                          </span>
+                    </td>
+                    <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{contract.totalAmount}}
+                          </span>
+                    </td>
+                    <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{contract.totalPaymentAmount}}
+                          </span>
+                    </td>
+                    <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{contract.totalDept}}
+                          </span>
+                    </td>
+                    <td class="text-center">
+                      <button (click)="selectCustomer(contract);openContractDetailsModal(contractDetailsModal);"
+                              class="btn btn-primary btn-rounded">
+                        <i class="bx bx-pen"></i>
+                      </button>
+                      <button class="btn btn-success btn-rounded ms-3" (click)="modal.close()"
+                              routerLink="/accounting/payment-for-contract/{{contract?.contractId}}">
+                        <i class="bx bx-dollar"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-container>
+
+    <ng-container *ngIf="selectedNav.id == 2">
+      <div class="row my-3">
+        <div class="col-md-4">
+          <label for="">Təhsil haqqı</label>
+          <input readonly type="text" class="form-control">
+        </div>
+        <div class="col-md-4">
+          <label for="">Ödənilib</label>
+          <input readonly type="text" class="form-control">
+        </div>
+        <div class="col-md-4">
+          <label for="">Borc</label>
+          <input readonly type="text" class="form-control">
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="selectedNav.id == 3">
+      <div class="mt-3">
+            <textarea name="" class="form-control" id="" cols="30" rows="5">Şagirdə 400 AZN endirim olundu
+            </textarea>
+      </div>
+    </ng-container>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Bağla</button>
+  </div>
+</ng-template>
+<ng-template #contractDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müqavilə məlumatları</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="selectedContract?.contractId"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

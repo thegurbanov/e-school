@@ -1,0 +1,465 @@
+<ng-template #scrollDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müştərinin müqavilələri</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-list-special [consentId]="contractDto.agreementSide.customer.id"
+      [consentType]="contractDto.agreementSide.agreementSideType"></app-contract-list-special>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Bağla</button>
+  </div>
+</ng-template>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">1.Müqavilə şərtləri</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="row" style="text-align: right;">
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilənin nömrəsi</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="{{contractDto?.contractNumber}}"
+                  [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilənin növü</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="{{contractDto?.contractType?.info}}"
+                  [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilənin tarixi</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="{{contractDto?.contractDate}}"
+                  [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilənin bitmə tarixi</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="{{contractDto?.contractPaymentOrder?.expireDate}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilənin dəyəri</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" value="{{contractDto?.contractPaymentOrder?.totalValue}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Endirim (%)</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="{{contractDto?.contractPaymentOrder?.discount}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Müqavilənin məbləği</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                  value="{{contractDto?.contractPaymentOrder?.totalAmount}} {{contractDto?.contractPaymentOrder?.currency?.isoCode}}"
+                  [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Ödəniş qaydası</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{contractDto?.contractPaymentOrder?.paymentType?.info}}" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2" *ngIf="isLoan">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Kredit müddəti (ay)</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{contractDto?.contractPaymentOrder?.offerMonth}}" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2" *ngIf="isLoan">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Aylıq ödəniş</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                  value="{{contractDto?.contractPaymentOrder?.totalBalance}} {{contractDto?.contractPaymentOrder?.currency?.isoCode}}"
+                  [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2" *ngIf="isLoan">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Güzəşt müddəti (ay)</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{contractDto?.contractPaymentOrder?.discountMonth}}" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2" *ngIf="isLoan">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Kredit faizi (%)</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{contractDto?.contractPaymentOrder?.loanPercent}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2" *ngIf="isLoan">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Kreditin başlanma tarixi</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="04/02/2021" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2" *ngIf="isLoan">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Kreditin bitmə tarixi</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="04/02/2022" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">İlkin ödəniş</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                  value="{{contractDto?.contractPaymentOrder?.initialAmount}}"
+                  [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <div class="col-sm-4">
+                <input type="text" class="form-control" value="0" [disabled]="true">
+              </div>
+              <label class="col-sm-1 col-form-label" style="text-align: left">%</label>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Cəmi ödəniş</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{contractDto?.contractPaymentOrder?.totalPaymentAmount}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <div class="col-sm-4">
+                <input type="text" class="form-control"
+                       value="{{contractDto?.contractPaymentOrder?.totalPaymentPercent}}"
+                       [disabled]="true">
+              </div>
+              <label class="col-sm-1 col-form-label" style="text-align: left">%</label>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Qalıq borc</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{contractDto?.contractPaymentOrder?.totalDeptAmount}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-2">
+              <div class="col-sm-4">
+                <input type="text" class="form-control"
+                       value="{{contractDto?.contractPaymentOrder?.totalDeptPercent}}"
+                       [disabled]="true">
+              </div>
+              <label class="col-sm-1 col-form-label" style="text-align: left">%</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="contractDto">
+
+    <app-customer-select-list [isEditable]="false" [consentId]="contractDto.agreementSide.customer?.id ?? ''"
+                              *ngIf="contractDto.agreementSide.customer"></app-customer-select-list>
+
+    <app-company-select-list [isEditable]="false" [consentId]="contractDto.agreementSide.company?.id ?? ''"
+                             *ngIf="contractDto.agreementSide.company"></app-company-select-list>
+
+    <ng-container *ngIf="contractDto.contractPredimet">
+      <app-apartment-select-list [isEditable]="false"
+                                 [predimetId]="contractDto.contractPredimet.predimetId"
+                                 *ngIf="contractDto.contractPredimet.predimetType === 'APARTMENT'"
+                                 [contractValue]="contractDto.contractPaymentOrder.totalAmount || 0">
+      </app-apartment-select-list>
+      <app-garage-select-list [isEditable]="false"
+                              *ngIf="contractDto.contractPredimet.predimetType === 'GARAGE'"
+                              [predimetId]="contractDto.contractPredimet.predimetId"
+                              [contractValue]="contractDto.contractPaymentOrder.totalAmount || 0">
+      </app-garage-select-list>
+      <app-commercial-object-select-list [isEditable]="false"
+                                         *ngIf="contractDto.contractPredimet.predimetType === 'COMMERCIAL_OBJECT'"
+                                         [predimetId]="contractDto.contractPredimet.predimetId"
+                                         [contractValue]="contractDto.contractPaymentOrder.totalAmount || 0">
+      </app-commercial-object-select-list>
+      <app-student-select-list [isEditable]="false"
+                               *ngIf="contractDto.contractPredimet.predimetType === 'CUSTOMER'"
+                               [predimetId]="contractDto.contractPredimet.predimetId"></app-student-select-list>
+    </ng-container>
+
+  </ng-container>
+</div>
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-body mt-2">
+      <ul class="nav nav-tabs tabs">
+        <ng-container *ngFor="let nav of navs">
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{ active: nav.status }" (click)="changeSelectedNav(nav)">{{
+              nav.title
+              }}</a>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+    <ng-container *ngIf="contractDto">
+      <div class="table-responsive px-3" *ngIf="selectedNav.id === 1">
+        <table class="table table-bordered text-center">
+          <thead class="ant-table-thead">
+          <tr>
+            <th rowspan="2">Nömrə</th>
+            <th colspan="4">Ödənməlidir</th>
+            <th colspan="2">Ödənilib</th>
+            <th rowspan="2">Borc</th>
+            <th rowspan="2"></th>
+          </tr>
+          <tr>
+            <th>Tarix</th>
+            <th>Məbləğ</th>
+            <th>Güzəşt</th>
+            <th>Ödənilməli</th>
+            <th>Tarix</th>
+            <th>Məbləğ</th>
+          </tr>
+          </thead>
+          <tbody class="text-center">
+          <ng-container
+            *ngFor="let orderLine of contractDto?.contractPaymentOrder?.contractPaymentOrderLine; let i = index">
+            <ng-container *ngIf="(orderLine?.payments?.length ?? 0) === 0">
+              <tr *ngIf="orderLine?.amount ?? 0 > 0">
+                <td class="text-end" [ngClass]="{'text-start' : orderLine.line === -1 , 'text-end' : orderLine.line !== -1}">{{orderLine?.line === -1 ? 'İlkin ödəniş' : orderLine?.line}}</td>
+                <td>{{orderLine?.lineDate}}</td>
+                <td class="text-end">{{orderLine?.amount}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-end">{{orderLine?.debt}}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-primary btn-rounded" *ngIf="orderLine?.editable">
+                    <i class="bx bx-edit-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="(orderLine?.payments?.length ?? 0) === 1">
+              <tr *ngFor="let payment of orderLine?.payments">
+                <ng-container *ngIf="orderLine?.amount ?? 0 > 0">
+                  <td class="text-end" [ngClass]="{'text-start' : orderLine.line === -1 , 'text-end' : orderLine.line !== -1}">{{orderLine?.line === -1 ? 'İlkin ödəniş' : orderLine?.line}}</td>
+                  <td>{{orderLine?.lineDate}}</td>
+                  <td class="text-end">{{orderLine?.amount}}</td>  
+                  <td></td>
+                  <td></td>
+                  <td>{{payment?.paymentDate}}</td>
+                  <td class="text-end">{{payment?.lineAmount}}</td>
+                  <td class="text-end">{{orderLine?.debt}}</td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-primary btn-rounded" *ngIf="orderLine?.editable">
+                      <i class="bx bx-edit-alt"></i>
+                    </button>
+                  </td>
+                </ng-container>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="(orderLine?.payments?.length ?? 0) > 1">
+              <tr *ngIf="orderLine?.amount ?? 0 > 0">
+                <td class="text-end" [attr.rowspan]="orderLine?.payments?.length ?? 0" [ngClass]="{'text-start' : orderLine.line === -1 , 'text-end' : orderLine.line !== -1}">{{orderLine.line === -1 ? 'İlkin ödəniş' : orderLine.line}}</td>
+                <td [attr.rowspan]="orderLine?.payments?.length ?? 0">{{orderLine?.lineDate}}</td>
+                <td class="text-end" [attr.rowspan]="orderLine?.payments?.length ?? 0">{{orderLine?.amount}}</td>
+                <td [attr.rowspan]="orderLine?.payments?.length ?? 0"></td>
+                <td [attr.rowspan]="orderLine?.payments?.length ?? 0"></td>
+                <td>{{orderLine.payments[0].paymentDate}}</td>
+                <td class="text-end">{{orderLine.payments[0].lineAmount}}</td>
+                <td class="text-end" [attr.rowspan]="orderLine?.payments?.length ?? 0">{{orderLine?.debt}}</td>
+                <td class="text-center" [attr.rowspan]="orderLine?.payments?.length ?? 0">
+                  <button type="button" class="btn btn-primary btn-rounded" *ngIf="orderLine?.editable">
+                    <i class="bx bx-edit-alt"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngFor="let payment of orderLine?.payments?.slice(1); let i = index">
+                <ng-container>
+                  <td>{{payment?.paymentDate}}</td>
+                  <td class="text-end">{{payment?.lineAmount}}</td>
+                </ng-container>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <tr class="text-end">
+            <th colspan="2">YEKUN</th>
+            <th>{{contractDto?.contractPaymentOrder?.totalAmount}}</th>
+            <th colspan="2"></th>
+            <th colspan="2">{{contractDto?.contractPaymentOrder?.totalPaymentAmount}}</th>
+            <th>{{contractDto?.contractPaymentOrder?.totalDeptAmount}}</th>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-responsive px-3" *ngIf="selectedNav.id === 2">
+        <table class="table table-bordered">
+          <thead class="ant-table-thead" class="text-center">
+          <tr>
+            <th rowspan="2" style="text-align: left;"><span class="ant-table-header-column">
+          <div><span class="ant-table-column-title">№</span><span class="ant-table-column-sorter"></span>
+          </div>
+        </span></th>
+            <th rowspan="2">Məbləğ</th>
+            <th rowspan="2">Valyuta</th>
+            <th colspan="2">Hesab</th>
+            <th rowspan="2">Tarix</th>
+            <th rowspan="2"></th>
+          </tr>
+          <tr>
+            <th>Kassa - Nağd</th>
+            <th>Bank</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let paymentInfo of paymentList; let i = index" class="text-center">
+            <td>{{i+1}}</td>
+            <td class="text-end">{{paymentInfo?.amount}}</td>
+            <td>{{paymentInfo?.currency?.isoCode}}</td>
+            <td>{{paymentInfo?.kassa?.info}}</td>
+            <td>{{paymentInfo?.bankAccount?.bank?.info}} {{paymentInfo?.bankAccount?.bankAccount}}</td>
+            <td>{{paymentInfo?.paymentDate}}</td>
+            <td>
+              <a class="btn btn-soft-light btn-sm w-xs waves-effect btn-label waves-light" target="_blank"
+                 href="{{baseUrl}}/accounting/api/v1/invoice/pdf?id={{paymentInfo?.id}}">
+                <i class="bx bx-download label-icon"></i> Çap et
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-3" *ngIf="selectedNav.id === 3">
+        Müqavilə sənədləri
+      </div>
+      <div class="px-3 table-responsive" *ngIf="selectedNav.id === 4
+      && contractDto.contractType.paymentLogic === 'PURCHASE'">
+        <table class="text-center table table-bordered">
+          <thead>
+          <th>№</th>
+          <th>Müqavilə</th>
+          <th>Qaimə</th>
+          <th>Tarix</th>
+          <th>Status</th>
+          <th>Məbləğ</th>
+          <th>Ödənilib</th>
+          <th>Ödənilib (%)</th>
+          <th>Ödənilməlidir</th>
+          <th></th>
+          </thead>
+          <tbody>
+          <tr *ngFor="let debitor of creditorOrDebitorList; let i = index">
+            <th>{{i + 1}}</th>
+            <td>{{debitor?.contractNumber}}</td>
+            <td>{{debitor?.invoiceId}}</td>
+            <td>{{debitor?.date}}</td>
+            <td [ngClass]="{'text-primary' : debitor?.status === 'Açıq' ,
+            'text-success' : debitor?.status !== 'Açıq'}">
+              {{debitor?.status}}</td>
+            <td class="text-end">{{debitor?.totalAmount}}</td>
+            <td class="text-end">{{debitor?.totalPaymentAmount}}</td>
+            <td class="text-end">{{debitor?.totalPaymentPercent}}</td>
+            <td class="text-end">{{debitor?.totalDeptAmount}}</td>
+            <td>
+              <button class="btn btn-primary btn-rounded" [disabled]="debitor?.status === 'Ödənilib'">
+                <i class="bx bx-dollar"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-3 table-responsive" *ngIf="selectedNav.id === 4
+      && contractDto.contractType.paymentLogic === 'SALE'">
+        <table class="text-center table table-bordered">
+          <thead>
+          <th>№</th>
+          <th>Müqavilə</th>
+          <th>Qaimə</th>
+          <th>Tarix</th>
+          <th>Status</th>
+          <th>Məbləğ</th>
+          <th>Ödənilib</th>
+          <th>Ödənilib (%)</th>
+          <th>Ödənilməlidir</th>
+          <th></th>
+          </thead>
+          <tbody>
+          <tr *ngFor="let creditor of creditorOrDebitorList; let i = index">
+            <th>{{i + 1}}</th>
+            <td>{{creditor?.contractNumber}}</td>
+            <td>{{creditor?.invoiceId}}</td>
+            <td>{{creditor?.date}}</td>
+            <td [ngClass]="{'text-primary' : creditor?.status === 'Açıq' ,
+            'text-success' : creditor?.status !== 'Açıq'}">
+              {{creditor?.status}}</td>
+            <td class="text-end">{{creditor?.totalAmount}}</td>
+            <td class="text-end">{{creditor?.totalPaymentAmount}}</td>
+            <td class="text-end">{{creditor?.totalPaymentPercent}}</td>
+            <td class="text-end">{{creditor?.totalDeptAmount}}</td>
+            <td>
+              <button class="btn btn-primary btn-rounded" [disabled]="creditor?.status === 'Ödənilib'">
+                <i class="bx bx-dollar"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </div>
+</div>

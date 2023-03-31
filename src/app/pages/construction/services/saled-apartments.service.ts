@@ -1,0 +1,17 @@
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {BaseService} from 'src/app/services/base/base.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SaledApartmentsService extends BaseService {
+
+  public getBlocks(request: any): Observable<any> {
+    return this.get<any>('/construction/api/v1/bina', request)
+  }
+
+  public getSoldApartmentsByBinaId(request: any): Observable<any> {
+    return this.get<any>('/construction/api/v1/bina-block-mertebe-menzil/sold/' + request, '')
+  }
+}

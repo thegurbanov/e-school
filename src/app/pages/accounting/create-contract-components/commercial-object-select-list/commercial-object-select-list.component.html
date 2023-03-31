@@ -1,0 +1,86 @@
+<ng-template #scrollDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müştərinin müqavilələri</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-list-special [predmetId]="selectedCommercialObject.id"
+                               [predmetType]="'COMMERCIAL_OBJECT'"></app-contract-list-special>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla</button>
+  </div>
+</ng-template>
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">3.Kommersiya obyektləri</h4>
+  </div>
+  <div class="card-body mt-2">
+    <form [formGroup]="form">
+      <div class="row" style="text-align: right">
+        <div class="col-md-6 px-2">
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label">Kommersiya obyekti</label>
+            <div class="col-sm-7">
+              <ng-select [clearable]="false" class="col-md-12" style="text-align: left"
+                         formControlName="predimetId"
+                         (change)="getCommercialObjectById($event)"  [ngClass]="{ 'is-invalid': validation.predimetId.errors}">
+                <ng-option *ngFor="let object of commercialObjects" value="{{object.id}}">
+                  {{object.info}}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="validation.predimetId.errors" class="invalid-feedback">
+                <div *ngIf="validation.predimetId.errors.required">
+                  Kommersiya obyekti is required
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-1">
+              <button class="btn btn-primary btn-rounded"
+                      [disabled]="!this.form.controls['predimetId'].value" (click)="scrollModal(scrollDataModal)">
+                <i class="bx bx-show"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-2"></div>
+        <div class="col-md-6 px-2">
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label">Sahəsi kv/m<sup>2</sup></label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" value="{{this.selectedCommercialObject?.sahe || 0}}" [disabled]="true">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-2">
+          <div class="row mb-4">
+            <label class="col-sm-4 col-form-label">Otaq sayı</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" value="{{this.selectedCommercialObject?.otaqSay || 0}}" [disabled]="true">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-2">
+          <div class="row mb-2">
+            <label class="col-sm-4 col-form-label">1 kv/m<sup>2</sup> qiyməti</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control"
+                     value="{{(contractValue / (this.selectedCommercialObject?.sahe || 1)) | number : '1.0-2'}}"
+                     [disabled]="true">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 px-2">
+          <div class="row mb-2">
+            <label class="col-sm-4 col-form-label">&nbsp;</label>
+            <div class="col-sm-8">&nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

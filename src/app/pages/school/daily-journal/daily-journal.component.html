@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Jurnal-Gündəlik </h4>
+                <p class="card-title-desc"></p>
+            </div>
+            <div class="card-body p-4">
+                <div class="mt-4 mt-lg-0">
+
+                    <label>Tarix</label>
+                    <input type="date" [(ngModel)]="date" (change)="getJournalDaily($event)"
+                        class="form-control w-25" />
+                    <div class="table-responsive">
+                        <table class="table table-bordered mt-2">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Sinif</th>
+                                    <th>Fənn</th>
+                                    <th>Müəllim</th>
+                                    <th>Ev tapşırığı</th>
+                                    <th>Tədris olunan mövzu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let data of journalData | search:'info,type': data;let i = index">
+                                    <tr>
+                                        <td>{{i+1}}</td>
+                                        <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{ data.classYearly.classPrefix }}{{ data.classYearly.classPrefixIndicator }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{ data.subject.info }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{ data.employee.fullName }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{ data.homeTask }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="pr-6 whitespace-nowrap">
+                                                {{ data.topic?.info }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

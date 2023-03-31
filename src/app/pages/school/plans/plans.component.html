@@ -1,0 +1,190 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Cari Tədris planı</h4>
+                <p class="card-title-desc">
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <form [formGroup]="PlanForm" (ngSubmit)="add()">
+
+                            <div>
+                                <div class="mb-3">
+                                    <label class="form-label">Bölmə</label>
+                                    <ng-select formControlName="classSection" name="classSection"
+                                        [ngClass]="{ 'is-invalid': submitted && f.classSection.errors }"
+                                        [clearable]="false" name="section" [items]="sections" bindLabel="info"
+                                        class="ng-select w-100" [notFoundText]="'Bölmə tapılmadı'">
+                                    </ng-select>
+                                    <div *ngIf="submitted && f.classSection.errors" class="invalid-feedback">
+                                        info is required
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                  <label class="form-label">Sinif</label>
+                                  <ng-select formControlName="classPrefix"
+                                        [ngClass]="{ 'is-invalid': submitted && f.classPrefix.errors }"
+                                        [clearable]="false" name="section" [items]="counter" class="ng-select w-100"
+                                        [notFoundText]="'Bölmə tapılmadı'">
+                                    </ng-select>
+
+                                    <div *ngIf="submitted && f.classPrefix.errors" class="invalid-feedback">
+                                        classPrefix is required
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Təmayül</label>
+                                    <ng-select formControlName="tendency" name="tendency"
+                                        [ngClass]="{ 'is-invalid': submitted && f.tendency.errors }" [clearable]="false"
+                                        name="temayul" [items]="temayuls" bindLabel="info" class="ng-select w-100"
+                                        [notFoundText]="'Bölmə tapılmadı'">
+                                    </ng-select>  
+                                    <div *ngIf="submitted && f.tendency.errors" class="invalid-feedback">
+                                        tendency is required
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Fənn</label>
+                                    <ng-select formControlName="subject" name="subject"
+                                        [ngClass]="{ 'is-invalid': submitted && f.subject.errors }" [clearable]="false"
+                                        name="subject" [items]="subjects" bindLabel="info" class="ng-select w-100"
+                                        [notFoundText]="'Bölmə tapılmadı'">
+                                    </ng-select>  
+
+                                    <div *ngIf="submitted && f.subject.errors" class="invalid-feedback">
+                                        subject is required
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tədris saatı</label>
+                                    <input [attr.disabled]="year.isCurrent ? null :''" type="number"
+                                        class="form-control" formControlName="weeklyHour" name="weeklyHour"
+                                        [ngClass]="{ 'is-invalid': submitted && f.weeklyHour.errors }">
+                                    <div *ngIf="submitted && f.weeklyHour.errors" class="invalid-feedback">
+                                        weeklyHour is required
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <button (click)="update()" type="button" [class.disabled]="!year.isCurrent"
+                                        class="btn btn-primary me-3">
+                                        <i class="bx bx-edit-alt"></i>
+                                        Dəyiş
+                                    </button>
+                                    <button class="btn btn-success me-3" [class.disabled]="!year.isCurrent">
+                                        <i class="bx bx-plus-medical"></i>
+                                        Əlavə et
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-9 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                            <div class="d-flex flex-wrap">
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1">Tədris ili</label>
+                                     ̰ <ng-select [(ngModel)]="year" (change)="selectCurrentYear(year)" bindLabel="info"
+                                        name="year" [items]="years" class="ng-select w-100"
+                                        [notFoundText]="'Tədris tapılmadı'">
+                                    </ng-select>
+                                </div>
+
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1"> Bölmə</label>
+                                    <ng-select [(ngModel)]="section" (change)="filter()" bindLabel="info" name="section"
+                                        [items]="sections" class="ng-select w-100" [notFoundText]="'Bölmə tapılmadı'">
+                                    </ng-select>
+                                </div>
+
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1"> Sinif</label>
+                                     ̰ <ng-select [(ngModel)]="selectedClass" bindLabel="info" (change)="filter()"
+                                        name="selectedClass" [items]="counter" class="ng-select w-100"
+                                        [notFoundText]="'Sinif tapılmadı'">
+                                    </ng-select>
+                                </div>
+                                <div class="me-2 mt-1">
+                                    <label class="mb-1"> Təmayül</label>
+                                    <ng-select [(ngModel)]="selectedTendency" bindLabel="info" (change)="filter()"
+                                        name="selectedTendency" [items]="temayuls" class="ng-select w-100"
+                                        [notFoundText]="'Təmayül tapılmadı'">
+                                    </ng-select>
+                                </div>
+                                <div class="mt-1">
+                                    <label class="mb-1"> Fənn</label>
+                                    <ng-select [(ngModel)]="selectedSubject" (change)="filter()" bindLabel="info"
+                                        name="selectedSubject" [items]="subjects" class="ng-select w-100"
+                                        [notFoundText]="'Fənn tapılmadı'">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="table-responsive mt-3 mb-0">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Bölmə</th>
+                                            <th>Sinif</th>
+                                            <th>Təmayül</th>
+                                            <th>Fənn</th>
+                                            <th>Tədris<br>saatı</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container
+                                            *ngFor="let plan of plans |search:'subject.info':plan;let i = index">
+                                            <tr [class.selected]="selectedPlan?.id == plan.id"
+                                                (click)="getProgramById(plan)" style="cursor: pointer">
+                                                <td>
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap text-primary">
+                                                        {{plan.classSection.info}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{plan.classPrefix}} {{plan.classPrefixIndicator}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{plan.tendency.info}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{plan.subject.info}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{plan.weeklyHour}}
+                                                    </span>
+                                                </td>
+                                                <td class="p-1 text-center">
+                                                    <button type="button" (click)="delete(plan)"
+                                                            title="{{plan.classPrefix}} {{plan.classPrefixIndicator}} / {{plan.classSection.info}}"
+                                                        class="btn btn-danger btn-rounded">
+                                                        <i class="bx bx-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

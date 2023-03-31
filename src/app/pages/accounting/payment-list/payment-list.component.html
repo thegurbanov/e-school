@@ -1,0 +1,217 @@
+<div id="main">
+  <!-- Right Sidebar -->
+  <div id="rightbar" class="right-bar custom">
+    <form [formGroup]="searchForm">
+    <ngx-simplebar class="h-100">
+      <div class="rightbar-title d-flex align-items-center bg-dark p-3">
+        <h5 class="m-0 me-2 text-white">Filtirlə</h5>
+        <a href="javascript:void(0);" class="right-bar-toggle ms-auto" (click)="hide();">
+          <i class="mdi mdi-close noti-icon"></i>
+        </a>
+      </div>
+
+      <!-- Settings -->
+      <hr class="m-0"/>
+
+      <div class="p-4" style="text-align: right; margin-left: -60px;">
+        <div class="row mb-4">
+          <label class="col-sm-4 col-form-label">Tarix</label>
+          <div class="col-sm-4">
+            <input type="date" class="form-control" formControlName="startDate">
+          </div>
+          <div class="col-sm-4">
+            <input type="date" class="form-control" formControlName="endDate">
+          </div>
+        </div>
+        <div class="row mb-4">
+          <label class="col-sm-4 col-form-label">Müqavilə növü</label>
+          <div class="col-sm-8">
+            <ng-select class="ng-select w-100" [clearable]="true" style="text-align: left" formControlName="contractType">
+              <ng-option *ngFor="let contractType of contractTypeList"
+                         [value]="contractType?.id">{{contractType?.info}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <label class="col-sm-4 col-form-label">Ödəniş növü</label>
+          <div class="col-sm-8">
+            <ng-select class="ng-select w-100" [clearable]="true" style="text-align: left" formControlName="paymentType">
+              <ng-option *ngFor="let paymentType of contractPaymentTypeList" [value]="paymentType?.id">{{paymentType?.info}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <label class="col-sm-2 col-form-label"></label>
+          <div class="col-sm-2">
+            <div class="form-check mt-2">
+              <input class="form-check-input" type="radio" name="paymentType" value="CASHBOX" (change)="changePaymentType($event)" checked>
+              <label class="form-check-label">
+                Nağd
+              </label>
+            </div>
+          </div>
+          <div class="col-sm-8">
+            <ng-select [clearable]="true" class="col-md-12" style="text-align: left" formControlName="cashboxId">
+              <ng-option *ngFor="let cashbox of cashboxList" value="{{cashbox?.id}}">
+                {{cashbox?.info}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <label class="col-sm-2 col-form-label"></label>
+          <div class="col-sm-2">
+            <div class="form-check mt-2">
+              <input class="form-check-input" type="radio" name="paymentType" value="BANK" (change)="changePaymentType($event)">
+              <label class="form-check-label">
+                Bank
+              </label>
+            </div>
+          </div>
+          <div class="col-sm-8">
+            <ng-select [clearable]="true" class="col-md-12" style="text-align: left" formControlName="bankAccountId">
+              <ng-option *ngFor="let bankAccount of bankAccountList" value="{{bankAccount?.id}}">
+                {{bankAccount?.bank?.info}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <label class="col-sm-4 col-form-label">Predmet</label>
+          <div class="col-sm-8">
+            <ng-select class="ng-select w-100" [clearable]="true" style="text-align: left" formControlName="predmetId">
+              <ng-option *ngFor="let predmetType of contractPredmetTypeList"
+                         [value]="predmetType?.id">{{predmetType?.info}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <label class="col-sm-4 col-form-label">Tərəf</label>
+          <div class="col-sm-8">
+            <ng-select class="ng-select w-100" [clearable]="true" style="text-align: left" formControlName="agreementSideId">
+              <ng-option *ngFor="let agreementSideType of contractAgreementSideTypeList"
+                         [value]="agreementSideType?.id">{{agreementSideType?.info}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-warning" (click)="reset()">
+              <i class="bx bx-reset"></i> Təmizlə
+            </button>
+            <button class="btn btn-success ms-2" (click)="search()">
+              <i class="bx bx-search"></i> Axtarış
+            </button>
+          </div>
+        </div>
+      </div>
+    </ngx-simplebar>
+    </form>
+  </div>
+  <!-- /Right-bar -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <button class="btn btn-success" (click)="open()">
+        <i class="bx bx-window-open"></i> Filtirləri aç
+      </button>
+      <a routerLink="/accounting/payment-for-contract" class="btn btn-success ms-2">
+        <i class="bx bx-plus-medical"></i> Yeni ödəniş
+      </a>
+      <ng-container [formGroup]="paymentTypeForm">
+        <div class="d-inline-block form-check form-switch ms-2" dir="ltr">
+          <input type="checkbox" class="form-check-input" formControlName="isCashBoxActive"
+                 (change)="changeCashBoxStatus()">
+          <label class="form-check-label">Kassa</label>
+        </div>
+        <div class="d-inline-block form-check form-switch ms-2" dir="ltr">
+          <input type="checkbox" class="form-check-input" formControlName="isBankActive" (change)="changeBankStatus()">
+          <label class="form-check-label">Bank</label>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-sm-12 col-md-6">
+      <div class="dataTables_length" id="tickets-table_length"><label
+        class="d-inline-flex align-items-center">Göstər:
+        <select name="tickets-table_length" aria-controls="tickets-table"
+                (change)="changePageSize()"
+                [(ngModel)]="pageSize" class="form-control form-control-sm mx-2">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="25">25</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select> data</label></div>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead class="ant-table-thead" class="text-center">
+      <tr>
+        <th [attr.rowspan]="getRowSpanValue()" style="text-align: left;"><span class="ant-table-header-column">
+          <div><span class="ant-table-column-title">№</span><span class="ant-table-column-sorter"></span>
+          </div>
+        </span></th>
+        <th [attr.rowspan]="getRowSpanValue()">Müqavilə<br>nömrəsi</th>
+        <th [attr.rowspan]="getRowSpanValue()">Müştəri</th>
+        <th [attr.rowspan]="getRowSpanValue()">Mədaxil</th>
+        <th [attr.rowspan]="getRowSpanValue()">Məxaric</th>
+        <th [attr.rowspan]="getRowSpanValue()">Valyuta</th>
+        <th colspan="2" *ngIf="isCashBoxStatusActive && isBankStatusActive">Hesab</th>
+        <th rowspan="1" *ngIf="isCashBoxStatusActive && isBankStatusActive===false">Kassa - Nağd</th>
+        <th rowspan="1" *ngIf="isBankStatusActive && isCashBoxStatusActive===false">Bank</th>
+        <th [attr.rowspan]="getRowSpanValue()">Tarix</th>
+        <th [attr.rowspan]="getRowSpanValue()"></th>
+      </tr>
+      <tr *ngIf="isBankStatusActive===true && isCashBoxStatusActive===true">
+        <th rowspan="1">Kassa - Nağd</th>
+        <th rowspan="1">Bank</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let paymentInfo of paginatedPaymentList?.content; let i = index" class="text-center">
+        <td class="text-end">{{pageSize * (pageNumber - 1) + i + 1}}</td>
+        <td class="text-end" (click)="openContractDetails(paymentInfo, contractModal)">
+          <a class="link-primary custom-hover">{{paymentInfo?.contract?.contractNumber}}</a>
+        </td>
+        <td>{{paymentInfo?.contract | agreementSide }}</td>
+        <td
+          class="text-end">{{paymentInfo?.contract?.contractType?.paymentLogic === 'SALE' ? paymentInfo?.amount : ''}}</td>
+        <td
+          class="text-end">{{paymentInfo?.contract?.contractType?.paymentLogic === 'PURCHASE' ? paymentInfo?.amount : ''}}</td>
+        <td>{{paymentInfo?.currency?.isoCode}}</td>
+        <td
+          *ngIf="isCashBoxStatusActive">{{paymentInfo?.kassa?.info}}</td>
+        <td
+          *ngIf="isBankStatusActive">{{paymentInfo?.bankAccount?.bank?.info}} {{paymentInfo?.bankAccount?.bankAccount}}</td>
+        <td>{{paymentInfo?.paymentDate}}</td>
+        <td>
+          <a class="btn btn-soft-light btn-sm w-xs waves-effect btn-label waves-light" target="_blank"
+             href="{{baseUrl}}/accounting/api/v1/invoice/pdf?id={{paymentInfo?.id}}">
+            <i class="bx bx-download label-icon"></i> Çap et
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [paginatedData]="paginatedPaymentList" [pageSize]="pageSize"
+                  (changePageNumberEvent)="receivePageNumber($event)" [changePageNumber]="changePageNumber">
+  </app-pagination>
+</div>
+<ng-template #contractModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müqavilə məlumatları</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="selectedPaymentLine.contract.id"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

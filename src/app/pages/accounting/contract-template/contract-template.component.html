@@ -1,0 +1,162 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Müqavilə şablonu</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="">
+            <tr>
+              <th>Ad</th>
+              <th>Müqavilə növü</th>
+              <th>Ödəniş növü</th>
+              <th>Valyuta</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let contractTemplate of contractTemplateList"
+                [ngClass]="{'selected' : contractTemplate?.id  === selectedContractTemplate?.id}">
+              <td>{{contractTemplate?.info}}</td>
+              <td>{{contractTemplate?.contractType?.info}}</td>
+              <td>{{contractTemplate?.paymentType?.info}}</td>
+              <td>{{contractTemplate?.currency?.info}}</td>
+              <td class="text-center">
+                <button type="button" (click)="deleteContractTemplateById(contractTemplate.id)"
+                        class="btn btn-danger btn-rounded">
+                  <i class="bx bx-trash-alt"></i>
+                </button>
+                <button type="button" class="btn btn-primary btn-rounded ms-2"
+                        (click)="getContractTemplateById(contractTemplate.id)">
+                  <i class="bx bx-edit-alt"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <form [formGroup]="form">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Müqavilə şablonu</h4>
+        </div>
+        <div class="card-body mt-2">
+          <div class="text-end">
+            <div class="row mb-2 d-none">
+              <label class="col-sm-4 col-form-label">Info</label>
+              <div class="col-sm-8">
+                <input type="text" formControlName="id"/>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Ad</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" formControlName="info"
+                       [ngClass]="{ 'is-invalid': validation.info.errors}"/>
+                <div *ngIf="validation.info.errors" class="invalid-feedback">
+                  <div *ngIf="validation.info.errors.required">
+                    Ad is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Müqavilə növü</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" class="w-100 text-start" formControlName="contractType"
+                           (change)="changeContractType($event)"
+                           [ngClass]="{ 'is-invalid': validation.contractType.errors}">
+                  <ng-option *ngFor="let contractType of contractTypes" [value]="contractType?.id">
+                    {{contractType?.info}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.contractType.errors" class="invalid-feedback">
+                  <div *ngIf="validation.contractType.errors.required">
+                    Müqavilən növü is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Ödəniş qaydası</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" formControlName="paymentType" class="w-100" style="text-align: left"
+                           (change)="changePaymentType($event)"
+                           [ngClass]="{ 'is-invalid': validation.paymentType.errors}">
+                  <ng-option *ngFor="let paymentType of paymentTypeList" [value]="paymentType.id">
+                    {{paymentType.info}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.paymentType.errors" class="invalid-feedback">
+                  <div *ngIf="validation.paymentType.errors.required">
+                    Ödəniş qaydası is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Valyuta</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" formControlName="currencyId" class="w-100 text-start"
+                           [ngClass]="{ 'is-invalid': validation.currencyId.errors}">
+                  <ng-option *ngFor="let currency of currencyList" [value]="currency.id">
+                    {{currency.isoCode}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.currencyId.errors" class="invalid-feedback">
+                  <div *ngIf="validation.currencyId.errors.required">
+                    Valyuta is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Ümumi məbləğ</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="totalAmount"/>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">İlkin ödəniş</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="initialAmount"/>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-4 col-form-label">Müddət</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="offerMonth"/>
+              </div>
+            </div>
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Güzəştli müddət</label>
+              <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="discountMonth"/>
+              </div>
+            </div>
+            <div class="justify-content-end mb-2">
+              <button type="submit" class="btn btn-warning me-3" (click)="reset()">
+                <i class="bx bx-reset"></i>
+                Təmizlə
+              </button>
+              <button type="submit" class="btn btn-primary me-3" (click)="update()" [disabled]="!form.valid && !isFormUpdatable()">
+                <i class="bx bx-edit-alt"></i>
+                Dəyiş
+              </button>
+              <button class="btn btn-success" (click)="add()" [disabled]="!form.valid">
+                <i class="bx bx-plus-medical"></i> Əlavə et
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

@@ -1,0 +1,198 @@
+<div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Jurnal - Sinif: {{_class?.classYearly?.classPrefix}} {{_class?.classYearly?.classPrefixIndicator}} | Dərs: {{_class?.subject?.info}}
+            | Müəllim: {{_class?.teacher?.fullName}}</h4>
+          <div class="d-flex flex-wrap">
+            <div class="months my-3">
+              <ng-select [clearable]="false" [(ngModel)]="month" (change)="changeMonth(month)">
+                <ng-option *ngFor="let item of months" [value]="item">
+                  {{item.monthText }} - {{item.year }}</ng-option>
+              </ng-select>
+            </div>
+            <div class="class my-3 ms-3">
+              <ng-select [(ngModel)]="_class" (change)="changeClass(month,_class.classYearly)" [clearable]="false">
+                <ng-option *ngFor="let class of classes" [value]="class">{{class?.info}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+            </div>
+            <div class="card-body p-4">
+                <div>
+                    <div class="students">
+                        <div class="student row">
+                            <div class="col-3">
+                                <div class="student-info text-center def w-100">Ad Soyad Ata adı</div>
+                                <ng-container *ngFor="let student of lesson.students ;let i = index">
+                                    <div class="student-info text-left w-100">{{i+1}}. {{student.fullName}}</div>
+                                </ng-container>
+                            </div>
+                            <div class="col-9 scroll-x">
+                                <ul class="notes d-flex ">
+                                    <ng-container *ngFor="let day of lesson.days">
+                                        <li class="note def">{{day.day}}
+
+                                        </li>
+                                    </ng-container>
+                                </ul>
+                                <ng-container *ngFor="let student of lesson.students ; let i = index">
+                                    <ul class=" notes d-flex ">
+                                        <ng-container *ngFor="let day of lesson.days">
+                                            <li class="note {{day.lessonType | journal}}"
+                                                [class.disabled]="day.isCurrent !=0">
+                                                <span *ngIf="day.isCurrent !=0">
+                                                    <ng-container *ngFor="let note of student.marks">
+                                                        <ng-container *ngIf="note.lessonId == day.lesson?.id">
+                                                            {{note.mark}}
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </span>
+                                                <ng-container *ngFor="let note of student.marks">
+                                                    <ng-container *ngIf="note.lessonId == day.lesson?.id">
+
+                                                        <!-- <input [disabled]="day.isCurrent!=0" id="note_{{i}}"
+                                                            maxlength="3" minlength="1"
+                                                            (keyup.arrowup)="Move('UP',i-1)"
+                                                            (keyup.arrowdown)="Move('DOWN',i+1)"
+                                                            *ngIf="day.isCurrent == 0" type="text"
+                                                            (change)="giveNote($event,student,day.lesson?.id)"> -->
+                                                        <div *ngIf="day.isCurrent == 0" class="w-100 h-100"
+                                                            (click)="openNoteModal(addNoteCurrentStudent,student,day.lesson,note)">
+                                                            {{note.mark}}
+                                                        </div>
+
+                                                    </ng-container>
+                                                </ng-container>
+
+
+                                            </li>
+                                        </ng-container>
+                                    </ul>
+                                </ng-container>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- <h5 class="mt-5">Mövzu - 6a Təsviri incəsənət</h5> -->
+                    <ul class="plans">
+                        <li class="plan def">
+                            <ul class="plan-detail">
+                              <li class="plan-date">Tarix</li>
+                              <li class="plan-task">Ev tapşırığı</li>
+                              <li class="plan-subject">Tədris olunan mövzu</li>
+                              <li class="modify text-center"><i class="fas fa-edit"></i></li>
+                              <li class="modify text-center text-danger"><i class="fas fa-trash"></i></li>
+                              <li class="plan-date">Əvəz edən</li>
+                              <li class="plan-date">Dərsdən imtina?</li>
+                            </ul>
+                        </li>
+                        <ng-container *ngFor="let day of programs">
+                            <li class="plan ">
+                              <ul class="plan-detail">
+                                <li class="plan-date {{day.topic?.lessonType | journal }}">{{day.lessonDay}} </li>
+                                <li class="plan-task {{day.topic?.lessonType  | journal }}">
+                                  {{day.homeTask}}
+                                <li class="plan-subject {{day.topic?.lessonType  | journal }}">
+                                <ng-container>{{ day.topic?.info }}</ng-container>
+                                <ng-container *ngIf="day.topic2"><br>{{day.topic2?.info}}</ng-container>
+                                </li>
+                                <li (click)="openModal(addTopic,day)"
+                                    class="modify text-center {{day.topic?.lessonType  | journal }}">
+                                  <i class="fad fa-edit edit"></i>
+                                </li>
+                                <li (click)="delProgram(day)"
+                                    class="modify text-center text-danger {{day.topic?.lessonType  | journal }}">
+                                  <i class="fad fa-trash edit"></i>
+                                </li>
+                                <li class="plan-date">{{day?.employee?.fullName}}</li>
+                                <li class="plan-date"></li>
+                              </ul>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- add topic-->
+<ng-template #addTopic role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Ev tapşırığının qeyd edilməsi</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="topicForm">
+        <label for="">Ev tapşırığı</label>
+        <input type="text" class="form-control" formControlName="homeTask">
+
+        <label for="" class="mt-3">Tədris olunan mövzu:</label>
+
+        <ng-select formControlName="topic" [items]="topics" bindLabel="info"
+                   class="ng-select w-100" [notFoundText]="'Mövzu tapılmadı'">
+        </ng-select>
+
+        <label for="" class="mt-3">Video dərslik linki</label>
+        <input type="text" class="form-control" formControlName="mediaLink">
+
+
+        <label for="" class="mt-3">2-ci tədris olunan mövzu (əgər varsa): </label>
+
+        <ng-select formControlName="topic2" [items]="topics" bindLabel="info"
+                   class="ng-select w-100" [notFoundText]="'Mövzu tapılmadı'">
+        </ng-select>
+
+        <label for="" class="mt-3">2-ci mövzunun video dərslik linki (əgər varsa): </label>
+        <input type="text" class="form-control" formControlName="mediaLink2">
+      </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Bağla</button>
+        <button class="btn btn-success" (click)="add2Topic()">Əlavə et</button>
+    </div>
+</ng-template>
+
+
+
+<!-- add note -->
+<ng-template #addNoteCurrentStudent role="document" let-modal>
+    <form [formGroup]="MarkForm" (ngSubmit)="giveNote()">
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">{{selectedStudent.fullName}} </h5>
+            <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+
+            <label for="">Məzmun standartlarını seç</label>
+            <ng-select [clearable]=" false" formControlName="content" class="w-100" [items]="contents" bindLabel="info">
+            </ng-select>
+
+            <div class="d-flex notes mt-3 w-100">
+
+                <ng-select [clearable]="false" formControlName="mark" (change)="setMarkAnumber()" class="marks-list"
+                    [items]="numberMarks" bindLabel="value" bindValue="value">
+                </ng-select>
+
+                <ng-container *ngFor="let mark of marks">
+                    <label (click)="selectMark(mark)" for="{{mark.value}}" [class.active]="mark.isActive"
+                        class="note">{{mark.value}}</label>
+                    <input class="d-none" type="radio" value="{{mark.value}}" name formControlName="mark"
+                        id="{{mark.value}}">
+                </ng-container>
+            </div>
+
+            <label for="marknote" class="mt-3">Qeyd</label>
+            <input type="text" formControlName="markNote" id="marknote" class="form-control">
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Bağla</button>
+            <button class="btn btn-success">Əlavə et</button>
+        </div>
+    </form>
+</ng-template>

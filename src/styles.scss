@@ -1,0 +1,115 @@
+@import "~ngx-toastr/toastr";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+select.form-select {
+    width: max-content;
+}
+
+.nav-item {
+    cursor: pointer;
+}
+ul {
+    margin-bottom: 0 !important;
+    padding-left: 0 !important;
+    li {
+        list-style-type: none;
+    }
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.modal-content {
+    min-height: 400px !important;
+}
+.modal-content {
+    min-height: unset !important;
+}
+
+.ng-select {
+    min-width: 200px;
+    width: max-content;
+}
+
+.ng-select.is-invalid .ng-select-container {
+    border: 1px solid #fd625e !important;
+}
+.ng-select.ng-select-single .ng-select-container {
+    height: 100% !important;
+}
+
+*::-webkit-scrollbar {
+    width: 3px;
+    height: 4px;
+    // background-color: #f5f5f5;
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #bf7646;
+}
+.table-responsive {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    min-height: 300px;
+    height: 68vh;
+    table {
+        width: max-content;
+        min-width: 100%;
+    }
+}
+
+//journal pipeline row border color
+.greenrow {
+    background: #08a53ca1!important;
+    color: #fff;
+    border: 1px solid #08a53ca1!important;
+}
+.redrow {
+    background: #fc1212a1!important;
+    color: #fff;
+    border: 1px solid #fc1212a1;
+}
+.table-responsive thead th {
+    top: -2px;
+    background: #f7f7f9;
+    position: sticky;
+    table-layout: fixed;
+}
+.loader {
+    width: calc(100% - 6px);
+    height: calc(100% - 78px);
+    backdrop-filter: blur(4px);
+    position: absolute;
+    z-index: 123;
+    background: #c7c7c71e;
+    left: 0;
+    top: 24px;
+    img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}

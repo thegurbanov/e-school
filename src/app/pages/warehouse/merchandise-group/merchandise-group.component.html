@@ -1,0 +1,151 @@
+<div class="row">
+  <div class="col-lg-12">
+      <div class="card">
+          <div class="card-header">
+              <h4 class="card-title">Kataloqlar</h4>
+
+              <p class="card-title-desc">Kataloqların siyahısı
+              </p>
+          </div>
+          <div class="card-body p-4">
+              <div class="row">
+                  <div class="col-lg-5">
+                      <div>
+                          <form [formGroup]="MerchandiseForm" (ngSubmit)="createMerchandise()">
+                            <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                              <label  class="col-sm-2  control-label">Adı</label>
+                                <div class="col-sm-10">
+                                  <input formControlName="info" class="form-control">
+                                </div>
+                            </div>
+                              <div class="mt-2">
+                                  <button (click)="editMerchandise()" type="button" class="btn btn-primary m-1"
+                                      [disabled]="MerchandiseForm.invalid">
+                                      <i class="bx bx-edit-alt"></i>
+                                      Dəyiş
+                                  </button>
+                                  <button class="btn btn-success m-1" [disabled]="MerchandiseForm.invalid">
+                                      <i class="bx bx-plus-medical"></i>
+                                      Əlavə et
+                                  </button>
+                              </div>
+                          </form>
+                          <br>
+                          <div class="ms-lg-auto">
+                            <div class="mt-4 mt-lg-0">
+                                <input type="search" class="form-control" placeholder="Axtar" [(ngModel)]="merchandise" >
+                                <div class="table-responsive">
+                                    <table class="table table-bordered mt-2">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Adı</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ng-container
+                                                *ngFor="let merchandise of data  | search:'info': merchandise ;let i = index">
+                                                <tr [class.selected]="selectedMerchandise.id == merchandise.id">
+                                                    <td>
+                                                        {{i+1}}
+                                                    </td>
+                                                    <td>
+                                                        <span class="pr-6 whitespace-nowrap">
+                                                            {{merchandise.info}}
+                                                        </span>
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <button (click)="delMerchandise(merchandise)"
+                                                            class="btn btn-danger btn-rounded">
+                                                            <i class="bx bx-trash-alt"></i>
+                                                        </button>
+
+                                                        <button (click)="selectMerchandise(merchandise)"
+                                                            class="btn btn-primary btn-rounded ms-2">
+                                                            <i class="bx bx-edit-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </ng-container>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="ms-lg-5 col-lg-6">
+                    <div>
+                        <form [formGroup]="ParentMerchandiseForm" (ngSubmit)="addMerchandiseToParent()">
+                          <label class="ms-lg-5" >Alt Kataloq</label>
+                          <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                            <label  class="col-sm-2  control-label">Adı</label>
+                              <div class="col-sm-10">
+                                <input formControlName="info" class="form-control">
+                              </div>
+                          </div>
+                            <div class="mt-2">
+                                <button (click)="editParentMerchandise()" type="button" class="btn btn-primary m-1"
+                                    [disabled]="ParentMerchandiseForm.invalid">
+                                    <i class="bx bx-edit-alt"></i>
+                                    Dəyiş
+                                </button>
+                                <button class="btn btn-success m-1" [disabled]="ParentMerchandiseForm.invalid">
+                                    <i class="bx bx-plus-medical"></i>
+                                    Əlavə et
+                                </button>
+                            </div>
+                        </form>
+                        <br>
+                        <div class="ms-lg-auto">
+                          <div class="mt-4 mt-lg-0">
+                              <input type="search" class="form-control" placeholder="Axtar" [(ngModel)]="parentmerchandise" >
+                              <div class="table-responsive">
+                                  <table class="table table-bordered mt-2">
+                                    <thead>
+                                      <tr>
+                                          <th></th>
+                                          <th>Adı</th>
+                                          <th></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <ng-container *ngFor="let item of parentmerchandises | search:'info':parentmerchandise;let i = index">
+                                          <tr [class.selected]="selectedParentMerchandise.id == item.id">
+                                              <td>
+                                                  {{i+1}}
+                                              </td>
+                                              <td>
+                                                  <span class="pr-6 whitespace-nowrap">
+                                                      {{item.info}}
+                                                  </span>
+                                              </td>
+                                              <td class="p-1">
+                                                <button (click)="delParentMerchandise(item)"
+                                                    class="btn btn-danger btn-rounded">
+                                                    <i class="bx bx-trash-alt"></i>
+                                                </button>
+
+                                                <button (click)="selectParentMerchandise(item)"
+                                                    class="btn btn-primary btn-rounded ms-2">
+                                                    <i class="bx bx-edit-alt"></i>
+                                                </button>
+                                            </td>
+
+                                          </tr>
+                                      </ng-container>
+                                  </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+               </div>
+
+              </div>
+          </div>
+      </div>
+
+

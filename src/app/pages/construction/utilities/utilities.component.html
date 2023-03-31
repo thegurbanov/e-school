@@ -1,0 +1,14 @@
+<div class="p-6">
+  <div class="mr-4 text-lg  font-medium" >Satışda olan</div>
+</div>
+<br>
+<ul class="nav nav-tabs tabs">
+  <ng-container *ngFor="let nav of navs">
+    <li (click)="selectedClass.id ? '': changeTab(nav)" class="nav-item">
+      <a class="nav-link active" [ngClass]="{ active: nav.status }">{{
+        nav.title
+        }}</a>
+    </li>
+  </ng-container>
+</ul>
+<br>

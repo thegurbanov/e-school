@@ -1,0 +1,168 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Dərs əlavə et</h4>
+      </div>
+      <div class="card-body mt-2">
+        <form [formGroup]="lessonAddForm" style="text-align: right;">
+          <div class="row mb-4 d-none">
+            <label class="col-sm-3 col-form-label">Id</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="id">
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Sinif</label>
+            <div class="col-sm-9">
+              <ng-select formControlName="classYearlyId" class="text-start w-100" [clearable]="false"
+                         [ngClass]="{ 'is-invalid': validation.classYearlyId.errors }">
+                <ng-option *ngFor="let class of classYearlyList" [value]="class?.id">
+                  {{class?.classPrefix}} {{class?.classPrefixIndicator}}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="validation.classYearlyId.errors" class="invalid-feedback">
+                <div *ngIf="validation.classYearlyId.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Dərs tarixi</label>
+            <div class="col-sm-9">
+              <input type="date" class="form-control" formControlName="lessonDay"
+                     [ngClass]="{ 'is-invalid': validation.lessonDay.errors }">
+              <div *ngIf="validation.lessonDay.errors" class="invalid-feedback">
+                <div *ngIf="validation.lessonDay.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Dərs saatı</label>
+            <div class="col-sm-9">
+              <ng-select formControlName="lessonHourId" class="text-start w-100" [clearable]="false"
+                         [ngClass]="{ 'is-invalid': validation.lessonHourId.errors }">
+                <ng-option *ngFor="let hour of lessonHourList" [value]="hour?.id">
+                  {{hour?.row}} | {{hour?.startHour}} - {{hour?.endHour}}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="validation.lessonHourId.errors" class="invalid-feedback">
+                <div *ngIf="validation.lessonHourId.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Fənn</label>
+            <div class="col-sm-9">
+              <ng-select formControlName="subjectId" class="text-start w-100" [clearable]="false"
+                         (change)="changeSubject($event)"
+                         [ngClass]="{ 'is-invalid': validation.subjectId.errors }">
+                <ng-option *ngFor="let subject of subjectList" [value]="subject?.id">{{subject?.info}}</ng-option>
+              </ng-select>
+              <div *ngIf="validation.subjectId.errors" class="invalid-feedback">
+                <div *ngIf="validation.subjectId.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Müəllim</label>
+            <div class="col-sm-9">
+              <ng-select formControlName="teacherId" class="text-start w-100" [clearable]="false"
+                         [ngClass]="{ 'is-invalid': validation.teacherId.errors }">
+                <ng-option *ngFor="let teacher of teacherList" [value]="teacher?.id">{{teacher?.fullName}}</ng-option>
+              </ng-select>
+              <div *ngIf="validation.teacherId.errors" class="invalid-feedback">
+                <div *ngIf="validation.teacherId.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Otaq</label>
+            <div class="col-sm-9">
+              <ng-select formControlName="branchRoomId" class="text-start w-100" [clearable]="false"
+                         [ngClass]="{ 'is-invalid': validation.branchRoomId.errors }">
+                <ng-option *ngFor="let room of branchRoomList" [value]="room?.id">{{room?.info}}</ng-option>
+              </ng-select>
+              <div *ngIf="validation.branchRoomId.errors" class="invalid-feedback">
+                <div *ngIf="validation.branchRoomId.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Qeyd</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="info">
+            </div>
+          </div>
+          <div class="justify-content-end mb-4">
+            <button type="submit" class="btn btn-warning" (click)="resetForm()">
+              <i class="bx bx-reset"></i>
+              Təmizlə
+            </button>
+            <button class="btn btn-success ms-3" (click)="addLesson()"
+                    [disabled]="this.lessonAddForm.invalid || selectedLesson">
+              <i class="bx bx-plus-medical"></i> Əlavə et
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <div class="row mb-2 mt-2">
+          <label class="col-sm-2 col-form-label text-end">Tədris ili</label>
+          <div class="col-sm-2">
+            <ng-select [(ngModel)]="yearlyId" class="text-start w-100" [clearable]="false" (change)="changeYear()">
+              <ng-option *ngFor="let year of years" [value]="year?.id">{{year?.info}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="card-body mt-2">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+              <th>Sinif</th>
+              <th>Dərs tarixi</th>
+              <th>Dərs saatı</th>
+              <th>Fənn</th>
+              <th>Müəllim</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let lesson of additionalLessonList" [class.selected]="lesson?.id === selectedLesson?.id"
+                (click)="getLessonById(lesson?.id)" style="cursor: pointer" class="text-center">
+              <td>{{lesson?.classYearly?.classPrefix}} {{lesson?.classYearly?.classPrefixIndicator}}</td>
+              <td>{{lesson?.lessonDay}}</td>
+              <td>{{lesson?.lessonHour?.row}} | {{lesson?.lessonHour?.startHour}} - {{lesson?.lessonHour?.endHour}}</td>
+              <td>{{lesson?.subject?.info}}</td>
+              <td>{{lesson?.teacher?.fullName}}</td>
+              <td>
+                <button type="button" (click)="deleteLessonById(lesson.id)"
+                        class="btn btn-danger btn-rounded">
+                  <i class="bx bx-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

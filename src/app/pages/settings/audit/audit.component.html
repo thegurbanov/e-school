@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Audit</h4>
+                <p class="card-title-desc">Istifadəçi loglarının qeydiyyatı
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <app-table [url]="'/main/api/v1/log'"
+                    [columns]="['id','username','module','className','method','methodName','insertTime']"
+                    [columns2]="['id','username','module','className','method','methodName','insertTime']">
+                </app-table>
+            </div>
+        </div>
+    </div>
+</div>

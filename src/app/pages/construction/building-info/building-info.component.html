@@ -1,0 +1,574 @@
+<ng-template #createModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Yeni Bina</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="col-lg-12">
+      <ul class="nav nav-tabs tabs">
+        <ng-container *ngFor="let nav of modalNavs">
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{ active: nav.status }">{{
+              nav.title
+              }}</a>
+          </li>
+        </ng-container>
+      </ul>
+      <br>
+      <form [formGroup]="buildingAddForm" style="text-align: right">
+        <ng-container *ngIf="selectedModalNav.title == 'Əsas məlumatlar'">
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Şirkət</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="company"
+                     [ngClass]="{ 'is-invalid': buildAddFormValidation.company.errors}">
+              <div *ngIf="buildAddFormValidation.company.errors" class="invalid-feedback">
+                <div *ngIf="buildAddFormValidation.company.errors.required">
+                  The filed is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Ad</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="info"
+                     [ngClass]="{ 'is-invalid': buildAddFormValidation.info.errors}">
+              <div *ngIf="buildAddFormValidation.info.errors" class="invalid-feedback">
+                <div *ngIf="buildAddFormValidation.info.errors.required">
+                  The filed is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Giriş sayı</label>
+            <div class="col-sm-9">
+              <input type="number" formControlName="blockCount" class="form-control"
+                     [ngClass]="{ 'is-invalid': buildAddFormValidation.blockCount.errors}">
+              <div *ngIf="buildAddFormValidation.blockCount.errors" class="invalid-feedback">
+                <div *ngIf="buildAddFormValidation.blockCount.errors.required">
+                  The filed is required
+                </div>
+                <div *ngIf="buildAddFormValidation.blockCount.errors.min">
+                  The filed is min. 1
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Ünvan</label>
+            <div class="col-sm-9">
+              <input type="text" formControlName="adress" class="form-control">
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Poçt indeksi</label>
+            <div class="col-sm-9">
+              <input type="text" formControlName="poct" class="form-control">
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button (click)="goToBlockDetailsPage()" class="btn btn-primary ms-2"
+                    [disabled]="!isValidMainBuildingInfo()">
+              Növbəti <i class="bx bx-right-arrow-alt"></i>
+            </button>
+          </div>
+        </ng-container>
+        <div formArrayName="blocks" style="text-align: left">
+          <ng-container *ngIf="selectedModalNav.title == 'Giriş strukturu'">
+            <table class="table table-bordered mb-0">
+              <thead>
+              <tr>
+                <th>Giriş</th>
+                <th>Yerüstü mərtəbə sayı</th>
+                <th>Yeraltı mərtəbə sayı</th>
+                <th>Bir mərtəbə üçün mənzillərin sayı</th>
+              </tr>
+              </thead>
+              <tbody *ngFor="let block of getBlocks.controls; let i = index" [formGroupName]="i">
+              <tr>
+                <td>
+                  <input formControlName="nomre" type="number" class="form-control">
+                </td>
+                <td>
+                  <input formControlName="mertebeSay" class="form-control" type="number"
+                         [ngClass]="{ 'is-invalid': getBlocks.controls[i]?.get('mertebeSay')?.errors}">
+                  <div *ngIf="getBlocks.controls[i]?.get('mertebeSay')?.errors" class="invalid-feedback">
+                    <div *ngIf="getBlocks.controls[i]?.get('mertebeSay')?.errors?.required">
+                      The filed is required
+                    </div>
+                    <div *ngIf="getBlocks.controls[i]?.get('mertebeSay')?.errors?.min">
+                      The filed is min. 0
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <input formControlName="mertebeSayDown" class="form-control" type="number"
+                         [ngClass]="{ 'is-invalid': getBlocks.controls[i]?.get('mertebeSayDown')?.errors}">
+                  <div *ngIf="getBlocks.controls[i]?.get('mertebeSayDown')?.errors" class="invalid-feedback">
+                    <div *ngIf="getBlocks.controls[i]?.get('mertebeSayDown')?.errors?.required">
+                      The filed is required
+                    </div>
+                    <div *ngIf="getBlocks.controls[i]?.get('mertebeSayDown')?.errors?.min">
+                      The filed is min. 0
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <input formControlName="evSay" class="form-control" type="number"
+                         [ngClass]="{ 'is-invalid': getBlocks.controls[i]?.get('evSay')?.errors}">
+                  <div *ngIf="getBlocks.controls[i]?.get('evSay')?.errors" class="invalid-feedback">
+                    <div *ngIf="getBlocks.controls[i]?.get('evSay')?.errors?.required">
+                      The filed is required
+                    </div>
+                    <div *ngIf="getBlocks.controls[i]?.get('evSay')?.errors?.min">
+                      The filed is min. 1
+                    </div>
+                    <div *ngIf="getBlocks.controls[i]?.get('evSay')?.errors?.max">
+                      The filed is max. 20
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <br>
+            <div class="d-flex justify-content-end">
+              <button (click)="goToBuildingDetailsPage()" class="btn btn-warning">
+                <i class="bx bx-left-arrow-alt"></i> Geri
+              </button>
+              <button (click)="goToFloorStructureDetailsPage()" class="btn btn-primary ms-2" [disabled]="!isValidBlockStructure()">
+                Növbəti <i class="bx bx-right-arrow-alt"></i>
+              </button>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="selectedModalNav.title == 'Mərtəbə strukturu'">
+            <table class="table table-bordered mb-0">
+              <thead>
+              <tr>
+                <th>Giriş</th>
+                <th>Mərtəbə</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let block of getBlocks.controls; let i = index" [formGroupName]="i">
+                <tr>Giriş {{i + 1}}</tr>
+                <ng-container formArrayName="floorStructures">
+                  <tr *ngFor="let floorStructure of getFloorStructures(i).controls; let j = index" [formGroupName]="j">
+                    <td></td>
+                    <td>
+                      <input type="number" class="form-control" formControlName="row">
+                    </td>
+                    <td>
+                      <div class="row mb-2 d-flex justify-content-center">
+                        <div class="col-sm-4">
+                          <div class="form-check mt-2">
+                            <input class="form-check-input" type="radio" [value]="true" formControlName="isResidintial">
+                            <label class="form-check-label">
+                              Yaşayış
+                            </label>
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="form-check mt-2">
+                            <input class="form-check-input" type="radio" [value]="false" formControlName="isResidintial">
+                            <label class="form-check-label">
+                              Qeyri-Yaşayış
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+              </tbody>
+            </table>
+            <br>
+            <div class="d-flex justify-content-end">
+              <button (click)="goToBlockDetailsPage()" class="btn btn-warning">
+                <i class="bx bx-left-arrow-alt"></i> Geri
+              </button>
+              <button (click)="goToApartmentStructureDetailsPage()" class="btn btn-primary ms-2">
+                Növbəti <i class="bx bx-right-arrow-alt"></i>
+              </button>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="selectedModalNav.title == 'Mənzil strukturu'">
+            <table class="table table-bordered mb-0">
+              <thead>
+              <tr>
+                <th>Giriş</th>
+                <th>Mənzilin mərtəbədəki nömrəsi</th>
+                <th>Otaq sayı</th>
+                <th>Sahəsi</th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let block of getBlocks.controls; let i = index" [formGroupName]="i">
+                <tr>Giriş {{i + 1}}</tr>
+                <ng-container formArrayName="apartmentStructures">
+                  <tr *ngFor="let apartmentStructure of getApartmentStructures(i).controls; let j = index" [formGroupName]="j">
+                    <td></td>
+                    <td>
+                      <input type="number" class="form-control" formControlName="nomre">
+                    </td>
+                    <td>
+                      <input type="number" class="form-control" formControlName="otaqSay"
+                             [ngClass]="{ 'is-invalid': getApartmentStructures(i).controls[j]?.get('otaqSay')?.errors}">
+                      <div *ngIf="getApartmentStructures(i).controls[j]?.get('otaqSay')?.errors"
+                           class="invalid-feedback">
+                        <div *ngIf="getApartmentStructures(i).controls[j]?.get('otaqSay')?.errors?.required">
+                          The filed is required
+                        </div>
+                        <div *ngIf="getApartmentStructures(i).controls[j]?.get('otaqSay')?.errors?.min">
+                          The filed is min. 1
+                        </div>
+                        <div *ngIf="getApartmentStructures(i).controls[j]?.get('otaqSay')?.errors?.max">
+                          The filed is max. 20
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <input type="number" class="form-control" formControlName="sahe"
+                             [ngClass]="{ 'is-invalid': getApartmentStructures(i).controls[j]?.get('sahe')?.errors}">
+                      <div *ngIf="getApartmentStructures(i).controls[j]?.get('sahe')?.errors" class="invalid-feedback">
+                        <div *ngIf="getApartmentStructures(i).controls[j]?.get('sahe')?.errors?.required">
+                          The filed is required
+                        </div>
+                        <div *ngIf="getApartmentStructures(i).controls[j]?.get('sahe')?.errors?.min">
+                          The filed is min. 1
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+              </tbody>
+            </table>
+            <br>
+            <div class="d-flex justify-content-end">
+              <button (click)="goToFloorStructureDetailsPage()" class="btn btn-warning">
+                <i class="bx bx-left-arrow-alt"></i> Geri
+              </button>
+              <button (click)="addBuilding()" class="btn btn-success ms-2" [disabled]="!buildingAddForm.valid">
+               <i class="bx bx-plus-medical"></i> Bina yarat
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Bina - {{selectedFloor?.floor?.binaBlock?.bina?.info}} / Giriş
+      - {{selectedFloor?.floor?.binaBlock?.nomre}} / Mərtəbə
+      - {{selectedFloor?.floor?.mertebeNomresi}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="floorEditForm">
+      <table class="table">
+        <thead>
+          <tr>
+            <td>Mənzilin <br>nömrəsi</td>
+            <td>Otaq sayı</td>
+            <td>Sahəsi kv/m<sup>2</sup></td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <ng-container formArrayName="flatList">
+            <tr *ngFor="let apartment of this.getFlats.controls; let i = index" [formGroupName]="i" class="">
+              <td>{{apartment.get("menzilNomre")?.value}}</td>
+              <td>{{apartment.get("otaqSay")?.value}}</td>
+              <td>
+                <input type="text" class="form-control" formControlName="sahe"
+                  [ngClass]="{ 'is-invalid': flatListValidation[i].get('sahe')?.errors}" />
+                <div *ngIf="flatListValidation[i].get('sahe')?.errors" class="invalid-feedback">
+                  <div *ngIf="flatListValidation[i].get('sahe')?.errors?.required">
+                    Mənzil sahəsi is required
+                  </div>
+                </div>
+              </td>
+              <!--                        <td>-->
+              <!--              <button class="btn btn-success btn-rounded"><i class="bx bx-plus"></i></button>-->
+              <!--            </td>-->
+              <td>
+                <button class="btn btn-danger btn-rounded" (click)="selectApartmentInFloorEditModal(i)"><i
+                    class="bx bx-minus"></i>
+                  <input type="checkbox" formControlName="deleted" [hidden]="true">
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          <tr>
+            <td colspan="2">Mərtəbənin faktiki sahəsi</td>
+            <td>
+              <input type="text" formControlName="sahe" class="form-control"
+                [ngClass]="{ 'is-invalid': validation.sahe.errors }" />
+              <div *ngIf="validation.sahe.errors" class="invalid-feedback">
+                <div *ngIf="validation.sahe.errors.required">
+                  Mərtəbə sahəsi is required
+                </div>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-outline-dark mt-2" (click)="updateFloor()">Yadda saxla</button>
+    </div>
+  </div>
+</ng-template>
+<div class="bg-card p-3">
+  <div class="p-6">
+    <div class="mr-4 text-lg font-medium">Binalar</div>
+  </div>
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="table-responsive border-bottom">
+        <table class="table table-bordered mt-2">
+          <thead>
+          <tr>
+            <th>Nömrəsi</th>
+            <th>Giriş sayı</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let building of buildingList">
+            <tr [ngClass]="{'selected' : building.id === selectedBuilding?.bina?.id}">
+              <td>{{building?.info}}</td>
+              <td>{{building?.blockCount}}</td>
+              <td class="text-center">
+                <button (click)="deleteBuilding(building.id)" class="btn btn-danger btn-rounded">
+                  <i class="bx bx-trash-alt"></i>
+                </button>
+                <button (click)="selectBuilding(building)" class="btn btn-primary btn-rounded ms-2">
+                  <i class="bx bx-edit-alt"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <button (click)="scrollModal(createModal)" class="btn btn-success ms-2">
+          <i class="bx bx-plus-medical"></i> Bina yarat
+        </button>
+      </div>
+    </div>
+    <div class="col-lg-9" *ngIf="this.selectedBuilding">
+      <ul class="nav nav-tabs tabs">
+        <ng-container *ngFor="let nav of infoNavs">
+          <li (click)="selectInfoNav(nav)" class="nav-item">
+            <a class="nav-link active" [ngClass]="{ active: nav.status }">{{
+              nav.title
+              }}</a>
+          </li>
+        </ng-container>
+      </ul>
+      <div class="mb-2"></div>
+      <ng-container *ngIf="selectedInfoNav?.title === 'Bina'">
+        <div *ngIf="selectedBuilding">
+          <form [formGroup]="buildingUpdateForm" style="text-align: right">
+            <div class="row mb-2">
+              <label class="col-sm-3 col-form-label">Şirkət</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="company">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-3 col-form-label">Ad</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="info">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-3 col-form-label">Giriş sayı</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" formControlName="blockCount">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-3 col-form-label">Yerüstü mərtəbə sayı</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" formControlName="mertebeSay">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-3 col-form-label">Yeraltı mərtəbə sayı</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" formControlName="mertebeSayDown">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label class="col-sm-3 col-form-label">Ünvan</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="adress">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label">Poçt indeksi</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="poct">
+              </div>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-primary">
+                Dəyiş
+              </button>
+            </div>
+          </form>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="selectedInfoNav?.title === 'Giriş'">
+        <div *ngIf="selectedBuilding">
+          <div class="col-lg-12">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" class="col-1">Giriş</th>
+                  <th scope="col" class="col-1">Sahəsi kv/m<sup>2</sup></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let block of selectedBuilding?.blockList">
+                  <td style="text-align: right">Giriş {{block?.block?.nomre}}</td>
+                  <td style="text-align: right">{{block?.block?.sahe}}</td>
+                </tr>
+                <tr>
+                  <th style="text-align: left;">YEKUN</th>
+                  <th style="text-align: right">{{selectedBuilding?.bina?.sahe}}</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-success">
+              <i class="bx bx-plus-medical"></i> Yeni giriş
+            </button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="selectedInfoNav?.title === 'Mərtəbə'">
+        <div *ngIf="selectedBuilding">
+          <div class="col-lg-12">
+            <div class="table-responsive mt-2">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col" class="col-1">Giriş</th>
+                    <th scope="col" class="col-1">Mərtəbə</th>
+                    <th scope="col" class="col-1">Sahəsi kv/m<sup>2</sup></th>
+                    <th scope="col" class="col-1">Növü</th>
+                    <th scope="col" class="col-2"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let block of selectedBuilding.blockList; let i = index">
+                    <tr class="selected">
+                      <td colspan="4">Giriş {{block.block.nomre}}</td>
+                      <td style="text-align: center"><button class="btn btn-success"><i class="bx bx-plus-medical"></i>
+                          Mərtəbə əlavə et</button></td>
+                    </tr>
+                    <ng-container>
+                      <tr *ngFor="let floor of block.floorList" class="text-start">
+                        <td></td>
+                        <td>Mərtəbə {{floor.floor.mertebeNomresi}}</td>
+                        <td class="text-end">{{floor.floor.sahe}}</td>
+                        <td>{{floor.floor.mertebeType | setResidental}}</td>
+                        <td style="text-align: center">
+                          <button class="btn btn-primary btn-rounded" (click)="openModal(content, floor.floor.id)"><i
+                              class="bx bx-edit-alt"></i></button>
+                        </td>
+                      </tr>
+                      <tr style="text-align: center">
+                        <td colspan="2"><strong>YEKUN</strong></td>
+                        <td style="text-align: right"><strong>{{block.block.sahe}}</strong></td>
+                        <td style="text-align: center"></td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="selectedInfoNav?.title === 'Mənzil'">
+        <div *ngIf="selectedBuilding">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col" class="col-1">Giriş</th>
+                    <th scope="col" class="col-1">Mərtəbə</th>
+                    <th scope="col" class="col-1">Mənzil nömrəsi</th>
+                    <th scope="col" class="col-3">Mənzil sahibi</th>
+                    <th scope="col" class="col-1">Sahəsi kv m<sup>2</sup></th>
+                    <th scope="col" class="col-1">Otaq sayı</th>
+                    <th scope="col" class="col-2"></th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let block of selectedBuilding.blockList let i = index">
+                  <tr class="selected">
+                    <th colspan="7">Giriş {{block.block.nomre}}</th>
+                  </tr>
+                  <ng-container *ngFor="let floor of block.floorList let i=index">
+                    <tr class="selected">
+                      <th colspan="1">&nbsp;</th>
+                      <th colspan="5"> Mərtəbə {{floor.floor.mertebeNomresi}}</th>
+                      <th colspan="1" style="text-align: center"></th>
+                    </tr>
+                    <ng-container *ngFor="let apartment of floor.flatList">
+                      <tr style="text-align: right">
+                        <td colspan="2">&nbsp;</td>
+                        <td>Mənzil {{apartment.menzilNomre}}</td>
+                        <td style="text-align: left;">Şirkət</td>
+                        <td>{{apartment.sahe}}</td>
+                        <td>{{apartment.otaqSay}}</td>
+                        <td colspan="2" style="text-align: center">
+                          <button class="btn btn-primary btn-rounded"
+                                  (click)="openApartmentEditModal(apartmentDetailModal, apartment)">
+                            <i class="bx bx-edit-alt"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                    <tr style="text-align: right">
+                      <td colspan="4" style="text-align: center"><strong>YEKUN</strong></td>
+                      <td><strong>{{floor.floor.sahe}}</strong></td>
+                      <td></td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<ng-template #apartmentDetailModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Mənzilin redaktə edilməsi</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-apartment-detail [apartmentId]="selectedApartment.id" (isChangeData)="closeModal()"></app-apartment-detail>
+  </div>
+</ng-template>

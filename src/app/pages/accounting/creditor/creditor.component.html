@@ -1,0 +1,154 @@
+<ul ngbNav #nav="ngbNav" [activeId]="0" class="nav-tabs">
+  <li [ngbNavItem]="0" (click)="getCreditorListByInvoice()">
+    <a ngbNavLink>
+      <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+      <span class="d-none d-sm-block">Qaiməyə görə</span>
+    </a>
+    <ng-template ngbNavContent>
+      <div class="table-responsive mt-3">
+        <table class="table table-bordered">
+          <thead class="ant-table-thead">
+          <tr>
+            <th rowspan="2" class="text-start">№</th>
+            <th rowspan="2" class="text-start">Tarix</th>
+            <th rowspan="2" class="text-start">Qaimə nömrəsi</th>
+            <th rowspan="2" class="text-center">Müştəri</th>
+            <th colspan="4" class="text-center">Hesablanmış</th>
+            <th colspan="4" class="text-center">Ödənilmiş</th>
+            <th colspan="4" class="text-center">Qalıq</th>
+            <th colspan="2" class="text-center">Son ödəniş</th>
+            <th rowspan="2" class="text-center">Qeyd</th>
+          </tr>
+          <tr>
+            <th class="text-center">Əsas məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol vergisi</th>
+            <th class="text-center">Yekun məbləğ</th>
+            <th class="text-center">Əsas məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol vergisi</th>
+            <th class="text-center">Yekun məbləğ</th>
+            <th class="text-center">Əsas məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol vergisi</th>
+            <th class="text-center">Yekun məbləğ</th>
+            <th class="text-center">Ödəniş</th>
+            <th class="text-center">Ödəniş tarixi</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let creditor of creditorList; let i = index">
+            <td class="text-start">{{i + 1}}</td>
+            <td class="text-start"><span>{{creditor?.contract | agreementSide}}</span></td>
+            <td class="text-end">{{creditor?.amount}} {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-end">{{creditor?.lineDate}}</td>
+            <td class="text-end">{{creditor?.contract?.contractPaymentOrder?.totalAmount}}
+              {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-end">{{creditor?.contract?.contractPaymentOrder?.totalPaymentAmount}}
+              {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-center">{{creditor?.contract?.contractPaymentOrder?.totalPaymentPercent}}%</td>
+            <td class="text-end">{{creditor?.contract?.contractPaymentOrder?.totalDeptAmount}}
+              {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-end">{{creditor?.contract?.contractPaymentOrder?.lastPaymentAmount}} {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-center">{{creditor?.contract?.contractPaymentOrder?.lastPaymentDate}}</td>
+            <td class="text-center">4</td>
+            <td class="text-center">
+              <button class="btn btn-primary btn-rounded" routerLink="/accounting/payment-for-contract/{{creditor?.contract?.id}}">
+                <i class="bx bx-dollar"></i></button>
+              <button type="button" class="btn btn-primary btn-rounded ms-2"
+                      (click)="selectCreditor(creditor, contractDetailsModal)">
+                <i class="bx bx-pen"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="1" (click)="getCreditorListByContract()">
+    <a ngbNavLink>
+      <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+      <span class="d-none d-sm-block">Müqaviləyə görə</span>
+    </a>
+    <ng-template ngbNavContent>
+      <div class="table-responsive mt-3">
+        <table class="table table-bordered">
+          <thead class="ant-table-thead">
+          <tr>
+            <th rowspan="2" class="text-start">№</th>
+            <th rowspan="2" class="text-start">Tarix</th>
+            <th rowspan="2" class="text-start">Qaimə nömrəsi</th>
+            <th rowspan="2" class="text-center">Müştəri</th>
+            <th colspan="4" class="text-center">Hesablanmış</th>
+            <th colspan="4" class="text-center">Ödənilmiş</th>
+            <th colspan="4" class="text-center">Qalıq</th>
+            <th colspan="2" class="text-center">Son ödəniş</th>
+            <th rowspan="2" class="text-center">Qeyd</th>
+          </tr>
+          <tr>
+            <th class="text-center">Əsas məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol vergisi</th>
+            <th class="text-center">Yekun məbləğ</th>
+            <th class="text-center">Əsas məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol vergisi</th>
+            <th class="text-center">Yekun məbləğ</th>
+            <th class="text-center">Əsas məbləğ</th>
+            <th class="text-center">ƏDV</th>
+            <th class="text-center">Yol vergisi</th>
+            <th class="text-center">Yekun məbləğ</th>
+            <th class="text-center">Ödəniş</th>
+            <th class="text-center">Ödəniş tarixi</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let creditor of creditorList; let i = index">
+            <td class="text-start">{{i + 1}}</td>
+            <td class="text-start"><span>{{creditor?.contract | agreementSide}}</span></td>
+            <td class="text-end">{{creditor?.amount}} {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-end">{{creditor?.lineDate}}</td>
+            <td class="text-end">{{creditor?.contract?.contractPaymentOrder?.totalAmount}}
+              {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-end">{{creditor?.contract?.contractPaymentOrder?.totalPaymentAmount}}
+              {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-center">{{creditor?.contract?.contractPaymentOrder?.totalPaymentPercent}}%</td>
+            <td class="text-end">{{creditor?.contract?.contractPaymentOrder?.totalDeptAmount}}
+              {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-end">{{creditor?.contract?.contractPaymentOrder?.lastPaymentAmount}} {{creditor?.contract?.contractPaymentOrder?.currency?.isoCode}}</td>
+            <td class="text-center">{{creditor?.contract?.contractPaymentOrder?.lastPaymentDate}}</td>
+            <td class="text-center">4</td>
+            <td class="text-center">
+              <button class="btn btn-primary btn-rounded" routerLink="/accounting/payment-for-contract/{{creditor?.contract?.id}}">
+                <i class="bx bx-dollar"></i></button>
+              <button type="button" class="btn btn-primary btn-rounded ms-2"
+                      (click)="selectCreditor(creditor, contractDetailsModal)">
+                <i class="bx bx-pen"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+  </li>
+</ul>
+<div [ngbNavOutlet]="nav" class="text-muted"></div>
+
+<ng-template #contractDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müqavilə məlumatları</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="selectedCreditor.contract.id"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

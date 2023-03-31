@@ -1,0 +1,171 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Valideynler</h4>
+                <p class="card-title-desc">
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div>
+                            <form [formGroup]="ParentForm" (ngSubmit)="createParent()">
+                                <div class="mb-3">
+                                    <div>
+                                        <label>Ad</label>
+                                        <input formControlName="firstName" class="form-control"
+                                            [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
+                                        <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                                            <div *ngIf="f.firstName.errors.required">
+                                                firstName is required
+                                            </div>
+                                            <div *ngIf="f.firstName.errors.min">
+                                                firstName must be at least 1 characters
+                                            </div>
+                                            <div *ngIf="f.firstName.errors.max">
+                                                firstName must not exceed 50 characters
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label>Soyad</label>
+                                        <input formControlName="secondName" class="form-control"
+                                            [ngClass]="{ 'is-invalid': submitted && f.secondName.errors }">
+                                        <div *ngIf="submitted && f.secondName.errors" class="invalid-feedback">
+                                            <div *ngIf="f.secondName.errors.required">
+                                                secondName is required+
+                                            </div>
+                                            <div *ngIf="f.secondName.errors.min">
+                                                secondName must be at least 1 characters
+                                            </div>
+                                            <div *ngIf="f.secondName.errors.max">
+                                                secondName must not exceed 50 characters
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label>Ata adı</label>
+                                        <input formControlName="fatherName" class="form-control"
+                                            [ngClass]="{ 'is-invalid': submitted && f.fatherName.errors }">
+                                        <div *ngIf="submitted && f.fatherName.errors" class="invalid-feedback">
+                                            <div *ngIf="f.fatherName.errors.required">
+                                                fatherName is required+
+                                            </div>
+                                            <div *ngIf="f.fatherName.errors.min">
+                                                fatherName must be at least 1 characters
+                                            </div>
+                                            <div *ngIf="f.fatherName.errors.max">
+                                                fatherName must not exceed 50 characters
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label>Cins</label>
+                                        <ng-select formControlName="gender" [items]="genders" bindLabel="info"
+                                            class="ng-select w-100" [searchable]="false" [clearable]="false">
+                                        </ng-select>
+                                    </div>
+
+                                </div>
+                                <div class="mt-2">
+                                    <button (click)="update()" type="button" class="btn btn-primary me-3">
+                                        <i class="bx bx-edit-alt"></i>
+                                        Dəyiş
+                                    </button>
+                                    <button class="btn btn-success me-3">
+                                        <i class="bx bx-plus-medical"></i>
+                                        Əlavə et
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                            <input type="search" class="form-control" placeholder="Fənn axtar" [(ngModel)]="parent">
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>S.A.A</th>
+                                            <th>Cins</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container
+                                            *ngFor="let parent of parents | search:'info': parent ;let i = index">
+                                            <tr [class.selected]="selectedParent.id == parent.id">
+                                                <td>
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{parent.fullName}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{parent.gender?.info}}
+                                                    </span>
+                                                </td>
+                                                <td class="p-1">
+                                                    <button (click)="delParent(parent)"
+                                                        class="btn btn-danger btn-rounded">
+                                                        <i class="bx bx-trash-alt"></i>
+                                                    </button>
+
+                                                    <button (click)="selectParent(parent)"
+                                                        class="btn btn-primary btn-rounded ms-2">
+                                                        <i class="bx bx-edit-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 ms-lg-auto">
+                        <div class="mt-4 mt-lg-0">
+                            <div class="table-responsive">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>S.A.A</th>
+                                            <th>Qohumluq əlaqəsi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let item of parentStudents;let i = index">
+                                            <tr>
+                                                <td>
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <span class="pr-6 whitespace-nowrap">
+                                                        {{item.customer?.fullName}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span>
+                                                        {{item.relationalShip?.info}}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

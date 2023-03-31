@@ -1,0 +1,832 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Şagird Qəbulu</h4>
+                <p class="card-title-desc">Şagird qəbulu ilə bağlı ümumi əməliyyata nəzarət
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                            <div class="row">
+                              <div class="col-md-7">
+                                <input type="search" class="form-control mb-3"
+                                       placeholder="Şagird axtar" [(ngModel)]="studentSearchFilter">
+                              </div>
+                              <div class="col-md-2">
+                              <ng-select class="w-100" placeholder="Tədris ilini seçin" [clearable]="false"
+                              [(ngModel)]="educationYear" (change)="getStudents()">
+                                <ng-option *ngFor="let year of years" [value]="year">
+                                  {{year?.info}}
+                                </ng-option>
+                              </ng-select>
+                            </div>
+                              <div class="col-md-3 text-center">
+                                <button class="btn btn-success" (click)="openStudentAddModal(studentAdd)">
+                                  <i class="bx bx-plus-medical"></i> Yeni şagird
+                                </button>
+                                <button class="btn btn-primary ms-3" (click)="openStatisticsModal(statistics)">
+                                  Statistik
+                                </button>
+                              </div>
+
+                              <div class="table-responsive">
+                                <table class="table table-bordered">
+                                  <thead>
+                                  <tr>
+                                    <th>#</th>
+                                    <th>S.A.A</th>
+                                    <th>Status</th>
+                                    <th>Cinsi</th>
+                                    <th>Sinif</th>
+                                    <th>Bölmə</th>
+                                    <th></th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <ng-container
+                                    *ngFor="let student of students |
+                                      search : 'secondName,firstName,fatherName' : studentSearchFilter;let i = index">
+                                    <tr [class.selected]="selectedStudent?.id==student?.id">
+                                      <td>
+                                                                        <span class="pr-6 whitespace-nowrap">
+                                                                            {{ i + 1 }}
+                                                                        </span>
+                                      </td>
+                                      <td>
+                                                                        <span class="pr-6 whitespace-nowrap">
+                                                                            {{student?.secondName}}
+                                                                          {{student?.firstName}}
+                                                                          {{student?.fatherName}}
+                                                                        </span>
+                                      </td>
+                                      <td>
+                                                                        <span
+                                                                          [style.color]="findStatus(student?.statusType)?.color"
+                                                                          class="pr-6 whitespace-nowrap">
+                                                                            {{findStatus(student?.statusType)?.info}}
+                                                                        </span>
+                                      </td>
+                                      <td>
+                                                                        <span class="pr-6 whitespace-nowrap">
+                                                                            {{student?.gender.info}}
+                                                                        </span>
+                                      </td>
+                                      <td>
+                                                                        <span class="pr-6 whitespace-nowrap">
+                                                                            {{student?.classPrefix}}
+                                                                        </span>
+                                      </td>
+                                      <td>
+                                                                        <span class="pr-6 whitespace-nowrap">
+                                                                            {{student?.section?.info}}
+                                                                        </span>
+                                      </td>
+
+                                      <td class="text-center">
+                                        <button (click)="del(student.id)"
+                                                title="{{student?.secondName}} {{student?.firstName}} {{student?.fatherName}}"
+                                                class="btn btn-danger btn-rounded">
+                                          <i class="bx bx-trash-alt"></i>
+                                        </button>
+                                        <button
+                                          (click)="openModal(addLessonModal,student)"
+                                          title="{{student?.secondName}} {{student?.firstName}} {{student?.fatherName}}"
+                                          class="btn btn-success btn-rounded ms-2">
+                                          <i class="bx bx-edit"></i>
+                                        </button>
+                                        <button (click)="openStudentDetailsModal(studentReceptionProcess,student)"
+                                                title="{{student?.secondName}} {{student?.firstName}} {{student?.fatherName}}"
+                                                class="btn btn-primary btn-rounded ms-2">
+                                          <i class="bx bx-edit-alt"></i>
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  </ng-container>
+                                  </tbody>
+                                </table>
+                              </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- add lesson-->
+<ng-template #addLessonModal role="document" let-modal>
+  <form [formGroup]="StudentReceptionForm" (ngSubmit)="changeStudentStatus(StudentReceptionForm.value)">
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">{{selectedStudentStatus?.secondName}} {{selectedStudentStatus?.firstName}}-
+        Şagirdin statusunun dəyişdirilməsi</h5>
+
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <label class="form-label mt-2">Status</label>
+      <ng-select [clearable]="false" (change)="catchStatusType($event)" class="w-100" formControlName="statusType"
+                 [items]="statuses" bindLabel="info">
+      </ng-select>
+
+      <div *ngIf="contactCheckboxShower" class="form-check mt-2">
+        <input class="form-check-input" formControlName="isContract" (change)="teacherShower($event)"
+               type="checkbox" id="formCheck3" checked>
+        <label class="form-check-label" for="formCheck2">
+          Müqavilə olsunmu?
+        </label>
+      </div>
+
+      <label class="form-label mt-2">Səbəb</label>
+      <input type="text" class="form-control" formControlName="statusReason">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary">Təsdiq et</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #statistics role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Statistik göstəricilər</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered text-center">
+            <thead>
+            <tr>
+              <th>Sinif</th>
+              <th>Gözləyən</th>
+              <th>Qəbul edilməyən</th>
+              <th>Təxirə salınan</th>
+              <th>Qəbul edilən</th>
+              <th>Cəmi</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let stat of statisticList">
+              <td>{{stat?.classNumber}}</td>
+              <td>{{stat?.pending}}</td>
+              <td>{{stat?.canceled}}</td>
+              <td>{{stat?.postpone}}</td>
+              <td>{{stat?.accepted}}</td>
+              <td>{{stat?.total}}</td>
+            </tr>
+            <tr>
+              <td><b>YEKUN</b></td>
+              <td><b>{{totalStatistics?.pending}}</b></td>
+              <td><b>{{totalStatistics?.canceled}}</b></td>
+              <td><b>{{totalStatistics?.postpone}}</b></td>
+              <td><b>{{totalStatistics?.accepted}}</b></td>
+              <td><b>{{totalStatistics?.totalOfTotal}}</b></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #studentAdd role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Şagirdin əlavə edilməsi</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+          <form [formGroup]="StudentReceptionForm" class="px-3">
+            <div class="row">
+              <div class="mt-2">
+                <label>Ad</label>
+                <input formControlName="firstName" class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
+                <div *ngIf="submitted && f.firstName.errors"
+                     class="invalid-feedback">
+                  <div *ngIf="f.firstName.errors.required">
+                    firstName is required
+                  </div>
+                  <div *ngIf="f.firstName.errors.min">
+                    firstName must be at least 1 characters
+                  </div>
+                  <div *ngIf="f.firstName.errors.max">
+                    firstName must not exceed 50 characters
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2">
+                <label>Soyad</label>
+                <input formControlName="secondName" class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && f.secondName.errors }">
+                <div *ngIf="submitted && f.secondName.errors"
+                     class="invalid-feedback">
+                  <div *ngIf="f.secondName.errors.required">
+                    secondName is required
+                  </div>
+                  <div *ngIf="f.secondName.errors.min">
+                    secondName must be at least 1 characters
+                  </div>
+                  <div *ngIf="f.secondName.errors.max">
+                    secondName must not exceed 50 characters
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2">
+                <label>Ata adı</label>
+                <input formControlName="fatherName" class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && f.fatherName.errors }">
+                <div *ngIf="submitted && f.fatherName.errors"
+                     class="invalid-feedback">
+                  <div *ngIf="f.fatherName.errors.required">
+                    fatherName is required
+                  </div>
+                  <div *ngIf="f.fatherName.errors.min">
+                    fatherName must be at least 1 characters
+                  </div>
+                  <div *ngIf="f.fatherName.errors.max">
+                    fatherName must not exceed 50 characters
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2">
+                <label for="dob">Doğum tarixi</label>
+                <input
+                  [ngClass]="{ 'is-invalid': submitted && f.dob.errors }"
+                  id="dob" formControlName="dob" type="date"
+                  class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Cins</label>
+                <ng-select formControlName="gender"
+                           [ngClass]="{ 'is-invalid': submitted && f.gender.errors }"
+                           [items]="genders" bindLabel="info"
+                           class="ng-select w-100" [searchable]="false"
+                           [clearable]="false">
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Seriya nömrəsi</label>
+                <input formControlName="documentNo" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>FIN kod</label>
+                <input formControlName="pin" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Email ünvanı</label>
+                <input formControlName="email" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Qeydiyyatda olduğu ünvan</label>
+                <input formControlName="registrationAdress" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Yaşadığı ünvan</label>
+                <input formControlName="factualAdress" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Maraq və hobbiləri</label>
+                <textarea formControlName="interest" class="form-control"></textarea>
+              </div>
+              <div class="mt-2">
+                <label>Tədris ili</label>
+                <ng-select formControlName="year"
+                           class="ng-select w-100"
+                           [searchable]="false" [clearable]="false">
+                  <ng-option *ngFor="let year of years"  [value]="year">{{year?.info}}</ng-option>
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Sinif</label>
+                <ng-select formControlName="classPrefix" [items]="classes"
+                           bindLabel="info" class="ng-select w-100"
+                           [searchable]="false" [clearable]="false">
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Sektor</label>
+                <ng-select formControlName="section" [items]="sections"
+                           bindLabel="info" class="ng-select w-100"
+                           [searchable]="false" [clearable]="false">
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Psixoloq</label>
+                <ng-select formControlName="psychologist" class="ng-select w-100" [clearable]="false"
+                           [ngClass]="{ 'is-invalid': submitted && f.psychologist.errors }">
+                  <ng-option *ngFor="let employee of employyeList" [value]="employee?.id">
+                    {{employee?.fullName }} - {{employee?.department?.info}}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Həkim</label>
+                <ng-select formControlName="doctor" class="ng-select w-100" [clearable]="false"
+                           [ngClass]="{ 'is-invalid': submitted && f.doctor.errors }">
+                  <ng-option *ngFor="let employee of employyeList" [value]="employee?.id">
+                    {{employee?.fullName }} - {{employee?.department?.info}}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="mt-4 ">
+                <div class="d-flex justify-content-end">
+                  <button [disabled]="selectedStudent" (click)="add()"
+                          class="btn btn-success ms-3">
+                    <i class="bx bx-plus-medical"></i>
+                    Əlavə et
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+  </div>
+</ng-template>
+
+<ng-template #studentReceptionProcess role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">{{selectedStudent?.secondName}} {{selectedStudent?.firstName}}
+      {{selectedStudent?.fatherName}} ({{selectedStudent?.classPrefix}} {{selectedStudent?.section?.info}}) üçün qəbul prosesi</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <ul ngbNav #navStudent="ngbNav" [activeId]="0" class="nav-tabs">
+      <li [ngbNavItem]="0">
+        <a ngbNavLink>
+          <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+          <span class="d-none d-sm-block">Şagird</span>
+        </a>
+        <ng-template ngbNavContent>
+          <form [formGroup]="StudentReceptionForm" class="px-3">
+            <div class="row">
+              <div class="mt-2">
+                <label>Ad</label>
+                <input formControlName="firstName" class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
+                <div *ngIf="submitted && f.firstName.errors"
+                     class="invalid-feedback">
+                  <div *ngIf="f.firstName.errors.required">
+                    firstName is required
+                  </div>
+                  <div *ngIf="f.firstName.errors.min">
+                    firstName must be at least 1 characters
+                  </div>
+                  <div *ngIf="f.firstName.errors.max">
+                    firstName must not exceed 50 characters
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2">
+                <label>Soyad</label>
+                <input formControlName="secondName" class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && f.secondName.errors }">
+                <div *ngIf="submitted && f.secondName.errors"
+                     class="invalid-feedback">
+                  <div *ngIf="f.secondName.errors.required">
+                    secondName is required
+                  </div>
+                  <div *ngIf="f.secondName.errors.min">
+                    secondName must be at least 1 characters
+                  </div>
+                  <div *ngIf="f.secondName.errors.max">
+                    secondName must not exceed 50 characters
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2">
+                <label>Ata adı</label>
+                <input formControlName="fatherName" class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && f.fatherName.errors }">
+                <div *ngIf="submitted && f.fatherName.errors"
+                     class="invalid-feedback">
+                  <div *ngIf="f.fatherName.errors.required">
+                    fatherName is required
+                  </div>
+                  <div *ngIf="f.fatherName.errors.min">
+                    fatherName must be at least 1 characters
+                  </div>
+                  <div *ngIf="f.fatherName.errors.max">
+                    fatherName must not exceed 50 characters
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2">
+                <label for="dob">Doğum tarixi</label>
+                <input
+                  [ngClass]="{ 'is-invalid': submitted && f.dob.errors }" formControlName="dob" type="date"
+                  class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Cins</label>
+                <ng-select formControlName="gender"
+                           [ngClass]="{ 'is-invalid': submitted && f.gender.errors }"
+                           [items]="genders" bindLabel="info"
+                           class="ng-select w-100" [searchable]="false"
+                           [clearable]="false">
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Seriya nömrəsi</label>
+                <input formControlName="documentNo" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>FIN kod</label>
+                <input formControlName="pin" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Email ünvanı</label>
+                <input formControlName="email" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Qeydiyyatda olduğu ünvan</label>
+                <input formControlName="registrationAdress" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Yaşadığı ünvan</label>
+                <input formControlName="factualAdress" class="form-control">
+              </div>
+              <div class="mt-2">
+                <label>Maraq və hobbiləri</label>
+                <textarea formControlName="interest" class="form-control"></textarea>
+              </div>
+              <div class="mt-2">
+                <label>Sinif</label>
+                <ng-select formControlName="classPrefix" [items]="classes"
+                           bindLabel="info" class="ng-select w-100"
+                           [searchable]="false" [clearable]="false">
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Sektor</label>
+                <ng-select formControlName="section" [items]="sections"
+                           bindLabel="info" class="ng-select w-100"
+                           [searchable]="false" [clearable]="false">
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Psixoloq</label>
+                <ng-select formControlName="psychologist" class="ng-select w-100" [clearable]="false"
+                           [ngClass]="{ 'is-invalid': submitted && f.psychologist.errors }">
+                  <ng-option *ngFor="let employee of employyeList" [value]="employee?.id">
+                    {{employee?.fullName }} - {{employee?.department?.info}}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="mt-2">
+                <label>Həkim</label>
+                <ng-select formControlName="doctor" class="ng-select w-100" [clearable]="false"
+                           [ngClass]="{ 'is-invalid': submitted && f.doctor.errors }">
+                  <ng-option *ngFor="let employee of employyeList" [value]="employee?.id">
+                    {{employee?.fullName }} - {{employee?.department?.info}}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="mt-4 ">
+                <div class="d-flex justify-content-end">
+                  <button [disabled]="!selectedStudent" (click)="update()"
+                          class="btn btn-warning ms-3">
+                    <i class="bx bx-edit-alt"></i>
+                    Dəyiş
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="1">
+        <a ngbNavLink>
+          <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+          <span class="d-none d-sm-block">Valideyn</span>
+        </a>
+        <ng-template ngbNavContent>
+          <div class="row">
+            <div class="col-md-6">
+              <form [formGroup]="StudentReceptionParentForm" class="p-3"
+                    (ngSubmit)="addParentToStudent()">
+                <div class="mt-2">
+                  <label>Ad</label>
+                  <input formControlName="firstName" class="form-control"
+                         [ngClass]="{ 'is-invalid': parentSubmitted && parentsControls.firstName.errors }">
+                  <div *ngIf="parentSubmitted && parentsControls.firstName.errors"
+                       class="invalid-feedback">
+                    <div *ngIf="parentsControls.firstName.errors.required">
+                      firstName is required
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <label>Soyad</label>
+                  <input formControlName="secondName" class="form-control"
+                         [ngClass]="{ 'is-invalid': parentSubmitted && parentsControls.secondName.errors }">
+                  <div *ngIf="parentSubmitted && parentsControls.secondName.errors"
+                       class="invalid-feedback">
+                    <div *ngIf="parentsControls.secondName.errors.required">
+                      secondName is required
+                    </div>
+                    <div *ngIf="parentsControls.secondName.errors.min">
+                      secondName must be at least 1 characters
+                    </div>
+                    <div *ngIf="parentsControls.secondName.errors.max">
+                      secondName must not exceed 50 characters
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <label for="dob">Doğum tarixi</label>
+                  <input formControlName="dob" type="date" class="form-control">
+                </div>
+                <div class="mt-2">
+                  <label>Seriya nömrəsi</label>
+                  <input formControlName="documentNo" class="form-control">
+                </div>
+                <div class="mt-2">
+                  <label>FIN kod</label>
+                  <input formControlName="pin" class="form-control">
+                </div>
+                <div class="mt-2">
+                  <label>Email ünvanı</label>
+                  <input formControlName="email" class="form-control">
+                </div>
+                <div class="mt-2">
+                  <label>Qeydiyyatda olduğu ünvan</label>
+                  <input formControlName="registrationAdress" class="form-control">
+                </div>
+                <div class="mt-2">
+                  <label>Yaşadığı ünvan</label>
+                  <input formControlName="factualAdress" class="form-control">
+                </div>
+                <div class="mt-2">
+                  <label>Çalışdığı sahə</label>
+                  <input formControlName="profession" class="form-control">
+                </div>
+                <div class="mt-2">
+                  <label>Cins</label>
+                  <ng-select formControlName="gender"
+                             [ngClass]="{ 'is-invalid': submitted && f.gender.errors }"
+                             [items]="genders" bindLabel="info"
+                             class="ng-select w-100" [searchable]="false"
+                             [clearable]="false">
+                  </ng-select>
+                </div>
+                <div class="mt-2">
+                  <label>Qohumluq</label>
+                  <ng-select formControlName="relational" [items]="relations"
+                             bindLabel="info" class="ng-select w-100" [searchable]="false"
+                             [clearable]="false">
+                  </ng-select>
+                </div>
+                <div class="mt-2">
+                  <label>Əlaqə nömrəsi</label>
+                  <input formControlName="mob1" class="form-control">
+                </div>
+                <div class="mt-2">
+                  <label>Əlaqə nömrəsi</label>
+                  <input formControlName="mob2" class="form-control">
+                </div>
+                <div class="mt-2 d-flex justify-content-end">
+                  <button [disabled]="!selectedParent" type="button"
+                          class="btn btn-primary" (click)="updateParent()">
+                    <i class="bx bx-edit-alt"></i>
+                    Dəyiş
+                  </button>
+                  <button [disabled]="!selectedParent" type="button"
+                          class="btn btn-warning ms-3" (click)="resetParentForm()">
+                    <i class="bx bx-reset"></i>
+                    Təmizlə
+                  </button>
+                  <button [disabled]="selectedParent" class="btn btn-success ms-3">
+                    <i class="bx bx-plus-medical"></i>
+                    Əlavə et
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <div class="table-responsive p-3">
+                <table class="table table-bordered">
+                  <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>S.A.A</th>
+                    <th>Qohumluq əlaqəsi</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let relation of parents; let i = index">
+                    <td>{{i + 1}}</td>
+                    <td>{{relation?.secondName}} {{relation?.firstName}} {{relation?.fatherName}}</td>
+                    <td>{{relation?.relational?.info}}</td>
+                    <td class="text-center">
+                      <button
+                        (click)="selectParent(relation)"
+                        class="btn btn-primary btn-rounded">
+                        <i class="bx bx-edit"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+      <li [disabled]="!selectedStudent" [ngbNavItem]="2">
+        <a ngbNavLink>
+          <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+          <span class="d-none d-sm-block">İmtahan</span>
+        </a>
+        <ng-template ngbNavContent>
+          <div class="row mt-3">
+            <div class="col-md-4 mt-3 border-1">
+              <form action="" [formGroup]="StudentReceptionExamForm">
+                <div class="mb-2">
+                  <label>Fənn</label>
+                  <ng-select formControlName="subject" [items]="subjects"
+                             bindLabel="info" class="ng-select w-100" [searchable]="false"
+                             (change)="getTeacherBySubjectId($event)" [clearable]="false">
+                  </ng-select>
+                </div>
+
+
+                <div class="form-check">
+                  <input class="form-check-input" formControlName="test"
+                         (change)="teacherShower($event)" type="checkbox" id="formCheck2"
+                         checked>
+                  <label class="form-check-label" for="formCheck2">
+                    Test
+                  </label>
+                </div>
+                <div *ngIf="!shower" class="mt-2">
+                  <label> Müəllim </label>
+                  <ng-select formControlName="teacher" [items]="teachers"
+                             bindLabel="fullName" class="ng-select w-100"
+                             [clearable]="false">
+                  </ng-select>
+                </div>
+
+                <div *ngIf="shower">
+                  <div class="mt-2">
+                    <label>Sualların sayı</label>
+                    <input formControlName="examQuestionCount" class="form-control"
+                           [ngClass]="{ 'is-invalid': submitted && examControls.examQuestionCount.errors }">
+                  </div>
+                  <div class="mt-2">
+                    <label>Cavablandırılmışların sayı</label>
+                    <input formControlName="examAnsweredQuestionCount"
+                           class="form-control"
+                           [ngClass]="{ 'is-invalid': submitted && examControls.examAnsweredQuestionCount.errors }">
+                  </div>
+                  <div class="mt-2">
+                    <label>Düzgün cavabların sayı</label>
+                    <input formControlName="examRightQuestionCount"
+                           class="form-control"
+                           [ngClass]="{ 'is-invalid': submitted && examControls.examRightQuestionCount.errors }">
+                  </div>
+                  <div class="mt-2">
+                    <label>İmtahan nəticəsi</label>
+                    <input formControlName="examResult" class="form-control"
+                           [ngClass]="{ 'is-invalid': submitted && examControls.examResult.errors }">
+                  </div>
+                </div>
+                <div *ngIf="!shower"  class="mt-2">
+                  <label>Qeyd</label>
+                  <textarea formControlName="note" class="form-control"
+                            [ngClass]="{ 'is-invalid': examSubmitted && examControls.note.errors }"
+                            id="" cols="10" rows="10"></textarea>
+                </div>
+
+                <div class="mt-2">
+                  <button [disabled]="!selectedExam" type="button"
+                          class="btn btn-warning me-3" (click)="resetExamForm()">
+                    <i class="bx bx-reset"></i>
+                    Təmizlə
+                  </button>
+                  <button [disabled]="!selectedExam" type="button"
+                          (click)="updateExam()" class="btn btn-primary me-3">
+                    <i class="bx bx-edit-alt"></i>
+                    Dəyiş
+                  </button>
+                  <button [disabled]="selectedExam" class="btn btn-success me-3" (click)="addExamToStudent()">
+                    <i class="bx bx-plus-medical"></i>
+                    Əlavə et
+                  </button>
+                </div>
+
+              </form>
+
+            </div>
+            <div class="col-md-8">
+              <label>Sınaqlar</label>
+              <div class="table-responsive">
+
+                <table class="table table-bordered">
+                  <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Fənn</th>
+                    <th>Müəllim</th>
+                    <th>Sual sayı</th>
+                    <th>Cavablandırılmış</th>
+                    <th>Düzgün cavab sayı</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <ng-container *ngFor="let exam of exams;let i = index">
+                    <tr>
+                      <td>
+                                                                    <span class="pr-6 whitespace-nowrap">
+                                                                        {{ i + 1 }}
+                                                                    </span>
+                      </td>
+                      <td>
+                                                                    <span class="pr-6 whitespace-nowrap">
+                                                                        {{exam?.subject.info}}
+                                                                    </span>
+                      </td>
+                      <td>
+                                                                    <span class="pr-6 whitespace-nowrap">
+                                                                        {{exam?.teacher?.fullName}}
+                                                                    </span>
+                      </td>
+                      <td>
+                                                                    <span class="pr-6 whitespace-nowrap">
+                                                                        {{exam?.examQuestionCount}}
+                                                                    </span>
+                      </td>
+                      <td>
+                                                                    <span class="pr-6 whitespace-nowrap">
+                                                                        {{exam?.examAnsweredQuestionCount}}
+                                                                    </span>
+                      </td>
+                      <td>
+                                                                    <span class="pr-6 whitespace-nowrap">
+                                                                        {{exam?.examRightQuestionCount}}
+                                                                    </span>
+                      </td>
+                      <td>
+                        <button (click)="delExam(exam.id)"
+                                class="btn btn-danger btn-rounded">
+                          <i class="bx bx-trash-alt"></i>
+                        </button>
+
+                        <button (click)="selectExam(exam)"
+                                class="btn btn-primary btn-rounded ms-2">
+                          <i class="bx bx-edit-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+      <li [disabled]="!selectedStudent" [ngbNavItem]="3">
+        <a ngbNavLink>
+          <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+          <span class="d-none d-sm-block">Psixoloq</span>
+        </a>
+        <ng-template ngbNavContent>
+          <h4 class="card-title mt-3 ">Psixoloq ({{selectedStudent?.psychologist?.secondName}} {{selectedStudent?.psychologist?.firstName}}) rəyi: </h4>
+          <textarea class="form-control" cols="30" rows="10" [value]="selectedStudent?.psychologistNote" [disabled]="true">
+          </textarea>
+        </ng-template>
+      </li>
+      <li [disabled]="!selectedStudent" [ngbNavItem]="4">
+        <a ngbNavLink>
+          <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+          <span class="d-none d-sm-block">Həkim</span>
+        </a>
+        <ng-template ngbNavContent>
+          <h4 class="card-title mt-3 ">Həkim ({{selectedStudent?.doctor?.secondName}} {{selectedStudent?.doctor?.firstName}}) rəyi: </h4>
+          <textarea class="form-control" cols="30" rows="10" [value]="selectedStudent?.doctorNote" [disabled]="true">
+          </textarea>
+        </ng-template>
+      </li>
+      <li [disabled]="!selectedStudent" [ngbNavItem]="5">
+        <a ngbNavLink>
+          <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+          <span class="d-none d-sm-block">Nəticə</span>
+        </a>
+        <ng-template ngbNavContent>
+            <h4 class="card-title my-3">Qəbul haqqında son rəy: </h4>
+            <textarea class="form-control" cols="30" rows="10" [(ngModel)]="studentNote">
+          </textarea>
+          <div class="d-flex justify-content-end mt-3" (click)="update()">
+            <button class="btn btn-success">
+              Təsdiq et
+            </button>
+          </div>
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="navStudent" class="text-muted"></div>
+  </div>
+</ng-template>

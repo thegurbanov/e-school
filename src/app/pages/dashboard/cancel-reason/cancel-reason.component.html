@@ -1,0 +1,78 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Ləğv etmə səbəbləri</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+              <th>Ad</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let cancelReason of cancelReasonList" class="text-end">
+              <td style="text-align: left">{{cancelReason.info}}</td>
+              <td style="text-align: center">
+                <button type="button" (click)="deleteCancelReasonById(cancelReason.id)"
+                        class="btn btn-danger btn-rounded">
+                  <i class="bx bx-trash-alt"></i>
+                </button>
+                <button type="button" class="btn btn-primary btn-rounded ms-2"
+                        (click)="getCancelReasonById(cancelReason.id)">
+                  <i class="bx bx-edit-alt"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Ləğv etmə səbəbi</h4>
+      </div>
+      <div class="card-body mt-2">
+        <form [formGroup]="cancelReasonForm" style="text-align: right;">
+          <div class="row mb-2 d-none">
+            <label class="col-sm-3 col-form-label">Id</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="id">
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-3 col-form-label">Ad</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="info"
+                     [ngClass]="{ 'is-invalid': validation.info.errors}">
+              <div *ngIf="validation.info.errors" class="invalid-feedback">
+                <div *ngIf="validation.info.errors.required">
+                  The field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="justify-content-end mb-2">
+            <button type="submit" class="btn btn-warning me-3" (click)="resetForm()">
+              <i class="bx bx-reset"></i>
+              Təmizlə
+            </button>
+            <button type="submit" class="btn btn-primary me-3" (click)="updateCancelReason()" [disabled]="isFormReset">
+              <i class="bx bx-edit-alt"></i>
+              Dəyiş
+            </button>
+            <button class="btn btn-success me-3" (click)="addCancelReason()">
+              <i class="bx bx-plus-medical"></i> Əlavə et
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,167 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Ödəniş səhifəsi</h4>
+  </div>
+  <div class="card-body mt-2">
+    <form [formGroup]="form" style="text-align: right;">
+      <div class="row mb-4">
+        <label class="col-sm-4 col-form-label">Müqavilə</label>
+        <div class="col-sm-6">
+          <ng-select [clearable]="false" class="col-md-12" style="text-align: left" formControlName="contractId"
+                     (change)="getContractById()"
+                     [ngClass]="{ 'is-invalid': validation.contractId.errors }">
+            <ng-option *ngFor="let contract of contractList" [value]="contract?.id">
+              {{contract?.contractType?.info}} № {{contract?.contractNumber}} ||
+              {{contract | agreementSide}}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="validation.contractId.errors" class="invalid-feedback">
+            <div *ngIf="validation.contractId.errors.required">
+              Müqavilə is required
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-1 text-center">
+          <button class="btn btn-primary btn-rounded" (click)="scrollModal(scrollDataModal)"
+                  [disabled]="form.controls['contractId'].value === ''">
+            <i class="bx bx-show"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row mb-4" *ngIf="selectedContract?.contractType?.paymentLogic === 'PURCHASE'">
+        <label class="col-sm-4 col-form-label">Ödəniş qaydası</label>
+        <div class="col-sm-1">
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" formControlName="isInvoice" [value]="false"
+                   (change)="changePaymentLogic()">
+            <label class="form-check-label">
+              Avans
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" formControlName="isInvoice" [value]="true"
+                   (change)="changePaymentLogic()">
+            <label class="form-check-label">
+              Qaimə/Faktura
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4" *ngIf="form.controls['isInvoice'].value === true &&
+              selectedContract?.contractType?.paymentLogic === 'PURCHASE'">
+        <label class="col-sm-4 col-form-label">Qaimələr</label>
+        <div class="col-sm-6">
+          <ng-select [clearable]="false" class="col-md-12 text-start">
+            <ng-option *ngFor="let invoice of invoiceList" [value]="invoice?.id">
+              № {{invoice?.invoiceNumber}} || Məbləğ - {{invoice?.amount}} || Tarix - {{invoice?.invoiceDate}}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <label class="col-sm-3 col-form-label"></label>
+        <div class="col-sm-1">
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" name="paymentType" value="CASHBOX" checked
+                   (change)="changePaymentKind($event)">
+            <label class="form-check-label">
+              Nağd
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <ng-select [clearable]="false" class="col-md-12" style="text-align: left" formControlName="kassaId" [scrollTop]="5"
+                     [ngClass]="{ 'is-invalid': validation.kassaId.errors }">
+            <ng-option *ngFor="let cashbox of cashboxList" value="{{cashbox?.id}}">
+              {{cashbox?.info}}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="validation.kassaId.errors" class="invalid-feedback">
+            <div *ngIf="validation.kassaId.errors.required">
+              Nağd is required
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <label class="col-sm-3 col-form-label"></label>
+        <div class="col-sm-1">
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" name="paymentType" value="BANK"
+                   (change)="changePaymentKind($event)">
+            <label class="form-check-label">
+              Bank
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <ng-select [clearable]="false" class="col-md-12" style="text-align: left" formControlName="bankAccountId"
+                     [ngClass]="{ 'is-invalid': validation.bankAccountId.errors }">
+            <ng-option *ngFor="let bankAccount of bankAccountList" value="{{bankAccount?.id}}">
+              {{bankAccount?.bank?.info}}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="validation.bankAccountId.errors" class="invalid-feedback">
+            <div *ngIf="validation.bankAccountId.errors.required">
+              Bank is required
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-sm-3"></div>
+        <label class="col-sm-1 col-form-label">Məbləğ</label>
+        <div class="col-sm-2">
+          <input type="number" class="form-control" formControlName="paymentAmount"
+                 [ngClass]="{ 'is-invalid': validation.paymentAmount.errors }">
+          <div *ngIf="validation.paymentAmount.errors" class="invalid-feedback">
+            <div *ngIf="validation.paymentAmount.errors.required">
+              Məbləğ is required
+            </div>
+          </div>
+        </div>
+        <label class="col-sm-1 col-form-label">Valyuta</label>
+        <div class="col-sm-3">
+          <ng-select [clearable]="false" class="col-md-12" style="text-align: left" formControlName="currencyId"
+                     [ngClass]="{ 'is-invalid': validation.currencyId.errors}">
+            <ng-option *ngFor="let currency of currencyList" [value]="currency?.id">
+              {{currency?.isoCode}}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="validation.currencyId.errors" class="invalid-feedback">
+            <div *ngIf="validation.currencyId.errors.required">
+              Valyuta is required
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-sm-10 mb-2">
+          <button type="submit" class="btn btn-success" (click)="addPayment()" [disabled]="!form.valid">
+            <i class="bx bx-money"></i>
+            Ödəniş et
+          </button>
+        </div>
+        <div class="col-sm-2"></div>
+      </div>
+    </form>
+  </div>
+</div>
+<ng-template #scrollDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müqavilə məlumatları</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="form.controls['contractId'].value"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

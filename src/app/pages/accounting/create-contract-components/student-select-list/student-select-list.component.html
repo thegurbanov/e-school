@@ -1,0 +1,121 @@
+<ng-template #scrollDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Müştərinin müqavilələri</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-list-special [predmetId]="selectedStudent.id"
+                               [predmetType]="'CUSTOMER'"></app-contract-list-special>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla</button>
+  </div>
+</ng-template>
+<div class="col-md-12">
+  <form [formGroup]="form">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">3.Şagird</h4>
+      </div>
+      <div class="card-body mt-2">
+        <div class="d-flex flex-wrap" style="text-align: right">
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Şagird</label>
+              <div class="col-sm-7">
+                <ng-select [clearable]="false" formControlName="predimetId" class="col-md-12"
+                           (change)="getStudent();sendPredimet()"
+                           style="text-align: left" [ngClass]="{ 'is-invalid': validation.predimetId.errors}">
+                  <ng-option *ngFor="let customer of studentList" [value]="customer?.id">
+                    {{customer?.secondName}} {{customer?.firstName}} {{customer?.fatherName}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.predimetId.errors" class="invalid-feedback">
+                  <div *ngIf="validation.predimetId.errors.required">
+                    Müştəri is required
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-primary btn-rounded" (click)="scrollModal(scrollDataModal)"
+                        [disabled]="!this.form.controls['predimetId'].value">
+                  <i class="bx bx-show"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Tədris ili</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" formControlName="yearId" class="col-md-12"
+                           style="text-align: left" [ngClass]="{ 'is-invalid': validation.yearId.errors}"
+                (change)="getClassesByYearId(); sendPredimet()">
+                  <ng-option *ngFor="let year of yearList" [value]="year?.id">
+                    {{year?.info}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.yearId.errors" class="invalid-feedback">
+                  <div *ngIf="validation.yearId.errors.required">
+                    Tədris ili is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Seriya nömrəsi</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{this.selectedStudent?.customerDocument?.documentSeriya}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Sinif</label>
+              <div class="col-sm-8">
+                <ng-select [clearable]="false" formControlName="classId" class="col-md-12 text-start"
+                           [ngClass]="{ 'is-invalid': validation.classId.errors}" (change)="sendPredimet()">
+                  <ng-option *ngFor="let class of classList" [value]="class?.id">
+                    {{class?.classPrefix}} {{class.classPrefixIndicator}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="validation.classId.errors" class="invalid-feedback">
+                  <div *ngIf="validation.classId.errors.required">
+                    Sinif is required
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">Orqan kodu</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control"
+                       value="{{this.selectedStudent?.customerDocument?.documentOrqan}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-2">
+            <div class="row mb-4">
+              <label class="col-sm-4 col-form-label">FIN kodu</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="{{this.selectedStudent?.customerDocument?.documentFin}}"
+                       [disabled]="true">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

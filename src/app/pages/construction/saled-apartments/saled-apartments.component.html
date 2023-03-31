@@ -1,0 +1,92 @@
+<div class="bg-card p-3">
+  <ul class="nav nav-tabs tabs">
+    <ng-container *ngFor="let nav of navs">
+      <li (click)="selectedClass.id ? '': changeTab(nav)" class="nav-item">
+        <a (click)="selectBina(nav.binaId)" class="nav-link active" [ngClass]="{ active: nav.status }">{{
+          nav.title
+          }}</a>
+      </li>
+    </ng-container>
+  </ul>
+</div>
+<div *ngIf="selectedNav?.id <= blockscount" class="col-lg-12">
+  <div class="table-responsive mt-2">
+    <table class="table table-bordered mb-0">
+      <thead class="text-center">
+      <tr>
+        <th rowspan="2">Giriş</th>
+        <th rowspan="2">Mərtəbə</th>
+        <th rowspan="2">Mənzil nömrəsi</th>
+        <th rowspan="2">Otaq sayı</th>
+        <th rowspan="2">Sahəsi kv/m<sup>2</sup></th>
+        <th colspan="7">Müqavilə</th>
+        <th rowspan="2"></th>
+      </tr>
+      <tr>
+        <th>Mənzil sahibi</th>
+        <th>1 kv/m<sup>2</sup> qiyməti</th>
+        <th>Satış qiyməti</th>
+        <th>İlkin ödəniş</th>
+        <th>Aylıq ödəniş</th>
+        <th>Cəmi ödəniş</th>
+        <th>Qalıq borc</th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let block of data; let i = index" class="text-left">
+      <tr>
+        <th colspan="15">Giriş  {{block.block.nomre}}</th>
+      </tr>
+      <ng-container *ngFor="let dat of block.floorList let i=index">
+        <tr>
+          <th></th>
+          <th colspan="14"> Mərtəbə {{dat.floor.mertebeNomresi}}</th>
+        </tr>
+        <ng-container *ngFor="let dat of block.floorList[i].flatList">
+          <tr style="text-align: right" *ngFor="let contract of dat.contracts">
+            <td scope="row" colspan="2"></td>
+            <td scope="row"><b>Mənzil № {{dat?.menzilNomre}}</b></td>
+            <td>{{contract?.roomCount}}</td>
+            <td>{{contract?.sahe}}</td>
+            <td style="text-align: left">{{contract?.customerFullName}}</td>
+            <td>{{contract?.totalAmount / dat?.sahe}}</td>
+            <td>{{contract?.totalAmount}}</td>
+            <td>{{contract?.initialAmount}}</td>
+            <td>{{contract?.monthlyPayment}}</td>
+            <td>{{contract?.totalPaymentAmount}}</td>
+            <td>{{contract?.totalDept}}</td>
+            <td class="text-start">
+              <button class="btn btn-primary btn-rounded me-2"
+                      (click)="openContractInfoModal(content, contract?.id)">
+                <i class="bx bx-info-circle"></i>
+              </button>
+              <button class="btn btn-success btn-rounded"
+                      routerLink="/accounting/payment-for-contract/{{contract?.id}}">
+                <i class="bx bx-dollar"></i>
+              </button>
+              <button *ngIf="(contract?.totalDept || 0) > 0" class='btn border-none'>
+                <i class='text-danger bx bx-md bxs-error bx-flashing'></i>
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Mənzilin müqaviləsi</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"
+            aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-contract-details [contractId]="selectedApartmentContractId"></app-contract-details>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Close click')">Bağla
+    </button>
+  </div>
+</ng-template>

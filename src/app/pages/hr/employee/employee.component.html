@@ -1,0 +1,318 @@
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">İşçi</h4>
+                <p class="modal-title mt-0">{{EmployeeForm.controls['secondName']?.value}}
+                    {{EmployeeForm.controls['firstName']?.value}}
+                    {{EmployeeForm.controls['fatherName']?.value}}</p>
+
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <ul ngbNav #verticalNav="ngbNav" [activeId]="1" class="nav-pills flex-column">
+                            <li [ngbNavItem]="1">
+                                <a ngbNavLink class="mb-2">
+                                    <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                    <span class="d-none d-sm-block">Şəxsi məlumatlar</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <form [formGroup]="EmployeeForm" (ngSubmit)="addOrUpdate()" action="">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Soyadı</label>
+                                                <input class="form-control" formControlName="secondName"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.secondName.errors }">
+                                                <div *ngIf="submitted && f.secondName.errors" class="invalid-feedback">
+                                                    <div *ngIf="f.secondName.errors.required">
+                                                        secondName is required+
+                                                    </div>
+                                                    <div *ngIf="f.secondName.errors.min">
+                                                        secondName must be at least 1 characters
+                                                    </div>
+                                                    <div *ngIf="f.secondName.errors.max">
+                                                        secondName must not exceed 50 characters
+                                                    </div>
+                                                </div>
+
+                                                <label>Adı</label>
+                                                <input class="form-control" formControlName="firstName"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
+                                                <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                                                    <div *ngIf="f.firstName.errors.required">
+                                                        firstName is required+
+                                                    </div>
+                                                    <div *ngIf="f.firstName.errors.min">
+                                                        firstName must be at least 1 characters
+                                                    </div>
+                                                    <div *ngIf="f.firstName.errors.max">
+                                                        firstName must not exceed 50 characters
+                                                    </div>
+                                                </div>
+                                                <label>Ata adı</label>
+                                                <input class="form-control" formControlName="fatherName"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.fatherName.errors }">
+                                                <div *ngIf="submitted && f.fatherName.errors" class="invalid-feedback">
+                                                    <div *ngIf="f.fatherName.errors.required">
+                                                        fatherName is required+
+                                                    </div>
+                                                    <div *ngIf="f.fatherName.errors.min">
+                                                        fatherName must be at least 1 characters
+                                                    </div>
+                                                    <div *ngIf="f.fatherName.errors.max">
+                                                        fatherName must not exceed 50 characters
+                                                    </div>
+                                                </div>
+
+                                                <label>Cins</label>
+                                                <ng-select formControlName="gender" [items]="genders" bindLabel="info"
+                                                    class="ng-select w-100" [searchable]="false" [clearable]="false"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.gender.errors }">
+                                                </ng-select>
+                                                <div *ngIf="submitted && f.department.errors" class="invalid-feedback">
+                                                    department is required
+                                                </div>
+                                                <label>Doğum tarixi</label>
+                                                <input class="form-control" formControlName="dob"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.secondName.errors }">
+
+                                              <label>Şöbə</label>
+                                              <ng-select formControlName="department" [items]="departments" bindLabel="info"
+                                                         class="ng-select w-100" [searchable]="false" [clearable]="false"
+                                                         [ngClass]="{ 'is-invalid': submitted && f.gender.errors }">
+                                              </ng-select>
+
+
+                                                <div class="mt-2">
+
+                                                    <button class="btn btn-success me-3">
+                                                        <i class="bx bx-plus-medical"></i>
+                                                        Yadda Saxla
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+
+                                                <img [src]="croppedImage" class="d-block"
+                                                    [style.border]="croppedImage ? '1px solid black' : 'none'" />
+                                                <label for="employeePhoto"
+                                                    class="btn btn-info mt-3 {{!employeeId ?  'disabled' : ''}} ">Şəkil
+                                                    seç</label>
+                                                <input type="file" id="employeePhoto" class="d-none"
+                                                    (change)="fileChangeEvent($event)" />
+
+                                            </div>
+                                            <div class="col-md-4">
+                                                <image-cropper [imageChangedEvent]="imageChangedEvent"
+                                                    [maintainAspectRatio]="true"
+                                                    [containWithinAspectRatio]="containWithinAspectRatio"
+                                                    [aspectRatio]="4 / 3" [resizeToWidth]="256" [cropperMinWidth]="128"
+                                                    [onlyScaleDown]="true" [roundCropper]="false"
+                                                    [canvasRotation]="canvasRotation" [transform]="transform"
+                                                    [alignImage]="'left'" [style.display]="showCropper ? null : 'none'"
+                                                    format="png" (imageCropped)="imageCropped($event)"
+                                                    (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady($event)"
+                                                    (loadImageFailed)="loadImageFailed()">
+                                                </image-cropper>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="2">
+                                <a ngbNavLink class="mb-2 {{!employeeId ?  'disabled' : ''}} ">
+                                    <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                                    <span class="d-none d-sm-block">Şəxsiyyət vəsiqəsi məlumatları</span>
+                                </a>
+                                <ng-template ngbNavContent>
+
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="3">
+                                <a ngbNavLink class="mb-2 {{!employeeId ?  'disabled' : ''}} ">
+                                    <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                                    <span class="d-none d-sm-block">Messages</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <p>
+                                        Etsy mixtape wayfarers, ethical wes anderson tofu before they
+                                        sold out mcsweeney's organic lomo retro fanny pack lo-fi
+                                        farm-to-table readymade. Messenger bag gentrify pitchfork
+                                        tattooed craft beer, iphone skateboard locavore carles etsy
+                                        salvia banksy hoodie helvetica. DIY synth PBR banksy irony.
+                                        Leggings gentrify squid 8-bit cred.
+                                    </p>
+                                    <p class="mb-0">DIY synth PBR banksy irony.
+                                        Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh
+                                        mi whatever gluten-free.</p>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="4">
+                                <a ngbNavLink class="mb-2 {{!employeeId ?  'disabled' : ''}} ">
+                                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                    <span class="d-none d-sm-block">Settings</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <p>
+                                        Trust fund seitan letterpress, keytar raw denim keffiyeh etsy
+                                        art party before they sold out master cleanse gluten-free squid
+                                        scenester freegan cosby sweater. Fanny pack portland seitan DIY,
+                                        art party locavore wolf cliche high life echo park Austin. Cred
+                                        vinyl keffiyeh DIY salvia PBR, banh mi before they sold out
+                                        farm-to-table.
+                                    </p>
+                                    <p class="mb-0">Fanny pack portland seitan DIY,
+                                        art party locavore wolf cliche high life echo park Austin. Cred
+                                        vinyl keffiyeh DIY salvia PBR, banh mi before they sold out
+                                        farm-to-table.
+                                    </p>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="5">
+                                <a ngbNavLink class="mb-2 {{!employeeId ?  'disabled' : ''}} ">
+                                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                    <span class="d-none d-sm-block">Ailə tərkibi</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <table class="table table-bordered mt-2">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Ailə üzvü</th>
+                                                <th>Qohumluq əlaqəsi</th>
+                                                <th>Məlumat</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-rounded ms-2">
+                                                        <i class="bx bx-edit-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="6">
+                                <a ngbNavLink class="mb-2 {{!employeeId ?  'disabled' : ''}} ">
+                                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                    <span class="d-none d-sm-block">Təhsili</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <table class="table table-bordered mt-2">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Təhsil aldığı məktəbin adı və onun olduğu yer</th>
+                                                <th>Fakültə və ya şöbənin adı</th>
+                                                <th>İxtisas</th>
+                                                <th>Daxil olduğu il</th>
+                                                <th>Qurtardığı və ya çıxdığı il</th>
+                                                <th>Əgər qurtarmayıbsa, hansı kursdan çıxmışdır</th>
+                                                <th>Diplom və ya vəsiqənin №-sini göstərməli</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-rounded ms-2">
+                                                        <i class="bx bx-edit-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="7">
+                                <a ngbNavLink class="mb-2 {{!employeeId ?  'disabled' : ''}} ">
+                                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                    <span class="d-none d-sm-block">Hərbi mükələfiyyəti</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <p class="mb-0">Fanny pack portland seitan DIY,
+                                        art party locavore wolf cliche high life echo park Austin. Cred
+                                        vinyl keffiyeh DIY salvia PBR, banh mi before they sold out
+                                        farm-to-table.
+                                    </p>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="8">
+                                <a ngbNavLink class="mb-2 {{!employeeId ?  'disabled' : ''}} ">
+                                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                    <span class="d-none d-sm-block">İş təcrübəsi</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <table class="table table-bordered mt-2">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th rowspan="2">#</th>
+                                                <th colspan="2">Ay və il </th>
+                                                <th rowspan="2">İdarə, təşkilat, müəssisə, habelə nazirlikləri
+                                                    (tabeliyi) göstərilməklə, vəzifəsi</th>
+                                                <th rowspan="2">İdarə, təşkilat və müəssisənin olduğu yer</th>
+                                                <th rowspan="2"></th>
+                                            </tr>
+                                            <tr>
+                                                <th>Daxil olması</th>
+                                                <th>Çıxması</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-rounded ms-2">
+                                                        <i class="bx bx-edit-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="9">
+                                <a ngbNavLink class="mb-2 {{!employeeId ?  'disabled' : ''}} ">
+                                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                    <span class="d-none d-sm-block">Bank hesabı</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <p class="mb-0">Fanny pack portland seitan DIY,
+                                        art party locavore wolf cliche high life echo park Austin. Cred
+                                        vinyl keffiyeh DIY salvia PBR, banh mi before they sold out
+                                        farm-to-table.
+                                    </p>
+                                </ng-template>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-9">
+                        <div [ngbNavOutlet]="verticalNav" class="text-muted"></div>
+                    </div>
+                </div><!-- end row -->
+            </div><!-- end card-body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+
+</div>

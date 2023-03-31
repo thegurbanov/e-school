@@ -1,0 +1,137 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Menyuların redaktə edilməsi</h4>
+        <p class="card-title-desc">Təşkilata görə dəyişdirə bilərsiniz
+        </p>
+      </div>
+      <div class="card-body p-4">
+        <div class="row">
+          <div class="col-lg-5">
+            <div>
+              <form [formGroup]="form">
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3  control-label">Kod</label>
+                  <div class="col-sm-9">
+                    <input formControlName="code" class="form-control">
+                    <div *ngIf="validation.code.errors" class="invalid-feedback">
+                      <div *ngIf="validation.code.errors.required">
+                        The field is required
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Azerbaijan</label>
+                  <div class="col-sm-9">
+                    <input formControlName="aze" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">English</label>
+                  <div class="col-sm-9">
+                    <input formControlName="eng" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Turkish</label>
+                  <div class="col-sm-9">
+                    <input formControlName="tur" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Russian</label>
+                  <div class="col-sm-9">
+                    <input formControlName="rus" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Germany</label>
+                  <div class="col-sm-9">
+                    <input formControlName="deu" class="form-control">
+                  </div>
+                </div>
+
+
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Spanish</label>
+                  <div class="col-sm-9">
+                    <input formControlName="spa" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">Italy</label>
+                  <div class="col-sm-9">
+                    <input formControlName="ita" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                  <label class="col-sm-3 control-label">French</label>
+                  <div class="col-sm-9">
+                    <input formControlName="fra" class="form-control">
+                  </div>
+                </div>
+                <div class="mb-3 mt-3 d-flex justify-content-end">
+                  <button type="button" class="btn btn-primary" (click)="update()"
+                          [disabled]="form.invalid">
+                    <i class="bx bx-edit-alt"></i>
+                    Dəyiş
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-7 ms-lg-auto">
+            <div class="mt-4 mt-lg-0">
+              <div class="table-responsive">
+                <input type="search" class="form-control" placeholder="Axtar" [(ngModel)]="permissionFilterText">
+                <table class="table table-bordered mt-2">
+                  <thead>
+                  <tr>
+                    <th>Adı</th>
+                    <th>AZE</th>
+                    <th>ENG</th>
+                    <th>RUS</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <ng-container *ngFor="let permission of permissionList
+                  | search:'code,aze,eng,rus': permissionFilterText">
+                    <tr [class.selected]="selectedPermission?.code == permission?.code" style="cursor: pointer"
+                        (click)="getByCode(permission.code)">
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{permission?.code}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{permission?.aze}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{permission?.eng}}
+                          </span>
+                      </td>
+                      <td>
+                          <span class="pr-6 whitespace-nowrap">
+                            {{permission?.rus}}
+                          </span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

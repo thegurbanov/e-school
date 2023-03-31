@@ -1,0 +1,105 @@
+<div class="row">
+  <div class="col-lg-12">
+      <div class="card">
+          <div class="card-header">
+              <h4 class="card-title">Bank hesabları</h4>
+          </div>
+          <div class="card-body p-4">
+              <div class="row">
+                  <div class="col-lg-5">
+                      <div>
+                          <form class="" [formGroup]="form" (ngSubmit)="addBankReports()">
+                            <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                              <label  class="col-sm-3  control-label">Bank Hesabı</label>
+                                <div class="col-sm-9">
+                                  <input formControlName="bankAccount" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                              <label class="col-sm-3  form-label">Bank</label>
+                              <div class="col-sm-9">
+                                <ng-select  [clearable]="false" formControlName="bank" [items]="bank"
+                                bindValue="id"
+                                bindLabel="info"
+                                 class="ng-select h-50 w-100 " [notFoundText]="'Bank tapılmadı'">
+                            </ng-select>
+                              </div>
+
+                            </div>
+                              <div class="form-group" style="display: flex;margin-bottom: 10px;">
+                                <label class="col-sm-3  form-label">Valyuta</label>
+                                <div class="col-sm-9">
+                                  <ng-select  [clearable]="false" formControlName="currency" [items]="currency"
+                                  bindValue="id"
+                                  bindLabel="info" class="ng-select h-50 w-100 " [notFoundText]="'Valyuta tapılmadı'">
+                              </ng-select>
+                                </div>
+
+                              </div>
+                              <div class="mt-2">
+                                  <button (click)="editBankReports()" type="button" class="btn btn-primary me-3">
+                                      <i class="bx bx-edit-alt"></i>
+                                      Dəyiş
+                                  </button>
+                                  <button class="btn btn-success me-3">
+                                      <i class="bx bx-plus-medical"></i>
+                                      Əlavə et
+                                  </button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  <div class="col-lg-7 ms-lg-auto">
+                      <div class="mt-4 mt-lg-0">
+                          <div class="table-responsive">
+                            <input type="search" class="form-control" placeholder="Axtar"
+                            [(ngModel)]="bankreport">
+                              <table class="table table-bordered mt-2">
+                                  <thead>
+                                      <tr>
+                                          <th>Adı</th>
+                                          <th>Bank</th>
+                                          <th>Valyuta</th>
+                                          <th></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <ng-container *ngFor="let bankreports of data | search:'bankAccount': bankreport">
+                                          <tr [class.selected]="selectedBankReports.id == bankreports.id">
+                                              <td>
+                                                  <span class="pr-6 whitespace-nowrap">
+                                                      {{bankreports.bankAccount}}
+                                                  </span>
+                                              </td>
+                                              <td>
+                                                <span class="pr-6 whitespace-nowrap">
+                                                    {{bankreports.bank?.info}}
+                                                </span>
+                                            </td>
+                                            <td>
+                                              <span class="pr-6 whitespace-nowrap">
+                                                  {{bankreports.currency?.info}}
+                                              </span>
+                                          </td>
+                                              <td>
+                                                  <button (click)="delBankReports(bankreports)" class="btn btn-danger btn-rounded">
+                                                      <i class="bx bx-trash-alt"></i>
+                                                  </button>
+
+                                                  <button (click)="selectBankReport(bankreports.id)" class="btn btn-primary btn-rounded ms-2">
+                                                      <i class="bx bx-edit-alt"></i>
+                                                  </button>
+                                              </td>
+                                          </tr>
+                                      </ng-container>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
